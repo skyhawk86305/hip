@@ -1,0 +1,178 @@
+class OocFinalSystemScanReport < ScheduledTask
+
+  def self.get_task_objects(config = {},queued_tasks = [])
+    # Save the config for use by other methods
+    RAILS_DEFAULT_LOGGER.debug "Setting up config"
+    @@config = config
+    
+    override_date = config[:override_date]
+    time_now = override_date.nil? ? Time.now.utc : override_date
+    # This is to run once every weekday at midnight eastern
+    schedule_time_utc = ScheduledTask.last_schedule_daily(0,0,false,'Eastern Time (US & Canada)')
+
+    tasks = []
+
+    scan_types = OocScanType.find(:all).inject({}) {|result, st| result[st.ooc_scan_type] = st; result}
+    orgs = Org.service_hip.inject({}) {|result, org| result[org.id.join(",")] = org; result}
+    groups = OocScan.find_by_sql("select distinct org_l1_id, org_l1_id, ooc_group_id, ooc_scan_type
+      from hip_ooc_scan_v
+      where year(publish_ready_timestamp) = #{time_now.year} and month(publish_ready_timestamp) = #{time_now.month}")
+    groups.each do |g|
+      group = OocGroup.find(g.ooc_group_id)
+      org = orgs["#{group.org_l1_id},#{group.org_id}"]
+      if !org.nil? # Org is not found if the org has been de-boarded from HIP
+        scan_type = scan_types[g.ooc_scan_type]
+        tasks << self.new("OOCFinalSystemScan-#{org.org_id}_#{scan_type.file_name_abbreviation}_#{group.ooc_group_id}", schedule_time_utc, 'y',  nil, org, scan_type, group)
+      end
+    end
+    return tasks.sort
+  end
+  
+  def <=>(b)
+    return @org.org_name <=> b.org.org_name unless @org.org_name == b.org.org_name
+    return @scan_type.ooc_scan_type <=> b.scan_type.ooc_scan_type unless @scan_type.ooc_scan_type == b.scan_type.ooc_scan_type
+    return @group.ooc_group_name <=> b.group.ooc_group_name
+  end
+
+  attr_reader :name, :last_run_timestamp, :auto_retry,:queued_task_id, :org, :scan_type, :group
+  
+  def initialize(name, last_run_timestamp, auto_retry, queued_task_id, org, scan_type, group)
+    # name is a string, last_run_timestamp can either be a Time object, or a string denoting a time
+    @name = name
+    @last_run_timestamp = last_run_timestamp
+    @auto_retry = auto_retry
+    @org = org
+    @scan_type = scan_type
+    @group = group
+  end
+
+  def run
+    override_date = @@config[:override_date]
+    @time_now = override_date.nil? ? Time.now.utc : override_date
+    org_name = @org.org_name.gsub(/\W/,"_") #replace / with - (for date indicator)
+    storage_path = "#{RAILS_ROOT}/reports/#{org_name}/#{@time_now.strftime("%Y-%m")}"
+    FileUtils.makedirs storage_path
+
+    zip_filename={
+      :org_name=>@org.org_name,
+      :group_name=>@group.ooc_group_name,
+      :scan_type=>@scan_type.file_name_abbreviation,
+      :date=>@time_now.strftime("%Y-%m"),
+      :report_num=>"A-214P-01",
+      :extention=>"zip"
+    }
+    scans = get_released(@group.ooc_group_id, @scan_type.ooc_scan_type,
+      get_last_timestamp({:storage_path=>storage_path, :zip_filename=>zip_filename}), @time_now)
+
+    if scans.size > 0
+      publish_ready_timestamp = @time_now
+      
+      scans.each do |scan|
+
+        zip_path = "#{RAILS_ROOT}/tmp/#{@time_now.to_i}"
+        Dir.mkdir(zip_path) unless File.exists?(zip_path)
+
+        
+        asset = Asset.find(:first, :conditions => "tool_asset_id = #{scan.asset_id} and #{SwareBase.quote_value(scan.publish_ready_timestamp)} between row_from_timestamp and coalesce(row_to_timestamp, current_timestamp)")
+
+        # create the html file
+        html = OocFinalSystemScanReportDetail.get_report(@org, @group, scan, asset, override_date.nil? ? '' :  "<span style='color: red;'>Re-Run</span>")
+        # create the pdf file from the html output
+        create_pdf({:html=>html,:org_name=>@org.org_name,
+            :host_name=>asset.host_name,
+            :unique => scan.asset_id,
+            :scan_type=>@scan_type.file_name_abbreviation,
+            :path=>zip_path
+          })
+
+        f = File.new("#{zip_path}/.last_released_timestamp",'w')
+        f.puts publish_ready_timestamp
+        f.close
+
+        # create the zip file
+        zip_file({:storage_path=>storage_path,
+            :zip_path=>zip_path,
+            :group_name=>@group.ooc_group_name,
+            :org_name=>@org.org_name,
+            :scan_type=>@scan_type.file_name_abbreviation,
+            :zip_filename=>zip_filename,
+          })
+
+        FileUtils.rm_rf(zip_path)
+      end
+
+    end
+    
+    {:success => true}
+  end
+
+  # private
+  def create_pdf(params)
+    filename_params={
+      :org_name=>params[:org_name],
+      :host_name=>params[:host_name],
+      :scan_type=>params[:scan_type],
+      :report_num=>"A-214P-01",
+      :date=>@time_now.strftime("%Y-%m"),
+      :unique => params[:unique],
+      :extention=>"pdf"
+    }
+    filename = FilenameCreator.filename(filename_params)
+    kit = PDFKit.new(params[:html],
+      :header_left => "Account: #{params[:org_name]} System Name: #{params[:host_name]}"
+    )
+    kit.to_file("#{params[:path]}/#{filename}")
+
+    return filename
+  end
+
+  def zip_file(params)
+    Dir.chdir(params[:zip_path])
+
+    filename = FilenameCreator.filename(params[:zip_filename])
+    Zip::ZipFile.open("#{params[:storage_path]}/#{filename}", Zip::ZipFile::CREATE) {
+      |zipfile|
+      Dir.glob("*.{pdf,last_released_timestamp}"){|file|
+        if zipfile.find_entry(file).nil?
+          zipfile.add(file,file)
+        else
+          zipfile.replace(file,file)
+        end
+      }
+       if zipfile.find_entry(".last_released_timestamp").nil?
+      zipfile.add(".last_released_timestamp",".last_released_timestamp")
+       else
+         zipfile.replace(".last_released_timestamp",".last_released_timestamp")
+       end
+
+      zipfile.close
+    }
+    Dir.chdir("#{RAILS_ROOT}")
+  end
+
+  def get_released(ooc_group_id, ooc_scan_type, last_report_time, report_end_time)
+    puts "get_released, ooc_group_id: #{ooc_group_id}, ooc_scan_type: #{ooc_scan_type}, last_report_time: #{last_report_time}, report_end_time: #{report_end_time}"
+    OocScan.find(:all, :conditions => "publish_ready_timestamp >= #{SwareBase.quote_value(last_report_time)} and publish_ready_timestamp < #{SwareBase.quote_value(report_end_time)}
+      and ooc_group_id = #{ooc_group_id} and ooc_scan_type = #{SwareBase.quote_value(ooc_scan_type)}")
+  end
+
+  def get_last_timestamp(params)
+    timestamp_file = ".last_released_timestamp"
+    filename = FilenameCreator.filename(params[:zip_filename])
+    last_released_timestamp = nil
+    if File.exists?("#{params[:storage_path]}/#{filename}")
+      Zip::ZipFile.open("#{params[:storage_path]}/#{filename}")  { |zipfile|
+        unless zipfile.find_entry(timestamp_file).nil?
+          last_released_timestamp = Time.parse(zipfile.read(timestamp_file))
+        else
+          last_released_timestamp = @time_now.beginning_of_month
+        end
+        zipfile.close
+      }
+    else
+      last_released_timestamp = @time_now.beginning_of_month
+    end
+
+    return last_released_timestamp
+  end
+end
