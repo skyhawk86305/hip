@@ -1,0 +1,17 @@
+<h2>Account Users</h2>
+Total Users: <%= @members.size %>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>EMail</th>
+    <th>BlueGroup</th>
+  </tr>
+
+  <% @members.each do |member| %>
+    <tr class="<%=cycle("gray","white")%>">
+      <td><%= member[0].upcase%></td>
+      <td><%= member[1]%></td>
+      <td><%= member[2]%></td>
+    </tr>
+  <%end%>
+</table>

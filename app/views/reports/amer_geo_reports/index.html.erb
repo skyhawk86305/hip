@@ -1,0 +1,15 @@
+<h1>Americas Geo Level Reports</h1>
+<ul>
+  <li style="width: 80%"><%= link_to "HC Cycle Executive Dashboard Report #141-01", :action=>:executive_dashboard %> - High Level Summary of the Completion Status of HC Cycle Work tasks and metrics on Deviation Validations & Suppressions.
+Data is captured Once a day and is included for  ALL Accounts in the selected HC Cycle Month.   (CSV & PDF)
+ </li>
+   <li style="width: 80%"><%= link_to "Out of Cycle Executive Dashboard Report #241-01", :action=>:ooc_executive_dashboard %> - High Level Summary of the Completion Status of Out of Cycle Cycle Work tasks and metrics on Deviation Validations & Suppressions.
+Data is captured Once a day and is included for ALL Accounts.   (CSV & PDF)
+ </li>
+  <li style="width: 80%"><%= link_to "Suppressed Deviation Detailed Report (#131C-01)",:action=>:suppression_deviation_detail %> - Dump of Deviation Suppression data for multiple accounts across multiple HC Cycle Months
+ </li>
+ <li style="width: 80%"><b>Suppression Expiration Report</b> <%#= link_to "Suppression Expiration Report" %> - List of Suppressions Due to Expire in X time for all accounts
+</li>
+ <li style="width: 80%"><%= link_to "Account Member List",:action=>"account_member" %> - A list of all the users who have access to an account.
+</li>
+</ul>

@@ -1,0 +1,11 @@
+<% @title = 'Login'%>
+<b>Please login using your IBM Intranet Userid and Password</b>
+<br/><br/>
+<% form_tag({ :action => :login }, :method => :put) do %>
+         <%= label_tag(:userid,"Userid")%>
+         <%= text_field_tag('userid', @userid, :size => 40, :maxlength =>200) %>
+         <p><%=label_tag(:password,"Password")%></p> 
+         <%= password_field_tag('password', nil, :size => 40, :maxlength => 200) %>
+         <p><%= submit_tag("Log in") %></p>
+         <%= set_focus_to_id( @userid.nil? || @userid.empty? ? 'userid' : 'password') %>
+<% end # form -%>

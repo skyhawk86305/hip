@@ -1,0 +1,15 @@
+<%= will_paginate @orgs, 
+  :params=>{:org_name=>params[:org_name],:per_page=>params[:per_page]},
+  :class => 'pagination ajax' %>
+<table width="75%">
+  <tr>
+    <th>Account</th>
+    <th>CHIP ID</th>
+  </tr>
+  <% @orgs.each do |org| %>
+    <tr class="<%= cycle("gray","white")%> ">
+      <td class="left" ><%= link_to org.org_name, edit_admin_roles_group_path(org) %></td>
+      <td><%= org.org_ecm_account_id%> </td>
+    </tr>
+  <%end%>
+</table>

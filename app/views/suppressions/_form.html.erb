@@ -1,0 +1,145 @@
+<% form_for @ex ,:html =>{ :name => "suppression" } do |f|  %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :suppress_name ,"Suppression Name"   %>
+    <%= f.text_field :suppress_name, :size=>50%>
+  </p>
+
+  <p>
+    <%= f.label :suppress_desc, "Suppression Description"   %>
+
+    <%= f.text_area :suppress_desc, :cols=>80,:rows=>7 %>
+    <%= observe_field 'suppression_suppress_desc', :frequency=>1,:update=>'test',
+      :function => "$('test').value=500-$('suppression_suppress_desc').value.length" %>
+  </p>
+
+  <span class="bold">500 Character Limit.  Characters Left</span>: <%= text_field_tag :test, (@ex.suppress_desc? ? 500-@ex.suppress_desc.length : nil), :size=>6,:readonly=>true %>
+  <p>
+    <%= f.label :start_timestamp ,"Start Date"   %>
+		<% if controller.action_name == "edit" %>
+		<%= @ex.start_timestamp_formatted %>
+		<% else %>
+    <%= f.select :start_timestamp, start_ymd_select_list(@ex.start_timestamp), :selected=>@ex.start_timestamp_formatted,:include_blank=>"Select Start Date" %>
+		<% end %>
+  </p>
+
+  <p>
+    <%= f.label :end_timestamp ,"End Date"   %>
+    <%= f.select :end_timestamp, end_ymd_select_list(@ex.end_timestamp), :selected=>@ex.end_timestamp_formatted,:include_blank=>"Select End Date" %>
+  </p>
+  <p>
+    <%= f.label :suppress_class,"Classification"    %>
+    <%= f.select :suppress_class, classification_list, {:include_blank => 'Select Classification'} %>
+  </p>
+  <!--p>
+  <%#= f.label :approval_status    %>:<br/>
+  <%#= f.select :approval_status, approval_status_list  %>
+  </p-->
+  <div style="display:none">
+    <p>
+      <%= f.label :automatic_suppress_flag ,"Is Bulk/Automatic Suppression"  %>:
+      <%= f.check_box :automatic_suppress_flag, {:onclick=>"toggleBulkSuppression(this,'bulk_suppression')"},"y", "n"
+    %>
+    </p>
+
+    <fieldset id="bulk_suppression" style="border: black solid 1px;width:60px;<%= bulk_style_display(@ex.automatic_suppress_flag) %>">
+      <legend>Bulk/Automatic Suppression</legend>
+      <p>
+        <%= f.label :apply_to_scope  %>:<br/>
+        <%= f.select :apply_to_scope ,scope_list %>
+      </p>
+      <p>
+        <script  type="text/javascript">
+
+          function resetId(field,id){
+            var element = document.getElementById(id)
+            if (field.value==""){
+              element.value=""
+            }
+          }
+          function setVulnIdField(text,li) {
+            // alert (li.id);
+            var form=document.forms['suppression']
+            form.suppression_vuln_id.value=li.id
+            //org_id.value=li.id
+          }
+          function setAssetIdField(text,li) {
+            // alert (li.id);
+            var form=document.forms['suppression']
+            form.suppression_asset_id.value=li.id
+            //org_id.value=li.id
+          }
+        </script>
+        <%= f.label :vuln_id, "Deviation Type"  %>:<br/>
+        <%= text_field_with_auto_complete :suppression, :vuln_title,
+          {:value=>!@ex.vuln.blank? ? @ex.vuln.title : nil,:size=>"40",:onblur=>"resetId(this,'suppression_vuln_id')"},
+          { :url =>  vulns_path(:js),:frequency=>"1.5",
+          :method => :get, :param_name=>'title'}%>
+
+
+      </p>
+      <p>
+        <%= f.label :hc_group_ids, "Health Check Groups"   %>:<br/>
+        <%= f.select :hc_group_ids ,
+          options_for_select(hc_group_list(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]},:selected=>@ex.selected_hc_group_ids),
+          {},{:multiple=>true ,:size=>5} %>
+      </p>
+      <p>
+        <%= f.label :system_name, "System Name"   %>:<br/>
+        <%= text_field_with_auto_complete :suppression, :system_name,
+          {:value=>!@ex.asset_id.blank? ? @ex.asset.host_name : nil,:size=>"40",:onblur=>"resetId(this,'suppression_asset_id')"},
+          { :url =>  '/assets/autocomplete_lookup',:frequency=>"1.5",
+          :method => :get, :param_name=>'query'}%>
+
+        <!-- :value=>!@ex.asset.blank? ? @ex.asset.host_name : nil,-->
+      </p>
+    </fieldset>
+  </div>
+  <p><%= label_tag :lu_userid, "Last Updated by" unless @ex.lu_userid.nil?%> <%= @ex.lu_userid=="unk" ? "":@ex.lu_userid %>
+  </p>
+  <p><%= label_tag :lu_timestamp, "Last Updated on" unless @ex.lu_timestamp.nil?%> <%= @ex.lu_timestamp %>
+  </p>
+  <p>
+
+    <%= f.submit 'save' ,:disabled=>hide_element %>
+
+  </p>
+<% end %>
+
+<script type="text/javascript">
+  // datepicker options
+  options = {
+    maxDate: '+1y',
+    showOn: 'button',
+    buttonImage: '/images/calendar.png',
+    buttonImageOnly: true,
+    dateFormat: 'yy-mm',
+    defaultDate: null
+    //constrainInput :true
+  }
+  // datepicker start_date
+  $j(function() {
+    $j("#suppression_start_timestamp").datepicker(options);
+  });
+  // datepicker end_date
+  $j(function() {
+    $j("#suppression_end_timestamp").datepicker(options);
+  });
+
+  function toggleBulkSuppression(field,id){
+    if ( id ){
+        
+      element = document.getElementById(id)
+      display = element.style.display
+
+      if (field.checked==true){
+        element.style.display='block'
+      }
+      if (field.checked==false){
+        element.style.display='none'
+      }
+    }
+
+  }
+</script>
+

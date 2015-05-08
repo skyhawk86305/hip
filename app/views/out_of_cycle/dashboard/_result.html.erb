@@ -1,0 +1,180 @@
+<hr/>
+<div id="current_org_name">
+  <p>
+    <span class="bold">Report Run Date:</span> <%= Time.now.strftime("%Y-%m-%d %H:%M:%S UTC") %> <br/>
+    <span class="bold">Scan Type:</span> <%= params[:ooc_scan_type] %> <br/>
+    <span class="bold">Group Type:</span> <%= @group_type %> <br/>
+    <span class="red-text bold">Note: Report reflects scans from last 30 days.</span>
+  </p>
+</div>
+ 
+<table>
+  <tr>
+  </tr>
+  <tr>
+    <td colspan="5">&nbsp;</td>
+    <th>A1</th>
+    <th>A2</th>
+    <th>A3</th>
+    <th>A4</th>
+    <td>&nbsp;</td>
+    <th>A5</th>
+    <th>A6</th>
+    <th>A7</th>
+    <td>&nbsp;</td>
+    <th>B1</th>
+    <th>B2</th>
+    <th>B3</th>
+    <th>B4</th>
+    <td>&nbsp;</td>
+    <th>C1</th>
+    <th>C2</th>
+    <th>C3</th>
+    <th>C4</th>
+    <th>C5</th>
+
+  </tr>
+  <tr>
+    <td colspan="5">&nbsp</td>
+    <th colspan="8">System Scan Status</th>
+    <td >&nbsp</td>
+    <th colspan="7">Deviation Status</th>
+  </tr>
+  <tr>
+    <td colspan="5">&nbsp</td>
+    <th colspan="4"># Systems Incomplete</th>
+    <td style="width:1px">&nbsp</td>
+    <th colspan="3"># Systems Complete</th>
+    <td style="width:1px">&nbsp</td>
+    <th colspan="4">Scans Labeled, Not Released</th>
+    <td >&nbsp</td>
+    <th colspan="5">Released Scans</th>
+    <td style="width:1px">&nbsp</td>
+  </tr>
+  <tr>
+    <th>Group Name</th>
+    <th># Systems Transition Status</th>
+    <th># Systems Production Status</th>
+    <th>Total # Systems</th>
+    <td style="width:1px">&nbsp;</td>
+    <th>Unavailable without Reason</th>
+    <th>Available,None Labeled</th>
+    <th>Labeled, none Released</th>
+    <th>Total Incomplete (s/b zero)</th>
+    <td style="width:1px">&nbsp;</td>
+    <th>Released</th>
+    <th>Missing with Reason</th>
+    <th>Total Complete</th>
+    <td style="width:1px">&nbsp;</td>
+    <th># Scans with 0 Valid Deviations (ready to release)</th>
+    <th># Scans with 1+ Valid Deviations (not released)</th>
+    <th># Valid Deviations (not released)</th>
+    <th># Suppressed Deviations (not released)</th>
+    <td style="width:1px">&nbsp;</td>
+    <th># Scans with 0 Valid Deviations (released)</th>
+    <th># Scans with/ 1+ Valid Deviations (released</th>
+    <th># Valid Deviations (released)</th>
+    <th># Suppressed Deviations (released)</th>
+    <th>Average # Valid Deviations Per Server (released)</th>
+    <td style="width:1px">&nbsp;</td>
+    <th>Group Name</th>
+  </tr>
+  <!-- data here -->
+  <tr class="gray">
+    <td class="bold">Account Totals</td>
+    <td><%= @unassigend_assets_count[:trans_count].to_i + @current_groups_total[:trans_count].to_i + @not_current_groups_total[:trans_count].to_i%></td>
+    <td ><%= @unassigend_assets_count[:prod_count].to_i + @current_groups_total[:prod_count].to_i + @not_current_groups_total[:prod_count].to_i %> </td>
+    <td class="bold"><%= @unassigend_assets_count[:trans_count].to_i + @current_groups_total[:trans_count].to_i + @not_current_groups_total[:trans_count].to_i +
+@unassigend_assets_count[:prod_count].to_i + @current_groups_total[:prod_count].to_i + @not_current_groups_total[:prod_count].to_i
+  %></td>
+  </tr>
+  <tr class="white">
+    <td class="red-text bold">unassigned</td>
+    <td><%= @unassigend_assets_count[:trans_count] %></td>
+    <td><%= @unassigend_assets_count[:prod_count] %> </td>
+    <td class="bold"><%= @unassigend_assets_count[:prod_count].to_i + @unassigend_assets_count[:trans_count].to_i %></td>
+  </tr>
+
+  <tr>
+    <th class="left" colspan="34">Total Active Groups</th>
+  </tr>
+  <tr class="gray">
+    <td class="bold">Total</td>
+    <td><%= @current_groups_total[:trans_count] %></td>
+    <td ><%= @current_groups_total[:prod_count] %></td>
+    <td class="bold"><%= @current_groups_total[:prod_count].to_i + @current_groups_total[:trans_count].to_i %></td>
+    <td style="width:1px">&nbsp;</td>
+    <% # Note that current_groups_total elements are nil when there are no groups -- so to_i changes the nil to zero
+    %>
+    <td><%= @current_groups_total[:miss_no_reason].to_i %></td>
+    <td><%= @current_groups_total[:none_labeled].to_i %> </td>
+    <td><%= @current_groups_total[:none_released].to_i %> </td>
+    <td><%= @current_groups_total[:incomplete].to_i %></td>
+    <td style="width:1px">&nbsp;</td>
+    <td><%= @current_groups_total[:released].to_i %></td>
+    <td><%= @current_groups_total[:miss_reason].to_i  %></td>
+    <td><%= @current_groups_total[:complete].to_i %></td>
+    <td style="width:1px">&nbsp;</td>
+    <td><%=  @current_groups_total[:unreleased_no_valid_deviations_scan_count].to_i %></td>
+    <td><%=  @current_groups_total[:unreleased_unvalidated_scans_count].to_i%></td>
+    <td><%=  @current_groups_total[:unreleased_valid_deviation_count].to_i %></td>
+    <td><%=  @current_groups_total[:unreleased_suppress_deviation_count].to_i %></td>
+    <td style="width:1px">&nbsp;</td>
+    <td><%=@current_groups_total[:released_no_valid_deviations_scan_count].to_i %> </td>
+    <td><%= @current_groups_total[:released_scan_valid_count].to_i %></td>
+    <td><%= @current_groups_total[:released_valid_deviation_count].to_i %></td>
+    <td><%= @current_groups_total[:released_suppress_deviation_count].to_i %></td>
+    <td><%= @current_groups_total[:valid_deviations_avg].to_i%></td>
+    <td style="width:1px">&nbsp;</td>
+    <td>-</td
+  </tr>
+  <%   @current_totals_by_group.keys.sort.each do |group|   %>
+    <tr class="<%= cycle('white','gray')  %>">
+      <td><%= group %></td>
+      <td><%= @current_totals_by_group[group][:trans_count] %></td>
+      <td><%= @current_totals_by_group[group][:prod_count] %> </td>
+      <td class="bold"><%= @current_totals_by_group[group][:prod_count].to_i + @current_totals_by_group[group][:trans_count].to_i %></td>
+      <td style="width:1px">&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:miss_no_reason] %></td>
+      <td><%= @current_totals_by_group[group][:none_labeled] %> </td>
+      <td><%= @current_totals_by_group[group][:none_released] %> </td>
+      <td><%= @current_totals_by_group[group][:incomplete] %></td>
+      <td style="width:1px">&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:released] %></td>
+      <td><%= @current_totals_by_group[group][:miss_reason] %></td>
+      <td><%= @current_totals_by_group[group][:complete] %></td>
+      <td style="width:1px">&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:unreleased_no_valid_deviations_scan_count].to_i %> </td>
+      <td><%= @current_totals_by_group[group][:unreleased_unvalidated_scans_count]%></td>
+      <td><%= @current_totals_by_group[group][:unreleased_valid_deviation_count] %></td>
+      <td><%= @current_totals_by_group[group][:unreleased_suppress_deviation_count] %></td>
+
+      <td style="width:1px">&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:released_no_valid_deviations_scan_count].to_i %></td>
+      <td><%= @current_totals_by_group[group][:released_scan_valid_count].to_i %></td>
+      <td><%= @current_totals_by_group[group][:released_valid_deviation_count].to_i %></td>
+      <td><%= @current_totals_by_group[group][:released_suppress_deviation_count].to_i %></td>
+      <td><%= @current_totals_by_group[group][:valid_deviations_avg] %></td>
+      <td style="width:1px">&nbsp;</td>
+      <td><%= group %></td>
+    </tr>
+  <%end%>
+  <tr>
+    <th class="left" colspan="31">Total Inactive</th>
+  </tr>
+  <tr class="">
+    <td class="bold">Total</td>
+    <td><%= @not_current_groups_total[:trans_count].to_i %></td>
+    <td ><%= @not_current_groups_total[:prod_count].to_i %></td>
+    <td class="bold"><%= @not_current_groups_total[:prod_count].to_i + @not_current_groups_total[:trans_count].to_i %></td>
+  </tr>
+  <%  @not_current_totals_by_group.keys.sort.each do |group|   %>
+    <tr class="<%= cycle('white','gray')%>">
+      <td><%= group %></td>
+      <td><%= @not_current_totals_by_group[group][:trans_count].to_i %></td>
+      <td><%= @not_current_totals_by_group[group][:prod_count].to_i %></td>
+      <td class="bold"><%= @not_current_totals_by_group[group][:prod_count].to_i + @not_current_totals_by_group[group][:trans_count].to_i %></td>
+    </tr>
+  <%end%>
+</table>
+

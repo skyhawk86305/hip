@@ -1,0 +1,27 @@
+<h1>Continuing Business Need</h1>
+
+<p style="color: green"><% flash[:notice] %></p>
+
+<% form_remote_tag :url => { :controller => "/admin/cbn", :action => "preview" },
+    :method => "GET",
+    :loading => "hideElement('cbn_preview'); showElement('cbn_preview_spinner')",
+    :complete => "hideElement('cbn_preview_spinner'); showElement('cbn_preview')"  do %>
+  <%= submit_tag "Preview" %>
+<% end %>
+  <% form_tag({:controller => '/admin/cbn', :action => 'queue_task'}) do %>
+    <% if @show_queue_button %>
+      <%= submit_tag "Queue job to send e-mail" %>
+    <% else %>
+      <%= submit_tag "Queue job to send e-mail", :disabled => !@show_queue_button %>
+    <% end %>
+  <% end %>
+<% unless @show_queue_button %>
+  </br>A CBN job has been queued within the last 24 hours
+<% end %>
+
+<img src="/images/spinner.gif" id="cbn_preview_spinner" style="display: none;" alt="spinner" />
+
+<div id="result">
+  <%#= render :partial=>"result" %>
+</div>
+

@@ -1,0 +1,2 @@
+module VulnsHelper
+end

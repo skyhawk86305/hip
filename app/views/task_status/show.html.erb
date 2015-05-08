@@ -1,0 +1,39 @@
+<h1>Background Process Status</h1>
+<%if @task%>
+  <div id="task">
+    <p>
+      <span class="bold">Account Name: </span> <%= @org.nil? ? '' : @org.org_name %>
+    </p>
+    <% unless @task_params['g'].blank? %>
+    <p>
+      <span class="bold">Group: </span> <%= @task_params['g']  %>
+    </p>
+    <%end%>
+    <p>
+      <span class="bold">Task Name: </span> <%= @task.task_name %>
+    </p>
+    <p>
+    <span class="bold">Task Status: </span><%= @task_status %>
+    </p>
+    <p>
+      <span class="bold">Task Message: </span> <%= @task_message %> 
+    </p>
+    <p>
+      <span class="bold">Task Started by:</span> <%= @task_params['u'] %>
+    </p>
+    <p>
+      <span class="bold">Task Start Time: </span> <%= @task.start_timestamp.strftime("%Y-%m-%d %H:%M:%S")+" UTC" %>
+    </p>
+    <% unless @task.end_timestamp.nil?  %>
+      <p>
+        <span class="bold">Task End Time: </span> <%= @task.end_timestamp.strftime("%Y-%m-%d %H:%M:%S")+" UTC" %>
+      </p>
+    <%end%>
+  </div>
+  <h2><%= @message_subjet %></h2>
+  <p><%= @message %></p>
+  <hr/>
+  <% if @task.class_name=='OfflineSuppressions::DownloadSuppressionTask' and @task.task_status=='success' %>
+    <%= link_to "Download CSV File" ,{:action=>:get_file,:file=>"offline_suppression/#{@task_params['org_id'].sub(',','_')}/#{@task_params['fn']}"}  %>
+  <%end%>
+<%end%>

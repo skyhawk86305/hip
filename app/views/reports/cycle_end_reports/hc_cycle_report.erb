@@ -1,0 +1,31 @@
+<h1>Cycle End System HC Cycle Report</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<p>
+  This report is generated at the end of the month is made avaiable for audit and 
+  archiving purposes.  Select the Year and Month of the archived report you want
+  to receive.
+</p>
+
+<% form_remote_tag(:url =>  {:controller=>'/reports/cycle_end_reports',:action=>:hc_cycle_report}  ) do%>
+  <p>
+    <%= label_tag "Year Month Ending" %>
+    <%= select_tag :date,options_for_select(@dirs,:selected=>Time.now.strftime("%Y-%m"))%>
+  </p>
+  <p>
+    <%= submit_tag "Get Reports" %>
+  </p>
+<% end %>
+
+<div id="result"></div>
+  
+  <script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+  Element.show('reports-2')
+  Element.show('incycle-reports')
+
+  });
+</script>

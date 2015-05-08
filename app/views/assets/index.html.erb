@@ -1,0 +1,149 @@
+<h1>Assign Systems to HC Cycle Groups</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<div id="container2">
+  <div id="container1" style="width: 100%">
+
+
+    <% form_remote_for @asset,:method=>"GET", :loading=>"hideElement('asset_find');showElement('asset_find_spinner')",:complete=>"hideElement('asset_find_spinner');showElement('asset_find')",:url =>{ :controller => "assets", :action => "search" }  do |f|%>
+
+      <div id="col1">
+        <p>
+          <%= label_tag :hc_group_id, "HC Cycle Group"%>
+          <%= select :asset_search, :hc_group_id, hc_group_list_all(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]}.insert(0,"unassigned"),{:selected=>(hc_group_id.nil? ? 'unassigned':hc_group_id), :include_blank => "All"} %>
+        </p>
+
+        <p>
+          <%= label_tag :host_name, "System"%>
+          <%= text_field :asset_search, :host_name  %><br/>
+          Sort ASC: <%= radio_button :asset_search, :sort, 'asc',:checked=>true %> DESC <%= radio_button :asset_search, :sort, 'desc', :checked=>false %>
+        </p>
+        <p>
+          <%= label_tag :ip_string_list, "IP Address"%>
+          <%= text_field :asset_search, :ip_string_list %>
+        </p>
+
+        <p>
+          <%= f.label :os_product, "Operating System"%>
+          <%= select :asset_search, :os_product, Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] },  {:include_blank => "All" } %>
+        </p>
+        <br/>
+        <!--p>
+  <%#= label_tag :system_status %>:<br/>
+  <%#= select(:asset_search, :system_status,Asset.status_for_select.collect{|a| [a.system_status,a.system_status]} ,{:include_blank => "All" })  %>
+        </p-->
+        <%= hidden_field :asset_search,:org_id, :value=> current_org_id %>
+        <table>
+          <tr>
+            <td><img src="/images/spinner.gif" id="asset_find_spinner" style="display: none;" alt="spinner" /></td>
+            <td><%= f.submit 'find', {:id=>"asset_find"} %></td>
+            <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+            <td><%= label_tag :per_page, "Results Per Page"%>
+              <%= select :asset_search, :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+          </tr>
+        </table>
+      </div>
+      <div id="col2">
+
+        <p>
+          <%= f.label :hc_interval, "HC Interval"%>
+          <%= select :asset_search, :hc_interval, Asset.interval_list.collect{ |s| s.hc_auto_interval_weeks },  {:include_blank => "All" } %>
+        </p>
+        <p>
+          <%= f.label :hc_required,  "HC Required"%>
+          <%= select :asset_search, :hc_required, [["Yes"],["No"]],  {:include_blank => "All" } %>
+        </p>
+        <p >
+          <%= label_tag "Security Classification"%>
+          <%= select :asset_search, :hc_sec_class, Asset.sec_class_list.collect{ |s| s.security_policy_name },  {:include_blank => "All" } %>
+        </p>
+
+      </div>
+    <% end %>
+  </div>
+</div>
+<div id="result" style="clear:both"></div>
+
+<script type="text/javascript">
+  function checkHCGroup(field,entries){
+    var form = document.getElementById('asset_form')
+    if (checkSelectElement('option','Select an Action')){
+      if (form.option.value=='all' && field.options.selectedIndex==0){
+        alert('Select HC Group')
+      } else{
+        if (field.options.selectedIndex!=0){
+          confirm('Are you sure you want to save all '+ entries +'  Assets with HC Group '+field.options[field.options.selectedIndex].text)
+        }
+      }
+    }
+  }
+
+  //send alert to user that the number of systems
+  // have exceeded the threshold.
+  function systemsExceeded(group,total){
+    alert("The total number of systems allowed in HC Cycle Group '"+group+
+      "' has exceeded 200. Total systems in request is "+total+".  Create a new group for the remaining systems." );
+  }
+
+  function verifySubmit(entries){
+    var status=false
+    if (checkSelectElement('option','Select an action.')){
+      var element = document.getElementById('option')
+      status=true
+      value = element.options[element.options.selectedIndex].value
+
+      if (value=='selected'){
+        //if (checkSelectElement('hc_group','Select a HC Group.')){
+        return checkSelectElement('hc_group','Select a HC Group.')
+        // }
+      }
+      if (value=='all'){
+        if (checkSelectElement('hc_group','Select a HC Group.')){
+          text = element.options[element.options.selectedIndex].text
+          return confirm('Are you sure you want to '+ text +' systems')
+        }
+      
+      }
+    }
+    return status
+  }
+
+  function hasChecked(){
+    var checked = false
+    var myform =document.forms['asset_scan_form']
+    var tags = myform.getElementsByTagName('select')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('hc_group_id')>0){
+        if (tags[i].options.selectedIndex!=0){
+          return true
+        }
+      }
+    }
+    return checked
+  }
+
+  function selectFindings(){
+    var scan_form =document.forms['asset_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('selected')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+  
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'asset_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+  
+</script>

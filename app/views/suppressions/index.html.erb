@@ -1,0 +1,95 @@
+<h1>Define Suppressions</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<div id="container2">
+<div id="container1" style="width: 100%">
+  <% form_remote_for  @exception_search,:method=>"GET",:html=>{:name=>"exception_search"}, :url =>{ :controller => "suppressions", :action => "search" }  do |f|%>
+  <%# form_remote_tag :url =>{ :controller => "suppressions", :action => "search" }  do |f|%>
+    <div id="col1">
+      <p>
+        <%= f.label :suppress_name ,"Suppression Name"%>
+        <%= f.text_field :suppress_name %>
+      </p>
+      <p>
+        <%= f.label :suppress_class  ,"Classification"  %>
+        <%= f.select :suppress_class,classification_list.insert(0,"All"), :selected=>"All" %>
+      </p>
+      <!--p>
+  <%#= f.label :approval_status    %>:<br/>
+  <%#= f.select :approval_status, approval_status_list.push("All"), :selected=>"All"  %>
+      </p-->
+      <!--p>
+  <%#= f.label :automatic_suppress_flag,"Bulk/Automatic Suppression"%>:<br/>
+        Yes: <%#= f.radio_button :automatic_suppress_flag,  "y" %>
+        No: <%#= f.radio_button :automatic_suppress_flag,  "n" %>
+        All: <%#= f.radio_button :automatic_suppress_flag,  "all", :checked=>true %>
+      </p-->
+      <p>
+        <%= f.hidden_field :org_id,  :value=> current_org_id %>
+      <table>
+        <tr >
+          <td ><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+            <%= f.submit 'find',{:id=>"find"} %></td>
+          <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" }) %></td>
+          <td><%= f.label :per_page, "Results Per Page"%>
+            <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+        </tr>
+      </table>
+      </p>
+    </div>
+    <div id="col2">
+      <!--p>
+  <%#= f.label :hc_group_id,"HC group" %>:<br/>
+  <%#= f.select :hc_group_id ,hc_group_list(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]}.push("All"), :selected=>"All" %>
+      </p-->
+      <script  type="text/javascript">
+
+        function setVulnIdField(text,li) {
+          var form=document.forms['exception_search']
+          form.exception_search_vuln_id.value=li.id
+        }
+        function setAssetIdField(text,li) {
+          var form=document.forms['exception_search']
+          form.exception_search_asset_id.value=li.id
+          if (form.exception_search.host_name.value==""){
+            form.exception_search_asset_id.value=null
+          }
+
+        }
+        /** reset field to null
+         * field is the
+         */
+        function resetId(field,id){
+          var element = document.getElementById(id)
+          if (field.value==""){
+            element.value=""
+          }
+        }
+      </script>
+      <!--p>
+  <%#= f.label :vuln_id,"Deviation Type" %>:<br/>
+  <%#= text_field_with_auto_complete :exception_search,:vuln_title,
+  {:size=>"40",:onblur=>"resetId(this,'exception_search_vuln_id')"},
+  { :url =>  vulns_path(:js),:after_update_element=>"setVulnIdField",:frequency=>"1.5",
+  :method => :get, :param_name=>'title'}%>
+  <%#= f.hidden_field :vuln_id %>
+      </p-->
+      <!--p>
+  <%#= f.label :system_name %>:<br/>
+  <%#= text_field_with_auto_complete :exception_search, :host_name,
+  {:size=>"40",:onblur=>"resetId(this,'exception_search_asset_id')"},
+  { :url =>  '/assets/autocomplete_lookup',:after_update_element=>"setAssetIdField",:frequency=>"1.5",
+  :method => :get, :param_name=>'query'}%>
+  <%#= f.hidden_field :asset_id %>
+      </p-->
+
+    </div>
+  <% end %>
+</div>
+</div>
+<p style="clear:both">
+  <%= button_to "Add New",{:controller=>"suppressions",:action=>"new"},{:disabled=>hide_element} %>
+</p>
+<hr/>
+<div id="result" style="clear:both"></div>

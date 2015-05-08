@@ -1,0 +1,37 @@
+<%= will_paginate @tasks, 
+  :params=>{:task_status=>session[:task_status]},
+  :class => 'pagination ajax' %>
+<table width="100%">
+  <tr>
+    <th>Action</th>
+    <th>Instance Name</th>
+    <th>Task Name</th>
+    <th>Task Status</th>
+    <th>Class Name</th>
+    <th>Scheduled Time</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    <th>Task message</th>
+    <th>Params</th>
+    <th>Auto Retry</th>
+  </tr>
+  <% @tasks.each do |task| %>
+    <tr class="<%= cycle("gray","white")%> ">
+      <td>
+        <%= link_to "edit", edit_admin_task_status_path(task.task_id) %><br/>
+        <%= link_to_remote 'restart',:url=>{:controller=>"admin/task_statuses",:action=>'restart',:id=>task.task_id} %>
+        <%= link_to_remote 'delete',:url=>admin_task_status_path(task.task_id),:method=>"delete" %>
+      </td>
+      <td><%= task.instance_name%> </td>
+      <td><%= task.task_name%> </td>
+      <td><%= task.task_status%> </td>
+      <td><%= task.class_name%> </td>
+      <td><%= Time.parse(task.scheduled_timestamp).strftime("%Y-%m-%d %H:%M:%S") unless task.scheduled_timestamp.nil?%> </td>
+      <td><%= Time.parse(task.start_timestamp).strftime("%Y-%m-%d %H:%M:%S") unless task.end_timestamp.nil? %> </td>
+      <td><%= Time.parse(task.end_timestamp).strftime("%Y-%m-%d %H:%M:%S") unless task.end_timestamp.nil? %> </td>
+      <td><%= task.task_message%> </td>
+      <td><%= task.params %> </td>
+      <td><%= task.auto_retry%> </td>
+    </tr>
+  <%end%>
+</table>

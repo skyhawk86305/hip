@@ -1,0 +1,28 @@
+<% form_for(@missed_scan)  do |f| %>
+  <p>
+    <%= f.label :asset_id, "System Name" %><br/>
+    <%= @asset.host_name %>
+  </p>
+  <p>
+    <%= label_tag :ip_address_id, "Ip Address" %><br/>
+    <%= @asset.ip_string_list %>
+  </p>
+  <p>
+    <%= label_tag :hc_group_id, "HC Group" %><br/>
+    <%= @asset.asset_group.blank? ? "" :@asset.asset_group.hc_group.group_name %>
+  </p>
+
+  <p>
+    <%= f.label :missed_scan_reason_id, "Reason for Missed Scan"%><br/>
+    <%= f.select(:missed_scan_reason_id,
+      MissedScanReason.all.collect{|m| [m.missed_scan_reason, m.missed_scan_reason_id]}.sort)  %>
+  </p>
+  <p>
+  </p>
+  <%= f.hidden_field :asset_id,:value=>params[:asset_id] %>
+  <%= f.submit "save" ,:disabled=>hide_element%>
+<% end %>
+<% if ! @missed_scan.missed_scan_id.blank? %>
+  <%= button_to("delete", { :action => "destroy", :id =>@missed_scan  },:confirm => "Are you sure?", :method => :delete,:disabled=>hide_element) %>
+<%end%>
+

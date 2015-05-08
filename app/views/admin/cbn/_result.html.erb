@@ -1,0 +1,21 @@
+<p>
+	<% content_tag :table do %>
+	  <% content_tag :tr, :class => 'tbl_heading' do %>
+	    <%= content_tag :th, 'Manager Name' %>
+	    <%= content_tag :th, 'Manager E-Mail Address' %>
+	    <%= content_tag :th, 'Employees' %>
+	  <% end %>
+	  <% @mailing_list.each do |manager_email_address, manager_info| %>
+    	<% content_tag :tr, :class => cycle("gray","white") do %>
+	      <%= content_tag :td, manager_info[:manager_name], :class => "left" %>
+	      <%= content_tag :td, manager_email_address, :class => "left" %>
+	      <% content_tag :td, :class => "left" do %>
+	        <% manager_info[:managers_people].each do |userid, name| %>
+	          <%= "#{userid}: #{name}</br>" %>
+	        <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+</p>

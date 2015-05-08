@@ -1,0 +1,2 @@
+module HcCycleGroupDashboardHelper
+end

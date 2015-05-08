@@ -1,0 +1,137 @@
+<h1>Assign Deviation Validation Groups</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<div id="container2">
+<div id="container1"style="width: 100%" >
+  <% form_remote_for @deviation_search, :html=>{:name=>"deviation_search"},:method=>"GET",
+    :loading=>"hideElement('find');showElement('find_spinner')",:complete=>"hideElement('find_spinner');showElement('find')",
+    :url =>{ :controller => :validation_groups, :action => :search }  do |f|%>
+
+    <div id="col1">
+      <p>
+        <%= f.label :hc_group_id, "HC Cycle Group"%>
+        <%= f.select :hc_group_id, options_for_select(hc_group_list(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]},:selected=>hc_group_id),:include_blank=>"Select Group" %>
+      </p>
+
+      <p>
+        <%= f.label :system_name %>
+        <%= f.text_field :host_name %>
+      </p>
+
+      <p>
+        <%= f.label :ip_address,"IP Address" %>
+        <%= f.text_field :ip_address %>
+      </p>
+
+      <p>
+
+        <%= f.label "Operating System"%>
+        <%= f.select :os, Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] },  {:include_blank => "All" } %>
+      </p>
+
+      <p >
+        <%= f.hidden_field :org_id, :value=> current_org_id %>
+      <table>
+        <tr >
+          <td><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+            <%= f.submit 'find',{:id=>"find"} %></td>
+          <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+          <td> <%= f.label :per_page, "Results Per Page"%>
+            <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+        </tr>
+      </table>
+      </p>
+    </div>
+
+    <div id="col2">
+
+      <p style="clear:left">
+        <%= f.label :val_group, "Deviation Validation Group"%>
+        <%= f.select( :val_group,Vuln.category.collect{|c| c.sarm_cat_name}.insert(0,"All","unk"),:selected=>"All")  %>
+      </p>
+      <p style="clear:left">
+        <%= f.label :vuln_title, "Deviation Type"%>
+        <%= text_field_with_auto_complete :deviation_search, :vuln_title,
+          {:size=>"40"},
+          { :url =>  vulns_path(:js),:frequency=>"1.5",
+          :method => :get, :param_name=>'title'}%>
+      </p>
+      <p>
+        <%= f.label :vuln_text, "Deviation Text" %>
+        <%= f.text_field :vuln_text %>
+      </p>
+      <p>
+        <%= f.label :deviation_level, "Deviation Level"%>
+        <%= f.select(:deviation_level, options_for_select([
+              ["All"],
+              #["Compliant"],   <--- Removed until HIP processes compliant data
+            #  ["Info"],
+              ["Violation"],
+             # ["Warning"],
+            ]),:selected => "All") %>
+      </p>
+      <p>
+        <%= f.label :val_status, "Deviation Status"%>
+        <%= f.select(:val_status,options_for_select([
+              ["All"],
+              ["Valid","valid"],
+              ["Suppressed","suppressed"],
+            ]),:selected=>"not_validated")  %>
+      </p>
+
+    <% end %>
+  </div>
+</div>
+</div>
+<div id="result"></div>
+
+<script  type="text/javascript">
+   function selectFindings(){
+    var scan_form =document.forms['scan_findings_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('selected')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+  function setFindings(value){
+    var ele = document.getElementById('scan_findings_findings')
+    ele.value=value
+  }
+
+  function doPopup(findings){
+    new Popup('new_suppression_popup',null,{modal:true});
+    $('new_suppression_popup').popup.show();
+    setFindings(findings);
+  }
+  function verifySubmit(entries){
+    var status=false
+    if (checkSelectElement('scan_findings_option','Select a valid action.')){
+      var element = document.getElementById('scan_findings_option')
+      status=true
+      value = element.options[element.options.selectedIndex].value
+      if (value=='validate_all'){
+        text = element.options[element.options.selectedIndex].text;
+        return confirm('Are you sure you want to '+ text +' '+ entries +' scans')
+      }
+      return status
+    }
+    return status
+  }
+  
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'deviation_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+  
+</script>

@@ -1,0 +1,47 @@
+<h1>Out of Cycle Inventory With Scan Status (#222C-02)</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<br/>
+<% form_tag :action=>:inventory_scan_status do%>
+
+  <p>
+    <%= label_tag  "Scan Type"%>
+    <%= select_tag :ooc_scan_type, options_for_select(ooc_scan_type_list.insert(0,["Choose Scan Type","choose"]),
+      {:selected=>ooc_scan_type,:disabled=>"--------------"})%>
+  </p>
+
+  <div style="display: inline" id="group_scan">
+    <%= render 'group_scan_lists' %>
+  </div>
+  <p>
+    <%= hidden_field_tag :format,"csv" %>
+    <%= submit_tag "Get Report",:id=>"find" %>
+  </p>
+<% end %>
+
+<script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+    Element.show('reports-2')
+    Element.show('ooc-reports')
+<%= remote_function(:update => "group_scan",
+  :url=>'/out_of_cycle/reports/interim_reports/group_scan_lists',
+  :complete=>"
+  if ($('ooc_scan_type').value=='choose'  ) {
+  Form.Element.disable('find')
+  }else {Form.Element.enable('find')}")
+%>
+  });
+</script>
+
+
+<%= observe_field(:ooc_scan_type, :url => { :action => :group_scan_lists },
+  :update => :group_scan,
+  :with => :ooc_scan_type,
+  :loading =>"Form.Element.disable('find')",
+  :complete=>"if ($('ooc_scan_type').value=='choose'){Form.Element.disable('find')}else{Form.Element.enable('find')}") %>
+
+<%#= observe_field(:ooc_group_id,
+  :function=>"if ($('ooc_group_id').value=='choose') {Form.Element.disable('find')}else{Form.Element.enable('find')}") %>

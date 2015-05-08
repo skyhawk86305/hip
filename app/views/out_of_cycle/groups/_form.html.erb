@@ -1,0 +1,30 @@
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_for  [:out_of_cycle,@group] do |f| %>
+  <%= f.error_messages :header_message => "Error(s) prohibited this group from being saved."%>
+  <p>
+    <%= f.label :ooc_group_name, "Group Name"%>
+    <%= f.text_field :ooc_group_name %>
+  </p>
+  <p style="clear:left">
+    <%= f.label :ooc_group_type,"Group Type" %>
+    <% unless @group.ooc_group_name? %>
+    <%= f.select :ooc_group_type,
+      options_for_select(OocGroupType.all(:order=>:ooc_group_type).collect{|g| g.ooc_group_type},@group.ooc_group_type),
+      :include_blank=>"Select Group Type"%>
+    <%else%>
+      <%= @group.ooc_group_type %>
+    <%end%>
+  </p>
+  <p style="clear:left">
+    <%= f.label :ooc_group_status, "Group Status" %>
+    <%= f.select :ooc_group_status,options_for_select(ooc_group_status_list.insert(1,'deleted'),@group.ooc_group_status),:include_blank=>"Select Group Status" %>
+  </p>
+
+  <p>
+    <%= f.submit "save", :disabled=>hide_element  %>
+  </p>
+
+<%end%>

@@ -1,0 +1,12 @@
+<% # rendered during page load, and rendered from group_name_list.erb %>
+<p>
+<%= label_tag  "Group Name"%>
+  <select id="ooc_group_id" name="ooc_group_id">
+  <% if @group_name_list_all.present? %>
+    <%=options_for_select(@group_name_list_all.collect{|g| [g.ooc_group_name,g.ooc_group_id]}.insert(0,["Choose Group Name","choose"],["Unassigned to Group Type","unassigned"],["All Assigned",'assigned']),ooc_group_id ||='unassigned') %>
+  <%else%>
+    <option value='choose'>Choose Group Type</option>
+  <% end %>
+</select>
+</p>
+

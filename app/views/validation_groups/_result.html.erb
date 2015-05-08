@@ -1,0 +1,76 @@
+<hr/>
+<% form_remote_for :scan_findings, :loading=>"hideElement('save');showElement('spinner')",:complete=>"hideElement('spinner');showElement('save')",
+  :url =>{:controller => "validation_groups", :action => "update" },:html=>{:name=>"scan_findings_form"} do |f|%>
+
+  <table>
+    <tr>
+      <td> <%= f.select :option, options_for_select([["Action",0],["Update Selected Validation Groups","selected"],["Update All Validation Groups","all"],["Remove Selected Records","remove"]]),
+          {:disabled=>hide_element}  %></td>
+      <td><%= f.select( :val_group,Vuln.category.collect{|c| c.sarm_cat_name},{:include_blank=>"Select Validation Group"},:disabled=>true)  %></td>
+      <td>
+        <%= f.submit "Submit" ,:id=>"save",:onclick=>"return verifySubmit(#{@deviations.total_entries})" ,:disabled=>hide_element%>
+        <img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner"/>
+      </td>
+      <td>  <%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td>
+    </tr>
+  </table>
+
+  <%= will_paginate @deviations,:params=>{:deviation_search=>session[:deviation_search],:action=>"search"},
+    :class => 'pagination ajax'%>
+  <div>Total Records Found: <%= @deviations.total_entries %></div>
+  <table width="100%">
+    <tr class="tbl_heading">
+      <th title="Select all for validation on this page only.">Select All: <br/><%= check_box_tag :select_latest, "1",false,{:onclick=>"selectFindings()", :disabled=>hide_element} %></th>
+      <th>System Information</th>
+      <th>Deviation Type</th>
+      <th>Deviation Text</th>
+      <th>Deviation Validation Group</th>
+
+    </tr>
+    <% @deviations.each_with_index do |d,index| %>
+        <% f.fields_for "scan_finding[#{index}]" do |ff| %>
+          <tr class="<%= cycle("gray","white") %>">
+            <td><%= ff.check_box :selected,{:disabled=>hide_element},'y','n'  %></td>
+            <td class="left"><%= "<b>#{d.host_name}</b><br/> #{d.ip_string_list}<br/> #{d.os_product}<br/> #{d.group_name}" %> </td>
+            <td><%= d.title  %> </td>
+            <td class="left"><span id="trigger<%=index%>" class="popup_link" ><%= d.finding_text[0,100]%></span> </td>
+            <td><%= ff.hidden_field :finding_id,:value=>d.finding_id%><%= ff.hidden_field :finding_vid,:value=>d.finding_vid%>
+              <%= d.cat_name.nil? ? d.sarm_cat_name : d.cat_name    %></td>
+        </tr>
+      <% end #field_for %>
+  <%end%>
+</table>
+<% end #form %>
+<%= will_paginate @deviations,:params=>{:deviation_search=>session[:deviation_search],:action=>"search"},
+:class => 'pagination ajax'%>
+<% if @deviations.blank? %>
+<p>No Deviations Found</p>
+<%end%>
+
+<% @deviations.each_with_index do |d,index| %>
+  <div id="tooltip<%= index %>" class="popup" style="display:none;width: 300px">
+    <p class="bold">Deviation Text</p>
+    <p>
+      <%= d.finding_text %>
+    </p>
+  </div>
+  <script type="text/javascript">
+    //<![CDATA[
+    new Popup('tooltip<%=index%>','trigger<%= index  %>')
+    $('trigger<%=index%>').observe('mousein', function() {
+      $('tooltip<%=index%>').popup.show();
+    });
+    $('trigger<%=index%>').observe('mouseout', function() {
+      $('tooltip<%=index%>').popup.hide();
+    });
+    //]]>
+  </script>
+<%end%>
+
+<%= observe_field(:scan_findings_option,
+  :function=>"if ($('scan_findings_option').value!='selected' && $('scan_findings_option').value!='all'  ){
+  Form.Element.disable('scan_findings_val_group')
+  }else{
+  Form.Element.enable('scan_findings_val_group')
+}"
+) %>

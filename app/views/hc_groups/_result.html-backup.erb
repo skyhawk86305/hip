@@ -1,0 +1,31 @@
+<hr/>
+<%= will_paginate @groups_search, :params=>{:hc_group=>params[:hc_group],:per_page=>params[:per_page], :sort=>params[:sort]} ,:class => 'pagination ajax'%>
+<div>Total Records Found: <%= @groups_search.total_entries %></div>
+<table width="75%">
+  <tr class="tbl_heading">
+    <th>HC Cycle Group Name</th>
+    <th>Current HC Cycle?</th>
+    <th>Months Since Last Current</th>
+    <th>Total # of Production Systems</th>
+    <th>Make Current</th>
+    <th>Delete Group</th>
+    </tr>
+  <% for g in @groups_search %>
+    <tr class="<%= cycle("gray","white")%>">
+      <td ><%= hide_element ?
+          g.group_name : link_to(g.group_name, edit_hc_group_path(g.hc_group_id))%></td>
+      <td ><%= h g.is_current %></td>
+      <td><%= h(g.last_current_timestamp ? ((Time.now.utc - Time.parse(g.last_current_timestamp)) / (60 * 60 * 24 * 30).to_f).round : 0) %> </td>
+      <td><%= h g.asset_count %> </td>
+<% # 05-23-2013  Add Check Boxes for MakeCurrent and Delete Groups    %>
+<% # 05-23-2013 Note: _result.html.erb is wrapped around form_remote_for, allowing check_box_tag to work with remote_function option   %>
+<% # 05-23-2013 Can now pass params :makecurrent and params :deletegroups to hc_groups controller as parameters and controller actions  %>  
+      <td><%= check_box_tag "Make Current", g.group_name, false, :onchange => remote_function(:url => {:action => "makecurrent", :makecurrent => g.group_name})%></td>
+      <td><%= check_box_tag "Delete Group", g.group_name, false, :onchange => remote_function(:url => {:action => "deletegroup", :deletegroup => g.group_name})%></td>
+     </tr>
+  <% end %>
+</table>
+<%= will_paginate @groups_search, :params=>{:hc_group=>params[:hc_group],:per_page=>params[:per_page], :sort=>params[:sort]} ,:class => 'pagination ajax'%>
+<% if @groups_search.empty? %>
+  <p>No Health Check Groups Found</p>
+<%end%>

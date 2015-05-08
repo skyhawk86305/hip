@@ -1,0 +1,175 @@
+<h1>Identify Out of Cycle Scans</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_remote_tag  :loading=>"hideElement('find');showElement('find_spinner')",
+  :complete=>"hideElement('find_spinner');showElement('find')",
+  :url =>'/out_of_cycle/scans/search',
+  :html => {:class => 'hip-search hip-ooc-scan-search'} do%>
+  <%= hidden_field_tag :org_id, current_org_id%>
+  <div id="container2">
+    <div id="container1">
+      <div id="col1">
+        <p>
+          <%= label_tag  "Scan Type"%>
+          <%= select_tag :ooc_scan_type, options_for_select(ooc_scan_type_list(true).insert(0,["Choose Scan Type","choose"]),
+            {:selected=>ooc_scan_type,:disabled=>"--------------"})%>
+        </p>
+
+        <div style="display: inline" id="group_scan">
+          <%= render 'group_scan_lists' %>
+        </div>
+
+      </div>
+      <div id="col2">
+        <p>
+          <%= label_tag :host_name, "System Name"%>
+          <%= text_field_tag :host_name,'',:size=>15%>
+        </p>
+        <p>
+          <%= label_tag :ip_address,"IP Address"%>
+          <%= text_field_tag :ip_address,'',:size=>15 %>
+        </p>
+        <p>
+          <%= label_tag :system_scan_status,nil ,{:id=>"system_scan_status_help_link",:class=>"popup_link"}%>
+          <%= select_tag(:system_scan_status,options_for_select([
+                ["All",""],
+                ["Incomplete","incomplete"],
+                ["Complete","complete"],
+                ["Missing","missing"],
+                ["------------------------"],
+                ["Scan Not Available","no_reason"],
+                ["Missing, reason provided","with_reason"],
+                ["Available, none labeled","available"],
+                ["Labeled, none released","labeled"],
+                ["Released","released"],
+
+              ],:disabled=>"------------------------")) %>
+        </p>
+
+
+      </div>
+    </div>
+    <div id="filter" style="clear:both;display:none">
+      <div id="container1">
+        <div id="col1">
+          <p>
+            <%= label_tag :os_product, "Operating System"%>
+            <%= select_tag :os_product, options_for_select(Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] }.insert(0,["All",""]))%>
+          </p>
+          <p>
+            <%= label_tag :system_status,"System Status"%>
+            <%= select_tag :system_status, options_for_select(Asset.status_for_select.collect{|s| s.system_status}.insert(0,["All",""]))%>
+          </p>
+          <p>
+            <%= label_tag :hc_sec_class ,"Security Class"%>
+            <%= select_tag :hc_sec_class, options_for_select(Asset.sec_class_list.collect{ |s| s.security_policy_name }.insert(0,["All",""]))%>
+          </p>
+        </div>
+        <div id="col2">
+
+          <p>
+            <%= label_tag "Date Range" %><br/>
+            From: <%= text_field_tag :start_date,(Time.now - 31.days).strftime("%m/%d/%Y"),:size=>"12" %> To: <%= text_field_tag :end_date, Time.now.strftime("%m/%d/%Y"),:size=>"12" %><br/>
+            <!--Sort <span class="bold">ASC:</span> <%#= radio_button_tag :sort, 'asc',:checked=>true %> <span class="bold">DESC:</span> <%#= radio_button_tag :sort, 'desc' %> -->
+          </p>
+
+          <p>
+            <%= label_tag :hc_required, "HC Required"%>
+            <%= select_tag  :hc_required,options_for_select([["Yes"],["No"]].insert(0,["All",""])) %>
+          </p>
+          <p>
+            <%= label_tag :scan_tool_id, "Scan Tool"%>
+            <%= select_tag( :scan_tool_id,options_for_select(Tool.tool_list.collect{ |t| t.manager_name}.insert(0,["All",""])))  %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table style="clear:both">
+    <tr >
+      <td ><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+        <%= submit_tag 'find',{:id=>"find",:disabled=>"true"} %></td>
+      <td><%= submit_tag 'start over', :class => 'resetForm', :type => "button", :style => "display:block" %></td>
+      <td>
+        <%= label_tag :per_page, "Results Per Page"%>
+        <%= select_tag :per_page, options_for_select(per_page_list,:selected=>per_page) %>
+      </td>
+    </tr>
+  </table>
+  <%= link_to_function "Show More Filter Options",
+    :onclick=>"Element.show('filter');Element.show('hide_filter_link');Element.hide('show_filter_link');",:id=>"show_filter_link" %>
+  <%= link_to_function "Hide Filter Options",
+    :onclick=>"Element.hide('filter');Element.hide('hide_filter_link');Element.show('show_filter_link');",:id=>"hide_filter_link",:style=>"display:none" %>
+<% end %>
+
+
+<div id="result"></div>
+
+<script type="text/javascript">
+  options = {
+    maxDate: '+1y',
+    showOn: 'button',
+    buttonImage: '/images/calendar.png',
+    buttonImageOnly: true,
+    dateFormat: 'mm/dd/yy'
+  }
+  function verifySubmit(entries){
+    var status=false
+    if (checkSelectElement('option','Select a valid action.')){
+      var element = document.getElementById('option')
+      status=true
+      value = element.options[element.options.selectedIndex].value
+      if (value=='all'){
+        return confirm('Are you sure you want to label all '+ entries +' scans')
+      }
+      if (value=='selected'&& !hasChecked() ){
+        alert('You have not selected a scan to label.')
+        return false
+      }
+    }
+    return status
+  }
+  function hasChecked(){
+    var checked = false
+    var myform =document.forms['scans_form']
+    var tags = myform.getElementsByTagName('select')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('scan_id')>0){
+        if (tags[i].options.selectedIndex!=0){
+          return true
+        }
+      }
+    }
+    return checked
+  }
+
+  /**
+   *  Selected the first scan in the drop down list
+   */
+  function selectRecent(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('select')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('scan_id')>0){
+        tags[i].selectedIndex=1
+      }
+    }
+  }
+  function selectReady(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('ready_to_publish')>0){
+        tags[i].checked=true
+      }
+    }
+  }
+</script>
+
+<script type="text/javascript">
+
+HIP.initOocSearch();
+
+</script>

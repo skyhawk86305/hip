@@ -1,0 +1,9 @@
+<h1>The page you tried to access is restricted and you are not authorized for it</h1>
+<p>
+<% if @match_any %>
+<%= "You are not in one of the following roles:" -%>
+<% else %>
+<%= "You are not authorized for the following roles:" -%>
+<% end %>
+<%= @missing_roles.join(", ") -%>
+</p>

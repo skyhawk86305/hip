@@ -1,0 +1,61 @@
+<hr/>
+<%form_remote_for :asset, :loading=>"Element.hide('asset_save');Element.show('asset_save_spinner')",:complete=>"Element.hide('asset_save_spinner');Element.show('asset_save')", 
+  :url =>{:controller => "assets", :action => "update" },
+  :html=>{:name=>"asset_scan_form",:id=>"asset_form"}  do |f|%>
+  <table>
+    <tr>
+      <td><%=  select_tag "option", options_for_select([["Action","action"],["Assign Selected Records","selected"],["Assign All #{@assets.total_entries} Records","all"]], :selected=>"action"),:disabled=>hide_element %></td>
+      <td><%#= label_tag "Save filtered result as:" %>
+        <%= select_tag "hc_group", options_for_select(hc_group_list_all(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]}.insert(0,["Select HC Group","none"],["unassigned",""]),:selected=>"none"),
+          :disabled=>true %></td>
+      <td><img src="/images/spinner.gif" id="asset_save_spinner" style="display: none;" alt="spinner"/></td>
+      <td><%= f.submit "save", {:id=>"asset_save", :onclick =>"return verifySubmit(#{@assets.total_entries})",
+          :disabled=>hide_element} %></td>
+      <td><%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td>
+
+    </tr>
+  </table>
+
+  <%= will_paginate @assets,:params=>{:asset_search=>session[:asset_search],:action=>"search"}, :class => 'pagination ajax'%>
+  Total Records Found: <%= @assets.total_entries %>
+  <table style="clear:left" width="95%">
+    <tr class="tbl_heading">
+      <th title="Select all to assign systems on this page only.">Select All?: <br/><%= check_box_tag :select_latest, "1",false,{:onclick=>"selectFindings()", :disabled=>hide_element} %></th>
+      <th>System Information</th>
+      <!--th>Status</th-->
+
+      <th>HC Required</th>
+      <th>HC Interval (Weeks)</th>
+      <th>Security Classification</th>
+      <th>HC Start Date</th>
+    </tr>
+    <% @assets.each_with_index do |asset, index| %>
+
+      <% fields_for "assets[#{index}]", asset do |ff| %>
+        <tr class="<%= cycle("gray","white")%>">
+
+          <td> <%= ff.check_box :selected,{:disabled=>hide_element},asset.tool_asset_id,'n'  %>
+            <%= ff.hidden_field :hc_group_id %> </td>
+          <td class="left"><%= "<b>#{asset.host_name}</b><br>
+      #{asset.ip_string_list}<br>
+      #{asset.os_product}<br/>
+      #{asset.group_name.blank? ? 'unassigned': asset.group_name}"
+          %> </td>
+          <td><%= h asset.hc_required %> </td>
+          <td style="width: 60px"><%= h asset.hc_auto_interval_weeks  %> </td>
+          <td><%= h asset.security_policy_name  %> </td>
+          <!--td> <%#= h asset.system_status  %>  </td-->
+          <td> <%= h asset.hc_start_date %> </td>
+        </tr>
+      <% end  #fields for%>
+    <%  end #index of search_assets
+    %>
+  </table>
+  <%= will_paginate @assets,:params=>{:asset_search=>session[:asset_search],:action=>"search"},
+    :class => 'pagination ajax'%>
+  <% if @assets.blank? %>
+    No Systems Found
+  <%end%>
+<%  end #remote form -%>
+
+<%= observe_field(:option,:function=>"if ($('option').value=='action' ) {Form.Element.disable('hc_group')}else{Form.Element.enable('hc_group')}") %>

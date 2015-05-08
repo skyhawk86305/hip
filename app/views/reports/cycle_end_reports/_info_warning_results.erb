@@ -1,0 +1,13 @@
+<hr/>
+<ul>
+  <% @files.each do |file| %>
+    <% unless file.blank? %>
+      <li><%= link_to file, :controller=>'/reports/cycle_end_reports', :action=>:get_file,:file=>"#{params[:date]}/#{file}" %>
+        <%= " - ZIP of PDF files" unless file.index(".zip").nil? %>
+      </li>
+    <%end%>
+  <%end%>
+  <% if @files.size==0 %>
+    <p>No Reports for this Account and Year/Month</p>
+  <%end%>
+</ul>

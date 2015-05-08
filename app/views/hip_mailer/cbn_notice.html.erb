@@ -1,0 +1,67 @@
+<% def toggle
+     @row_number ||= 0
+     @row_number += 1
+     if @row_number % 2 == 1
+     	return 'white'
+     else
+     	return 'rgb(242,242,242)'
+     end
+   end
+
+   def toggle_reset
+   	  @row_number = nil
+   end
+   -%>
+<table style='font-family:sans-serif; font-size:12pt;'>
+	<tr><th colspan=2 style='text-align:left; font-weight:500; font-size:16pt; color:white; background-color:rgb(66,116,172);'>
+		ACTION REQUIRED - Respond by <%= @due_date.strftime('%B %-d, %Y') -%>
+	</th></tr>
+	<tr style='background-color:<%= toggle -%>;'>
+		<td style='font-weight:bold; vertical-align:top;'>Audience:</td>
+		<td>You are receiving this notice because you manage employees that have access to the Health check Inspection Portal application, also known as HIP.</td>
+	</tr>
+	<tr style='background-color:<%= toggle -%>;'>
+		<td style='font-weight:bold; vertical-align:top;'>Background:</td>
+		<td>IBM Security standards require all access to IBM applications be reviewed annually to insure that access is based on continuing business needs.  Access is required to be removed when there is no longer a business need.</td>
+	</tr>
+	<tr style='background-color:<%= toggle -%>;'>
+		<td style='font-weight:bold; vertical-align:top;'>Purpose:</td>
+		<td>The table below lists the userids assigned to people in departments you manage.  A review of their continued business need to access HIP is required.
+		</td>
+	</tr>
+	<tr style='background-color:<%= toggle -%>;'>
+		<td style='font-weight:bold; vertical-align:top;'>Target Date/Time:</td>
+		<td>The review, including responding to this email if needed, must be complete by <%= @due_date.strftime('%B %-d, %Y') -%></td>
+	</tr>
+	<tr style='background-color:<%= toggle -%>;'>
+		<td style='font-weight:bold; vertical-align:top;'>Action required:</td>
+		<td>Please review the list below.
+		If all the userids below continue to have a business need to access HIP, no further action is required.<br/><br/>
+		If any of these userids do not have a continuing business need to access HIP, please reply to this note indicating which userids should have their access revoked.</td>
+	</tr>
+	<tr style='background-color:<%= toggle -%>;'>
+		<td style='font-weight:bold; vertical-align:top;'>Support/Contact:</td>
+		<td>Questions about this userid review can be submitted by replying to this note.<br/>
+			<br/>
+			For more information about HIP, visit the following wikis:<br/>
+			<a href = 'http://w3.ibm.com/connections/wikis/home/wiki/W25d20ddeae14_4bc8_bd7f_79ebac6a3979?lang=en'>AG HC PO HIP Wiki</a><br/>
+			<a href = 'https://w3-connections.ibm.com/wikis/home?lang=en#/wiki/AG%20Health%20Check%20Project%20Office%20Wiki%20%28beta%29/page/HC%20PO%20Contacts%20%26%20Resources'>AG HC PO wiki</a><br/>
+			<br/>
+			If you have any questions about the AG Health Check process contact:<br/>
+			Jeannie Carlson/Chicago/IBM<br/>
+			Mary-Price Eckstein/Orlando/IBM<br/>
+			Doug Johnson/Tucson/IBM<br/>
+		</td>
+	</tr>
+</table>
+<p style='font-family:sans-serif; font-size:12pt;'>Userid List:</p>
+<table style='font-family:sans-serif; font-size:12pt;'>
+	<tr>
+		<th style='font-weight:500; font-size:16pt; color:white; background-color:rgb(66,116,172);'>Userid</th>
+		<th style='font-weight:500; font-size:16pt; color:white; background-color:rgb(66,116,172);'>Owner</th>
+	</tr>
+	<% 	toggle_reset
+		@userids.each do |userid, name| -%>
+		<tr style='background-color:<%= toggle -%>;'><td><%= userid %></td><td><%= name %></td></tr>
+	<% end -%>
+</table>

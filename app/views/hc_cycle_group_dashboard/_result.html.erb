@@ -1,0 +1,94 @@
+<div id="container1" style="width: 100%" >
+  <div id="col1">
+    <table border="1">
+      <th class="left" colspan="2">System Scan Status</th>
+      <tr>
+        <td class="left"># Systems Assigned to Group</td>
+<%# if all is selected, @groups is used, otherwise only deal with a single @group.%>
+        <td><%= @system_count %></td>
+      </tr>
+      <tr>
+        <td class="left">Current HC Cycle Flag</td>
+        <td><%= @is_current %></td>
+      </tr>
+      <tr>
+        <td class="left gray bold" colspan="2"># Systems - INCOMPLETE</td>
+      </tr>
+      <tr>
+        <td class="left">Missing, No Reason</td>
+        <td><%= number_with_delimiter @missing_no_reason  %> </td>
+      </tr>
+      <tr>
+        <td class="left">Available, None Labeled</td>
+        <td><%= number_with_delimiter  @available_none_labeled  %></td>
+      </tr>
+      <tr>
+        <td class="left">Labeled, None Released (a)</td>
+        <td><%= number_with_delimiter @labeled_none_released  %></td>
+      </tr>
+      <tr>
+        <td class="left bold">Total Incomplete (s/b zero)</td>
+        <td class="bold"><%=number_with_delimiter @total_incomplete  %></td>
+      </tr>
+      <tr>
+        <td class="left gray bold" colspan="2"># Systems - COMPLETE</td>
+      </tr>
+      <tr>
+        <td class="left">Released (b)</td>
+        <td><%= number_with_delimiter  @scans_released %></td>
+      </tr>
+      <tr>
+        <td class="left">Missing, with Reason</td>
+        <td><%= number_with_delimiter @missing_with_reason  %></td>
+      </tr>
+      <tr>
+        <td class="left bold">Total Complete</td>
+        <td class="bold"><%= number_with_delimiter @total_complete  %></td>
+      </tr>
+    </table>
+  </div>
+  <div id="col2">
+    <table border="1">
+      <tr>
+        <th class="left" colspan="2">Deviation Status</th>
+      </tr>
+      <tr>
+        <td class="left gray bold" colspan="2">HC Cycle Scans Labelled, None Released</td>
+      </tr>
+      <tr>
+        <td class="left"> # Scans Labelled, not released (a)</td>
+        <td><%=number_with_delimiter @scans_labeled_not_released %></td>
+      </tr>
+      <tr>
+        <td class="left">Suppressed Deviations</td>
+        <td><%= number_with_delimiter  @unreleased_suppressed_deviations %></td>
+      </tr>
+      <tr>
+        <td class="left">Valid Deviaitons</td>
+        <td><%= number_with_delimiter @unreleased_valid_deviations %></td>
+      </tr>
+      <tr>
+        <td class="left gray bold" colspan="2">HC Cycle Scans Released</td>
+      </tr>
+      <tr>
+        <td class="left"># Scans Released (b)</td>
+        <td><%=number_with_delimiter @scans_released %></td>
+      </tr>
+      <tr>
+        <td class="left">Suppressed Deviations</td>
+        <td><%= number_with_delimiter  @released_suppressed_deviations %></td>
+      </tr>
+      <tr>
+        <td class="left">Valid Deviations</td>
+        <td><%= number_with_delimiter @released_valid_deviations %></td>
+      </tr>
+      <tr>
+        <td class="left"> % Deviations Suppressed</td>
+        <td ><%=  @released_total_valid_deviations == 0 ? "0%" : "#{(@released_suppressed_deviations /
+					@released_total_valid_deviations.to_f * 100).round}%" %></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div style="clear:both"></div>

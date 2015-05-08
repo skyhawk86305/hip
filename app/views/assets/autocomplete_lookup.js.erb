@@ -1,0 +1,5 @@
+<ul class="auto_complete">
+  <% for asset in @assets do -%>
+      <li id="<%= asset.id.join(",") %>"><%=h asset.host_name -%></li>
+    <% end -%>
+  </ul>

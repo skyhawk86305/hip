@@ -1,0 +1,5 @@
+<ul class="auto_complete">
+  <% for org in @orgs do -%>
+      <li id="<%= org.id.join(",") %>"><%=h org.org_name -%></li>
+    <% end -%>
+  </ul>

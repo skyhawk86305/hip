@@ -1,0 +1,178 @@
+<h1>Account Dashboard for In-Cycle Scans</h1>
+<div id="current_org_name" >
+  <p>
+    <%= show_current_org_name %><br/>
+    <span class="bold">Account CHIP ID:</span> <%= @org.org_ecm_account_id %> <br/>
+    <span class="bold">Health Check Cycle:</span> Month ending <%= Date.new(@period.year,@period.month_of_year,-1).strftime("%B %d %Y")%><br/>
+    <span class="bold">In Cycle Inventory Effective date:</span> <%= @period.asset_freeze_timestamp.strftime("%B %d %Y %H:%M:%S %Z") %><br/>
+    <span class="red-text bold">Note:  Changes made in the last 30 minutes may not be reflected in this report</span>
+  </p>
+</div>
+
+<table>
+  <tr>
+  </tr>
+  <tr>
+    <td colspan="4">&nbsp;</td>
+    <th>A</th>
+    <th>B</th>
+    <th>C</th> 
+    <th>D</th>
+    <td>&nbsp;</td>
+    <th>E</th>
+    <th>F</th>
+    <th>G</th>
+    <td>&nbsp;</td>
+    <th>1a</th>
+    <th>1</th>
+    <th>2</th>
+    <td>&nbsp;</td>
+    <th>4a</th>
+    <th>4</th>
+    <th>5</th>
+    <th>6</th>
+  </tr>
+  <tr>
+    <td colspan="4">&nbsp</td>
+    <th colspan="8">System Scan Status</th>
+    <td >&nbsp</td>
+    <th colspan="8">Deviation Status</th>
+  </tr>
+  <tr>
+    <td colspan="4">&nbsp</td>
+    <th colspan="4"># Systems Incomplete</th>
+    <td >&nbsp</td>
+    <th colspan="3"># Systems Complete</th>
+    <td >&nbsp</td>
+    <th colspan="3">Scans Labeled, Not Released</th>
+    <td >&nbsp</td>
+    <th colspan="4">Released Scans</th>
+    <td >&nbsp</td>
+  </tr>
+  <tr>
+    <th>HC Cycle Group</th>
+    <th>Current HC Cycle?</th>
+    <th># Prod Systems</th>
+    <td>&nbsp;</td>
+    <th>Missing without Reason</th>
+    <th>Available,None Labeled</th>
+    <th>Labelled, none Released</th>
+    <th>Total Incomplete (s/b zero)</th>
+    <td>&nbsp;</td>
+    <th>Released</th>
+    <th>Missing with Reason</th>
+    <th>Total Complete</th>
+    <td>&nbsp;</td>
+    <th># Scans Labeled not released</th>
+    <th># Suppressed Deviations</th>
+    <th># Valid Deviations</th>
+    <td>&nbsp;</td>
+    <th># Scans Released</th>
+    <th># Suppressed Deviations</th>
+    <th># Valid Deviations</th>
+    <th>% Suppressed</th>
+    <td>&nbsp;</td>
+    <th>HC Cycle Group</th>
+  </tr>
+  <!-- data here -->
+  <tr class="gray">
+    <td class="bold">Account Totals</td>
+    <td></td>
+    <td class="bold"><%= @unassigend_assets_count[:prod_count] + @current_groups_total[:prod_count] + @not_current_groups_total[:prod_count] %> </td>
+  </tr>
+  <tr class="white">
+    <td class="red-text bold">Unassigned Systems<br/> (should be zero)</td>
+    <td></td>
+    <td><%= @unassigend_assets_count[:prod_count] %> </td>
+  </tr>
+
+  <tr>
+    <th class="left" colspan="25">Current HC Cycle</th>
+  </tr>
+  <tr class="gray">
+    <td class="bold">Total - Current Cycle</td>
+    <td>-</td>
+    <td class="bold"><%= @current_groups_total[:prod_count] %></td>
+    <td>&nbsp;</td>
+    <% # Note that current_groups_total elements are nil when there are no groups -- so to_i changes the nil to zero 
+    %>
+    <td><%= @current_groups_total[:miss_no_reason].to_i %></td>
+    <td><%= @current_groups_total[:none_labeled].to_i %> </td>
+    <td><%= @current_groups_total[:none_released].to_i %> </td>
+    <td><%= @current_groups_total[:incomplete].to_i %></td>
+    <td>&nbsp;</td>
+    <td><%= @current_groups_total[:released].to_i %></td>
+    <td><%= @current_groups_total[:miss_reason].to_i  %></td>
+    <td><%= @current_groups_total[:complete].to_i %></td>
+    <td>&nbsp;</td>
+    <td><%=  @current_groups_total[:unreleased_scan_count].to_i %></td>
+    <td><%=  @current_groups_total[:unreleased_suppress_deviation_count].to_i %></td>
+    <td><%=  @current_groups_total[:unreleased_valid_deviation_count].to_i %></td>
+    <td>&nbsp;</td>
+    <td><%= @current_groups_total[:released_scan_count].to_i %></td>
+    <td><%= @current_groups_total[:released_suppress_deviation_count].to_i %></td>
+    <td><%= @current_groups_total[:released_total_valid_deviation_count].to_i %></td>
+    <td><%= sprintf('%.0f', @current_groups_total[:suppress_percent].to_i) %>%</td>
+    <td>&nbsp;</td>
+    <td>-</td
+  </tr>
+  <%   @current_totals_by_group.keys.sort.each do |group|   %>
+    <tr class="<%= cycle('white','gray')  %>">
+      <td><%= group %></td>
+      <td>Yes</td>
+      <td><%= @current_totals_by_group[group][:prod_count] %> </td>
+      <td>&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:miss_no_reason] %></td>
+      <td><%= @current_totals_by_group[group][:none_labeled] %> </td>
+      <td><%= @current_totals_by_group[group][:none_released] %> </td>
+      <td><%= @current_totals_by_group[group][:incomplete] %></td>
+      <td>&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:released] %></td>
+      <td><%= @current_totals_by_group[group][:miss_reason] %></td>
+      <td><%= @current_totals_by_group[group][:complete] %></td>
+      <td>&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:unreleased_scan_count] %></td>
+      <td><%= @current_totals_by_group[group][:unreleased_suppress_deviation_count] %></td>
+      <td><%= @current_totals_by_group[group][:unreleased_valid_deviation_count] %></td>
+
+      <td>&nbsp;</td>
+      <td><%= @current_totals_by_group[group][:released_scan_count] %></td>
+      <td><%= @current_totals_by_group[group][:released_suppress_deviation_count] %></td>
+      <td><%= @current_totals_by_group[group][:released_total_valid_deviation_count] %></td>
+      <td><%= sprintf('%.0f', @current_totals_by_group[group][:suppress_percent]) %>%</td>
+      <td>&nbsp;</td>
+      <td><%= group %></td>
+    </tr>
+  <%end%>
+  <tr>
+    <th class="left" colspan="25">Not Current Health Check Cycle</th>
+  </tr>
+  <tr class="gray">
+    <td class="bold">Total - Not Current Cycle</td>
+    <td> - </td>
+    <td class="bold"><%= @not_current_groups_total[:prod_count] %></td>
+  </tr>
+  <%  @not_current_totals_by_group.keys.sort.each do |group|   %>
+    <tr class="<%= cycle('gray','white')  %>">
+      <td><%= group %></td>
+      <td>No</td>
+      <td><%= @not_current_totals_by_group[group][:prod_count] %></td>
+    </tr>
+  <%end%>
+</table>
+<br/>
+<% unless expiring_suppressions.empty?  %>
+  <p style="color:red">Suppressions expiring within 3 months.</p>
+  <p><% expiring_suppressions.each do |s| %>
+      <%="#{s.suppress_name},"%>
+    <% end %>
+  </p>
+<%end%>
+  
+<% unless expired_suppressions.empty?  %>
+  <p style="color:red">Expired Suppressions.</p>
+  <p><% expired_suppressions.each do |s| %>
+      <%="#{s.suppress_name},"%>
+    <% end %>
+  </p>
+<%end%>

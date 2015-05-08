@@ -1,0 +1,40 @@
+<h1>Manage Out of Cycle Groups</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_remote_tag :url=>{:action=>:search}, :method => "GET",
+  :loading=>"hideElement('find');showElement('find_spinner')",
+  :complete=>"hideElement('find_spinner');showElement('find')"   do %>
+  <%= hidden_field_tag :org_id, current_org_id%>
+
+  <p>
+    <%= label_tag :ooc_group_type, "Group Type"%>
+    <%= select_tag :ooc_group_type,options_for_select(OocGroupType.all(:order=>:ooc_group_type).collect{|g| g.ooc_group_type}.insert(0,["All",""]))%>
+  </p>
+  <p>
+    <%= label_tag :ooc_group_id, "Group Name"%>
+    <%= text_field_tag :ooc_group_name %>
+  </p>
+  <p>
+    <%= label_tag :ooc_group_status,"Group Status"%>
+    <%= select_tag :ooc_group_status,options_for_select(ooc_group_status_list.insert(0,["All",""])) %>
+  </p>
+
+  <table style="clear:both">
+    <tr >
+      <td width="50px" ><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+        <%= submit_tag 'find',{:id=>"find"} %></td>
+      <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" }) %></td>
+      <td>
+        <%= label_tag :per_page, "Results Per Page"%>
+        <%= select_tag :per_page, options_for_select(per_page_list,:selected=>per_page) %>
+      </td>
+    </tr>
+  </table>
+<% end %>
+<p>
+  <%= button_to "Add new group", {:action=>:new},:method=>:get,:disabled=>hide_element %>
+</p>
+<div id="result"></div>
+

@@ -1,0 +1,56 @@
+<%
+# for editing non-account related groups
+# action is defined in the new.html.erb and edit2.html.erb
+%>
+
+<% form_for [:admin,@rolesgroup],:url=>{:action=>@action},:html =>{ :name => "roles_group" } do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :role_name%>
+    <%= f.select :role_name, Role.all(:order=>"role_name").collect {|r| [ r.role_name, r.role_name ] }, {:prompt=>"Select Role"} %>
+  </p>
+  <p>
+    <%= f.label :category %>
+    <% if @role.has_associated_category.downcase=='y' %>
+      <%= f.select :category, options_for_select([["Operating System Check"],["Specific Userid Check"]]) %>
+    <%else%>
+      This role does not have a category associated.
+    <%end%>
+  </p>
+  <p>
+    <%= f.label :geo %>
+    <% if @role.has_associated_geo.downcase=='y' %>
+      <%= f.select :geo, options_for_select([["Americas"]]) %>
+    <%else%>
+      This role does not have a geo associated.
+    <%end%>
+  </p>
+  <script>
+    function setOrgIdField(text, li) {
+      //alert (li.id);
+      var form=document.forms['roles_group']
+      form.roles_group_pk_org_id.value=li.id
+      //org_id.value=li.id
+    }
+  </script>
+  <p>
+    <%= f.label :org_name ,"Account"%>
+    <% if @role.has_associated_org.downcase=='y' %>
+      <%= text_field_with_auto_complete :roles_group, :org_name ,{:value=>@rolesgroup.org_name,:size=>"40"},
+        { :url => admin_orgs_path(:js),:after_update_element=>"setOrgIdField",:frequency=>"1.5",:method => :get, :param_name=>'org_name'}%>
+      <%= f.hidden_field :pk_org_id %>
+    <% else %>
+      This role does not have an account associated.
+    <%end%>
+  </p>
+
+  <p>
+    <%= f.label :blue_groups_name %>
+    <%= f.text_field :blue_groups_name, :maxsize =>"255" %>
+  </p>
+
+
+  <%= f.submit 'save' %>
+
+
+<% end %>

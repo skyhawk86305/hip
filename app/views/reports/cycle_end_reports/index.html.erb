@@ -1,0 +1,23 @@
+<h1>Cycle End Reports</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<ul>
+  <li style="width: 80%"><%= link_to "Cycle End Valid Deviation Tracking Template", :action=>:valid_deviations_report %> - The template contains the final view of All VALID Deviations for ONLY RELEASED scans plus additional fields to be populated by the HCPT and Remediation Teams</li>
+  <li style="width: 80%"><%= link_to "Cycle End Inventory Detail Report", :action=>:inventory %> - Point-In-Time view of the Account's COMPLETE Inventory LOCKED at the beginning of the Current HC Cycle.  Data includes system and scan statuses.</li>
+  <li style="width: 80%"><%= link_to "System Cycle End HC Cycle Report", :action=>:hc_cycle_report %> - This generates a single pdf for each system in the HC Cycle Group. The report contains Scan, Deviation Validation & Suppression details </li>
+  <li style="width: 80%"><%= link_to "In-Cycle Final Information & Warning Details (#152C-02)", :action=>:info_warning  %>  - Report of Info and Warning Message</li>
+  <!--li style="width: 80%"><b>Group Cycle-End HC Cycle Report</b> - This CSV report contains Scan, Deviation Validation & Suppression details for all SYSTEMs in a CURRENT HC Cycle Group</li>
+  <li style="width: 80%"><b>Account Cycle-End HC Cycle Report</b> - Report contains Scan, Deviation Validation & Suppression details for each system in any of the CURRENT HC Cycle Groups </li>
+  <li style="width: 80%"><b>Cycle-End Active Suppression Report</b> - Account Specific Report listing the detailed attributes of all suppressions that are ACTIVE for the Current HC Cycle. </li-->
+</ul>
+
+
+  <script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+  Element.show('reports-2')
+  Element.show('incycle-reports')
+
+  });
+</script>

@@ -1,0 +1,208 @@
+<h1>Apply Suppressions</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% unless expiring_suppressions.empty? && expired_suppressions.empty?%>
+<p>
+<%= link_to_function "This account has #{expiring_suppressions.size + expired_suppressions.size} suppression(s) expired or expiring soon!",
+    :onclick=>"Element.show('expired_suppressions');Element.show('hide_supp_link');Element.hide('show_supp_link');",:id=>"show_supp_link",:style=>"color:red" %>
+  <%= link_to_function "Hide suppression list",
+    :onclick=>"Element.hide('expired_suppressions');Element.hide('hide_supp_link');Element.show('show_supp_link');",:id=>"hide_supp_link",:style=>"color:red;display:none" %>
+<div id="expired_suppressions" style="border:1px solid red;width:600px; padding:10px;display:none;">
+  <ul>
+    <% expiring_suppressions.each do |sup| %>
+    <li>Expiring Soon: <%= link_to sup.suppress_name, edit_suppression_path(sup,:cycle=>"suppress"),:target=>"_blank"  %> </li>
+    <%end%>
+    <% expired_suppressions.each do |sup| %>
+    <li>Expired: <%= link_to sup.suppress_name, edit_suppression_path(sup,:cycle=>"suppress"),:target=>"_blank"  %> </li>
+    <%end%>
+  </ul>
+</div>
+</p>
+<%end%>
+
+<div id="container2">
+  <div id="container1" xstyle="width:1200px" >
+    <% form_remote_for @deviation_search, :method => "GET", :html=>{:name=>"deviation_search"},
+      :loading=>"hideElement('find');showElement('find_spinner')",:complete=>"hideElement('find_spinner');showElement('find')",
+      :url =>{ :controller => :deviations, :action => :search }  do |f|%>
+
+      <div id="col1">
+        <p>
+          <%= f.label :hc_group_id, "HC Cycle Group"%>
+          <%= f.select :hc_group_id, hc_group_list(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]},:selected=>hc_group_id,:include_blank=>"Select Group" %>
+        </p>
+        <p>
+          <%= f.label :system_name %>
+          <%= f.text_field :host_name %>
+        </p>
+        <p>
+          <%= f.label :ip_address, "IP Address"%>
+          <%= f.text_field :ip_address %>
+        </p>
+        <p>
+          <%= f.label "Operating System"%>
+          <%= f.select :os, Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] },  {:include_blank => "All" } %>
+        </p>
+
+        <p style="clear:left">
+          <%= f.hidden_field :org_id, :value=> current_org_id %>
+
+        <table>
+          <tr>
+            <td>
+              <img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+              <%= f.submit 'find',{:id=>"find",:disabled=>true} %></td>
+            <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+            <td> <%= f.label :per_page, "Results Per Page"%>
+              <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+          </tr>
+        </table>
+        </p>
+      </div>
+
+      <div id="col2">
+
+      <p style="clear:left">
+        <%= f.label :val_group, "Deviation Validation Group"%>
+        <%= f.select( :val_group,Vuln.category.collect{|c| c.sarm_cat_name}.insert(0,"All","unk"),:selected=>"All")  %>
+      </p>
+      <p>
+        <%= f.label :vuln_title, "Deviation Type"%>
+        <%= text_field_with_auto_complete :deviation_search, :vuln_title,
+          {:size=>"40"},
+          { :url =>  vulns_path(:js),:frequency=>"1.5",
+          :method => :get, :param_name=>'title'}%>
+      </p>
+      <p>
+        <%= f.label :vuln_text, "Deviation Text" %>
+        <%= f.text_field :vuln_text %>
+      </p>
+      <p>
+        <%= f.label :deviation_level, "Deviation Level"%>
+        <%= f.select(:deviation_level, options_for_select([
+              ["All"],
+              #["Compliant"],   <--- Removed until HIP processes compliant data
+           #   ["Info"],
+              ["Violation"],
+           #   ["Warning"],
+            ]),:selected => "All") %>
+      </p>
+      <p>
+        <%= f.label :val_status, "Deviation Status"%>
+        <%= f.select(:val_status,options_for_select([
+              ["All"],
+              ["Valid","valid"],
+              ["Suppressed","suppressed"]
+            ]),:selected=>"not_validated")  %>
+      </p>
+      <p>
+        <%= f.label :suppress_status,"Suppression Status"%>
+        <%= f.select :suppress_status, options_for_select([
+          ["All"],
+          ["No Suppression", "none"],
+          ["Current", "current"],
+          ["Expired", "expired"],
+          ["Current, Expiring Soon", "current_expiring"],
+          ["Current, Not Expiring Soon", "current_not_expiring"],
+        ]) %>
+      </p>
+      <p>
+        <%= f.label "Suppression Name"%>
+        <%= f.select :suppress_id, exception_list_all(current_org_id).collect{|o| [ o.suppress_name, o.suppress_id ] }.insert(0,["All","all"]) %>
+      </p>
+
+
+      <% end %>
+    </div>
+  </div>
+</div>
+<div id="result"></div>
+
+<script  type="text/javascript">
+  
+  document.observe("dom:loaded", function() {
+    if ($('deviation_search_hc_group_id').value==''  ) {
+      Form.Element.disable('find')
+    }else {Form.Element.enable('find')}
+  });
+
+  function selectFindings(){
+    var scan_form =document.forms['scan_findings_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('finding_id')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+  
+  function setFindings(value){
+    var ele = document.getElementById('scan_findings_findings')
+    ele.value=value
+  }
+
+  function doPopup(findings){
+    new Popup('new_suppression_popup',null,{modal:true});
+    $('new_suppression_popup').popup.show();
+    setFindings(findings);
+  }
+
+
+  function verifySubmit(entries){
+    var status=false
+    if (checkSelectElement('scan_findings_option','Select a valid action.')){
+      var element = document.getElementById('scan_findings_option')
+      status=true
+      value = element.options[element.options.selectedIndex].value
+      if (value=='validate_all'){
+        text = element.options[element.options.selectedIndex].text
+        return confirm('Are you sure you want to '+ text +' deviations.')
+      }
+      if (value=='suppress_all' && checkSelectElement('scan_findings_suppress_id','Select a Suppression.') ){
+        text = element.options[element.options.selectedIndex].text
+        return confirm('Are you sure you want to '+ text +' deviations.')
+      }else {
+        // end processing, return back to page.
+        status=false
+      }
+      
+      if (value=='validate' && !hasChecked() ){
+        alert('You have not selected deviations to validate.')
+        return false
+      }
+      return true
+
+    }
+
+    return status
+  }
+  function hasChecked(){
+    var checked = false
+    var myform =document.forms['scan_findings_form']
+    var tags = myform.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('finding_id')>0){
+        if (tags[i].checked==true){
+          return true
+        }
+      }
+    }
+    return checked
+  }
+  
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'deviation_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+  
+</script>

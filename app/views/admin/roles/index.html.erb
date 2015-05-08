@@ -1,0 +1,45 @@
+<h1>Roles</h1>
+
+<p style="color: green"><% flash[:notice] %></p>
+
+<p><%= link_to "New Role", :action=>:new %></p>
+
+<%= will_paginate @roles %>
+<table width="75%">
+  <tr>
+    <th>Name</th>
+    <th>has category</th>
+    <th>has geo</th>
+    <th>has org</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+  </tr>
+  <% for r in @roles %>
+    <tr class="<%= cycle("gray","white")  %>">
+      <td><%= link_to h(r.role_name), edit_admin_role_path(r)  %></td>
+      <td><%= h r.has_associated_category %> </td>
+      <td><%= h r.has_associated_geo %> </td>
+      <td><%= h r.has_associated_org  %> </td>
+      <td><%= link_to "manage groups", :controller=>'/admin/roles_groups',:action=>:index, :role_name=>r.role_name unless r.has_associated_org=='y'%></td>
+      <td> <%= link_to "Delete Role", { :action => "destroy", :id => r.role_name },:confirm => "Are you sure?", :method => :delete %></td>
+    </tr>
+  <% end %>
+</table>
+<hr/>
+<h2>Account Roles</h2>
+<% form_remote_tag :url =>{:controller=>:roles,:action=>:search},:method => "GET" do %>
+  <%= hidden_field_tag :role_name,params[:role_name] %>
+  <table>
+    <tr>
+      <td align="left" ><%= label_tag "Account"%>  <%= text_field_tag :org_name,params[:org_name],:size=>20%></td>
+      <td align="left"><%= label_tag "Per Page"%> <%= select_tag :per_page, options_for_select(per_page_list,:selected=>params[:per_page]||="10") %></td>
+      <td><%= submit_tag "find" %></td>
+    </tr>
+  </table>
+
+<%end%>
+
+<div id="result">
+  <%= render :partial=>"org_result" %>
+</div>
+

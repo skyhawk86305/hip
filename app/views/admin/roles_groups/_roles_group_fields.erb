@@ -1,0 +1,18 @@
+        <tr class="fields">
+          <td><div style="border:1px solid black"><%= link_to_remove_fields "X", f%></div></td>
+          <td><%= f.hidden_field :id %> <%= f.hidden_field :lu_userid ,:value=>current_user.userid %>
+            <%= f.text_field_with_auto_complete :blue_groups_name, {:size=>20,:maxsize =>"255"}%>
+          </td>
+          <td><%= link_to(group.blue_groups_name, "https://w3.ibm.com/tools/groups/protect/groupsgui.wss?task=Members&gName=#{group.blue_groups_name}&showlist=false",:target=>"_new") unless defined?(group).nil?  %></td>
+          <td>
+          
+            <%= f.select :role_name, Role.find(:all,:conditions=>["has_associated_org = ?",'y'],:order=>"role_name").collect {|r| [ r.role_name, r.role_name ] },
+              {:include_blank=>"Select Role"} ,:onchange=>"manageCategory(this)"%>
+              
+          </td>
+          <td>
+
+            <%= f.select :category, options_for_select([["Select Category",""],["Operating System Check"],["Specific Userid Check"]],
+              :selected=>defined?(group).nil? ? "":group.category), {},:style=>(!defined?(group).nil? and group.role_name=='Deviation SME') ? "" :"display:none;" %>
+          </td>
+        </tr>

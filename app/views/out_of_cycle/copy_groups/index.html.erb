@@ -1,0 +1,77 @@
+<h1>Copy Systems between Groups</h1>
+Copy systems from source group to target group.  This will overwrite all systems in the target group.
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<% form_remote_tag :url =>{ :controller => "copy_groups", :action => "search" },
+  :method=>"GET",
+  :loading=>"hideElement('find');showElement('spinner')",
+  :complete=>"hideElement('spinner');showElement('find')"  do %>
+  <%= hidden_field_tag :org_id,current_org_id %>
+  <div>
+    <!--p>
+  <%#= label_tag  "Scan Type"%>
+  <%#= select_tag :scan_type, options_for_select(ooc_scan_type_list.insert(0,["Choose Scan Type","choose"],["HC Cycle"],["--------------"]),
+  {:selected=>ooc_scan_type,:disabled=>"--------------"})%>
+    </p-->
+
+    <% unless disabled_groups.nil? %>
+      <div style="margin-left: auto;margin-right: auto;text-align: center;width: 50%;padding:5px">
+        <p class="center yellow">
+          The Copy of Health Check Groups is NOT available until the Inventory is
+          locked for the current month.
+        </p>
+      </div>
+    <%end%>
+    <p>
+      <%= label_tag :group_src, "Source Group"%>
+      <%= select_tag :group_src, options_for_select(all_groups_list.collect{|g| ["(#{g.group_type}) #{g.group_name} #{g.count}" ,
+            "#{g.group_id},#{g.group_type}"]}.insert(0,["Choose Source Group","choose"]),
+        :disabled=>disabled_groups)
+    %>
+    </p>
+    <p>
+      <%= label_tag :group_target, "Target Group"%>
+      <%= select_tag :group_target, options_for_select(all_groups_list.find_all{|a| a.group_type!="HC Cycle" }.collect{|g| ["(#{g.group_type}) #{g.group_name} #{g.count}",g.group_id]}.insert(0,["Choose Target Group","choose"])),
+        :disabled=>true
+    %>
+    </p>
+  </div>
+  <table style="clear:both">
+    <tr>
+      <td><img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner" /></td>
+      <td><%= submit_tag 'find', {:onclick=>"return verifySubmit()",:id=>"find",:disabled=>true} %></td>
+      <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:inline" }) %></td>
+      <td><%= label_tag :per_page, "Results Per Page"%>
+        <%= select_tag :per_page, options_for_select(per_page_list,per_page) %></td>
+    </tr>
+  </table>
+<% end %>
+<div id="result"></div>
+
+<script type="text/javascript">
+  function verifySubmit(){
+    group_src_id = $('group_src').value.split(',')[0]
+    group_target_id=$('group_target').value
+    if (group_src_id==group_target_id){
+      alert('The Source and Target Groups cannot be the same.')
+      return false
+    }
+    return true
+  }
+  function verifyCopy(errors,copy,move,deleted){
+    if (errors > 0){
+      alert('There are '+errors+' produced with the copy and can not proceed.')
+      return false
+    }
+    if (deleted > 0){
+      return confirm('This copy action will remove ('+deleted+') existing systems from the target group. Press \'OK\' to proceed.')
+    }
+    return  confirm('Are you sure you want to copy all '+copy+' systems to the Target Group')
+  }
+
+</script>
+
+<%= observe_field(:group_target,:function=>"if ($('group_target').value=='choose') {Form.Element.disable('find')}else{Form.Element.enable('find')}") %>
+<%= observe_field(:group_src,:function=>"if ($('group_src').value=='choose') {Form.Element.disable('group_target')}else{Form.Element.enable('group_target');
+  }") %>

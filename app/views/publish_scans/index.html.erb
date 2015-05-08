@@ -1,0 +1,146 @@
+<h1>Release Scans</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<div id="container2">
+  <div id="container1" style="width: 100%">
+    <% form_remote_for @publish_scan_search, :method => "GET",
+      :loading=>"hideElement('find');showElement('find_spinner')",:complete=>"hideElement('find_spinner');showElement('find')",
+      :url =>{ :controller => :publish_scans, :action => :search }  do |f|%>
+      <div id="col1">
+        <p>
+          <%= f.label :hc_group_id, "HC Cycle Group"%>
+          <%= f.select :hc_group_id, options_for_select(hc_group_list(current_org_id).collect{ |g|[ g.group_name, g.hc_group_id]},:selected=>hc_group_id),:include_blank=>"Select Group" %>
+        </p>
+
+        <p>
+          <%= f.label :host_name,"System Name" %>
+          <%= f.text_field :host_name %>
+        </p>
+        <p>
+          <%= f.label :ip_address, "IP Address"%>
+          <%= f.text_field :ip_address %>
+        </p>
+
+        <p>
+          <%= f.label "Operating System"%>
+          <%= f.select :os, Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] }.insert(0,["All","all"]) %>
+        </p>
+
+
+        <p>
+          <%= f.hidden_field :org_id, :value=>current_org_id%>
+        </p>
+        <table>
+          <tr >
+            <td ><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+              <%= f.submit 'find',{:id=>"find",:disabled=>true} %></td>
+            <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+            <td><%= f.label :per_page, "Results Per Page"%>
+              <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+          </tr>
+        </table>
+      </div>
+      <div id="col2">
+        <p>
+          <%= f.label :publish_status,"Release Status" %>
+          <%= f.select :publish_status, [
+            ["All","all"],
+            ["Released","published"],
+            ["Not Released","not_published"]
+          ],:selected=>"all" %>
+        </p>
+        <p>
+          <%= f.label :scan_type %>
+          <%= f.select :scan_type, [
+            ["All","all"],
+            ["HC Cycle","HC Cycle"],
+            ["Unlabeled","unlabeled"]
+          ],:selected=>"all" %>
+        </p>
+
+        <p>
+          <%= f.label :val_status, "Scan Results" %>
+          <%= f.select :val_status, [
+            ["All","all"],
+          #  ["No Unvalidated Deviations","none"],
+          #  ["1 or More Unvalidated Deviations","some"],
+            ["Clean Scans (ZERO Deviations)","clean"],
+          ],:selected=>"all" %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>
+<div id="result"></div>
+
+<script type="text/javascript">
+  document.observe("dom:loaded", function() {
+    if ($('publish_scan_search_hc_group_id').value==''  ) {
+      Form.Element.disable('find')
+    }else {Form.Element.enable('find')}
+  });
+
+  function verifySubmit(entries,unvalidated){
+
+    msg='You are attempting to release scans that have one or more unvalidated deviations. \n\
+\n\
+If you release these scans then the status of these deviations will automaticly change from \'UNVALIDATED\' to \'VALID\' \n\
+\n\
+Are you sure you want to release these scans?'
+    var status=false
+    if (checkSelectElement('scans_option','Select a valid action.')){
+      var element = document.getElementById('scans_option')
+      status=true
+      // if user selects all and confirms true, then test for
+      // unvalidated count and send message
+      if (element.options[element.options.selectedIndex].value=='all'){
+        if (confirm('Are you sure you want to release all '+ entries +' scans?')==false){
+          return false
+        }
+      }
+      return status
+    }
+  }
+
+  function hasUnvalidated(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('index')>0){
+        index = tags[i].value
+        if (document.getElementById('scans_scan_'+index+'__scan_id').checked==true){
+          
+          if(document.getElementById('scans_scan_'+index+'__unvalidated_count').value>0){
+            return true
+          }
+        }
+      }
+    }
+    return false
+  }
+
+  function toggleReady(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('scan_id')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'publish_scan_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+
+</script>

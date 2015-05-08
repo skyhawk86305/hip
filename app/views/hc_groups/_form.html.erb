@@ -1,0 +1,18 @@
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_for  @group do |f| %>
+  <p>
+    <%= f.label :group_name, "HC Cycle Group Name"%>
+    <%= f.text_field :group_name %>
+  </p>
+<p style="clear:left">
+    <%= f.label :is_current %>
+    <%= f.check_box :is_current, {},"y", "n" %>
+  </p>
+  <p>
+    <%= f.submit "update", :disabled=>hide_element  %>
+  </p>
+
+<%end%>

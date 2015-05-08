@@ -1,0 +1,2 @@
+module OutOfCycle::MissedScansHelper
+end

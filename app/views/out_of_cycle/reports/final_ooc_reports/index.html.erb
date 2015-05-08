@@ -1,0 +1,18 @@
+<h1>Final Out of Cycle Reports</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<ul>
+  <li style="width: 80%"><%= link_to "OOC Valid Deviation Tracking Template (#A-213C-02)", :action=>:valid_deviations_report %> - The template contains the final view of All VALID Deviations for ONLY RELEASED scans plus additional fields to be populated by the HCPT and Remediation Teams</li>
+   
+  <li style="width: 80%"><%= link_to "OOC System Final Scan Details (#A-214P-01)", :action=>:scan_report %> - This generates a single PDF for each system in the Out of Cycle Group. The report contains Scan, Deviation Validation & Suppression details </li>
+</ul>
+
+<script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+  Element.show('reports-2')
+  Element.show('ooc-reports')
+
+  });
+</script>

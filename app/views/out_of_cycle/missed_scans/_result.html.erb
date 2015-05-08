@@ -1,0 +1,65 @@
+<hr/>
+<%form_remote_for :missed_scans_reason, :loading=>"hideElement('save');showElement('spinner')",:complete=>"hideElement('spinner');showElement('save')",
+  :url =>"/out_of_cycle/missed_scans/update" ,:html=>{:name=>"missed_scan_form",:id=>"scan_form"}do |f|%>
+
+  <table>
+    <tr>
+      <td><%=  f.select :option, options_for_select([["Action","action"],
+            ["Save Selected Records","selected"],
+            ["Save All #{@missed_scans.total_entries} Records","all"],
+            ["Remove All #{@missed_scans.total_entries} Records","remove_all"],
+            ["Remove Selected Record(s)","remove"]], :selected=>"action"),:disabled=>hide_element %>
+  <%#= observe_field :missed_scans_reason_option,
+  :function=>"if ($('missed_scans_reason_option').value=='all'){Element.show('missed_scans_reason_reason_id')}else{Element.hide('missed_scans_reason_reason_id');}" %>
+      </td>
+      <td><b>Scan Type</b>: <%= session[:ooc_missed_scan_search][:ooc_scan_type]  %>
+        <%=f.hidden_field :ooc_scan_type, :value=>session[:ooc_missed_scan_search][:ooc_scan_type]%> 
+        <%=f.hidden_field :ooc_group_id, :value=>session[:ooc_missed_scan_search][:ooc_group_id]%>
+
+      </td>
+      <td>
+        <%= f.select :reason_id,
+          MissedScanReason.all(:order=>"missed_scan_reason").collect{|m| [m.missed_scan_reason, m.missed_scan_reason_id]},
+          {:include_blank=>"Select Reason" },{:disabled=>true,:width=>"300", :style=>"width: 300px"} %>
+      </td>
+
+      <td><img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner"/></td>
+      <td><%= f.submit "save", {:id=>"save", :xonclick =>"return verifySubmit(#{@missed_scans.total_entries})",
+          :disabled=>hide_element} %></td>
+      <td><%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td>
+
+    </tr>
+  </table>
+
+  <%= will_paginate @missed_scans, :params=>{:params=>session[:ooc_missed_scan_search],:action=>"search"},:class => 'pagination ajax' %>
+  <div>Total Records  Found: <%= @missed_scans.total_entries %></div>
+  <table width="100%">
+    <tr class="tbl_heading">
+      <th>Select All: <br/><%= check_box_tag :select_latest, "1",false,{:onclick=>"selectFindings()", :disabled=>hide_element} %></th>
+      <th>System Information</th>
+      <th>Scan Type</th>
+      <th>Reason for Missed Scan</th>
+    </tr>
+
+    <% @missed_scans.each_with_index do |a, index| %>
+      <% f.fields_for "reason[#{index}]" do |ff| %>
+        <tr class="<%= cycle("gray","white")  %> ">
+          <td><%= ff.check_box :asset_id,{:disabled=>hide_element},a.asset_id,''  %>
+
+          </td>
+          <td class="left"><%= ff.hidden_field :ooc_group_id, {:value=>a.ooc_group_id} %>
+            <%= "<b>#{a.host_name}</b><br/> #{a.ip_string_list}<br/> #{a.os_product}<br/> #{a.group_name}" %> </td>
+          <td><%= a.ooc_scan_type %></td>
+          <td class="left"><%= a.missed_scan_reason ||= "Not Specified Yet" %> </td>
+        </tr>
+      <%end%>
+    <%end%>
+    <!-- add pagination -->
+  </table>
+<%end%>
+<%= will_paginate @missed_scans, :params=>{:params=>session[:ooc_missed_scan_search],:action=>"search"},:class => 'pagination ajax' %>
+<% if @missed_scans.blank? %>
+  <p>No Scans Found</p>
+<%end%>
+
+<%= observe_field(:missed_scans_reason_option,:function=>"if ($('missed_scans_reason_option').value!='selected' & $('missed_scans_reason_option').value!='all'  ) {Form.Element.disable('missed_scans_reason_reason_id')}else{Form.Element.enable('missed_scans_reason_reason_id')}") %>

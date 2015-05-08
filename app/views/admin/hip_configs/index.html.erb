@@ -1,0 +1,85 @@
+<h1>Config</h1>
+
+<p style="color: green"><% flash[:notice] %></p>
+<hr/>
+
+<%= button_to "Reload Config Now", :action=>:reload_config %>
+<%# @rolesgroups.each_with_index do |group,index| %>
+<% form_tag '/admin/hip_configs/update' do  %>
+  <%= error_messages_for 'config' %>
+  <table border="0">
+
+  <%# if index==0 %>
+    <tr>
+      <th style="width: 10px;">&nbsp;</th>
+      <th style="width: 25px;">Key</th>
+      <th style="width: 75px;">Value</th>
+    </tr>
+  <%#end%>
+    <% @configs.each_with_index do|config,index| %>
+      <% fields_for "config[#{index}]", config do |f| %>
+        <tr>
+          <td><%= link_to "remove", { :action => "destroy", :id => config.id },:confirm => "Are you sure?", :method => :delete %></td>
+          <td><%= f.hidden_field :id %>
+            <%= f.text_field :key, {:size=>25,:maxsize =>"25"}%>
+          </td>
+          <td>
+            <%= f.text_field :value, {:size=>75,:maxsize =>"255"}%>
+          </td>
+        </tr>
+
+      <% end %>
+    <% end %>
+    <tr>
+      <td colspan="3">
+        <table>
+          <tr>
+            <td><%= submit_tag 'update' %></td>
+
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<%#end%>
+<% form_for( [:admin,@config]) do |f| %>
+  <%= f.error_messages %>
+
+  <table border="0">
+    <tr>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td>
+        <%= f.text_field :key, {:size=>25,:maxsize =>"25"} %>
+      </td>
+      <td>
+        <%= f.text_field :value, {:size=>75,:maxsize =>"255"} %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <table>
+          <tr>
+            <td><%= f.submit 'new' %></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+<% end %>
+
+<p>Config Params</p>
+<ul>
+  <li>read_only_flag=y|n - Put the HC Cycle section in read-only mode.</li>
+  <ul>
+    <li>read_only_msg - Display a message that the HC Cycle section is in read-only mode.</li>
+  </ul>  
+  <li>ooc_read_only_flag=y|n - Put the Out of Cycle section in read-only mode.</li>
+  <ul>
+    <li>ooc_read_only_msg - Display a message that the Out of Cycle section is in read-only mode.</li>
+  </ul>
+  <li>hip_notice - Display a general message to users, such as a scheduled maintenence.</li>
+  <li>controller_notice - Display a notice for pages of a specific controller.  Value should be in the form of: &lt;tcontroller_class_name&gt;:&lt;controller_specific_message&gt;.  So for example, to place a notice on all pages of the Out of Cycle Account Dashboard pages, the key would be "controller_notice" and the value would be "OutOfCycle::DashboardController:This is a ooc dashboard message".  Note:  duplicate keys are allowed</li>
+</ul>

@@ -1,0 +1,26 @@
+<h1>Interim Working Reports</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<ul>
+
+  <li style="width: 80%"><%= link_to "Interim Inventory Detail Report",:action=>:interm_inventory_csv %> - Point-In-Time view of the Account's COMPLETE Inventory LOCKED at the beginning of the Current HC Cycle.  Data includes system and scan statuses.</li>
+  <li style="width: 80%"><%= link_to "Group Interim HC Cycle Report", :action=>:interim_hc_cycle_report %> - Point-In-Time status details on Deviations & Suppressions for BOTH RELEASED & NON-RELEASED scans. Report is provided for each CURRENT HC Cycle Group.</li>
+  <!--li style="width: 80%"><b>Defined Suppression Report</b> - Account Specific Report listing the detailed attributes of ALL suppressions defined for the account.  (Would Include Active & NON-Active Suppressions)</li>
+  <li style="width: 80%"><b>Suppressed Deviation  Analysis Report</b> - Is a Summary Report of how the suppressions have been applied to identified deviations and affected systems.</li-->
+  <li style="width: 80%"><%= link_to "In-Cycle Interim Information & Warning Details (#152C-01)", :action=>:info_warning  %>  - Report of Info and Warning Message</li>
+
+   <!--
+  <li><%= link_to "Valid Deviation Tracking Document" , :action=>:valid_deviations_report %> (released scans only)</li>
+  <li><%= link_to "Executive Dashboard Report", :action=>:executive_dashboard %> </li>
+   -->
+</ul>
+
+  <script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+  Element.show('reports-2')
+  Element.show('incycle-reports')
+
+  });
+</script>

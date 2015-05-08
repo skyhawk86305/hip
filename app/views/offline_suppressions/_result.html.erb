@@ -1,0 +1,13 @@
+<hr/>
+<p><b>Total Records Found:</b> <%= @count %></p>
+<%unless @filename.blank?%>
+  <% if @count > 0 %>
+    <%= link_to "Download CSV Suppressions File",{:action=>:get_file,:file=>@filename} %>
+  <%else%>
+    No file is available because there are no deviations for this filter.
+  <%end%>
+<% else %>
+  <p>
+    Your request is going to take a while.  You will receive a status email shortly within 15 minutes.
+  </p>
+<%end%>

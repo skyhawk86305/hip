@@ -1,0 +1,18 @@
+<% # rendered during page load, and rendered from group_name_list.erb %>
+<p>
+  <%= label_tag :ooc_group_type, "Group Type"%>
+  <%= @ooc_group_type.present? ? @ooc_group_type:"Choose Scan Type" %>
+  <%= hidden_field_tag :ooc_group_type ,@ooc_group_type %>
+</p>
+<% if params[:show_ooc_group_id] %>
+<p>
+  <%= label_tag  "Group Name"%>
+  <select id="ooc_group_id" name="ooc_group_id">
+    <% if @group_name_list.present? %>
+      <%=options_for_select(@group_name_list.collect{|g| [g.ooc_group_name,g.ooc_group_id]},ooc_group_id) %>
+    <%else%>
+      <option value='choose'>Choose Scan Type</option>
+    <% end %>
+  </select>
+</p>
+<%end%>

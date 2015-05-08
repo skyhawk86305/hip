@@ -1,0 +1,179 @@
+<h1>Identify HC Cycle Scans</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<div id="container2">
+  <div id="container1" style="width: 100%">
+    <% form_remote_for @scan_search, :method => "GET",
+      :loading=>"hideElement('find');showElement('find_spinner')",:complete=>"hideElement('find_spinner');showElement('find')",
+      :url =>{ :controller => :scans, :action => :search }  do |f|%>
+      <div id="col1">
+
+        <p>
+          <%= f.label :hc_group_id, "HC Cycle Group"%>
+          <%= f.select :hc_group_id, options_for_select(hc_group_list(current_org_id).collect{ |g|[ g.group_name, g.hc_group_id]},:selected=>hc_group_id),:include_blank=>"Select Group" %>
+        </p>
+        <p>
+          <%= f.label :host_name, "System Name" %>
+          <%= f.text_field :host_name%>
+        </p>
+        <p>
+          <%= f.label :ip_address, "IP Address" %>
+          <%= f.text_field :ip_address%>
+        </p>
+        <p>
+          <!--span id="system_scan_status_help_link" class="help-link-light popup_link bold" style="display:inline">System Scan Status:</span-->
+          <%= f.label :system_scan_status,nil ,{:id=>"system_scan_status_help_link",:class=>"popup_link"}%>
+          <%= f.select(:system_scan_status,[
+              ["All","all"],
+              ["Incomplete","incomplete"],
+              ["Complete","complete"],
+              ["Missing","missing"],
+              ["------------------------"],
+              ["Missing, no reason given","no_reason"],
+              ["Missing, reason provided","with_reason"],
+              ["Available, none labeled","available"],
+              ["Labeled, none released","labeled"],
+              ["Released","released"],
+
+            ],:disabled=>"------------------------") %>
+        </p>
+        <p>
+          <%= f.hidden_field :org_id, :value=>current_org_id%>
+        <table>
+          <tr >
+            <td ><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+              <%= f.submit 'find',{:id=>"find",:disabled=>true} %></td>
+            <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+            <td><%= f.label :per_page, "Results Per Page"%>
+              <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %>
+            </td>
+          </tr>
+        </table>
+
+        </p>
+      </div>
+      <div id="col2">
+        <p>
+          <%= label_tag "Scan Date Range" %><br/>
+          <%= f.label :start_date,"From"  %> <%= f.text_field :start_date,:size=>"10"%><br/>
+          <%= f.label :end_date,"To"  %> <%= f.text_field :end_date, :size=>"10" %><br/>
+          Sort <span class="bold">ASC:</span> <%= f.radio_button :sort, 'asc',:checked=>true %> <span class="bold">DESC:</span> <%= f.radio_button :sort, 'desc' %>
+        </p>
+        <p>
+          <%= f.label :scan_tool_id, "Scan Tool"%>
+          <%= f.select( :scan_tool_id,Tool.tool_list.collect{ |t| t.manager_name}.insert(0,["All","all"]),:selected=>"All")  %>
+        </p>
+        <p>
+          <%= f.label :scan_type %>
+          <%= f.select(:scan_type,[["All","all"],
+              ["HC Cycle","HC Cycle"],
+              ["Missing","missing"],
+              ["Unlabeled","unlabeled"]]) %>
+        </p>
+
+      </div>
+    <% end %>
+  </div>
+</div>
+<div id="result"></div>
+<div class="popup" id="system_scan_status_help">
+  <p class="bold">System Scan Status Help</p>
+  <ul>
+    <li>Incomplete - This is all systems with following status ( Missing no reason +  Available none labeled + Labeled none released )  </li>
+    <li>Complete - This is all systems with status o (f Released+  Missing reason provided ) </li>
+    <li>Missing - This is any scans Missing with or without reasons  (missing, no reason + missing reason provided) </li>
+    <li>Missing,no reason given - All systems with a missing scan, and no reason given </li>
+    <li>Missing, reason provided - All systems with a missing scan, with a reason provided </li>
+    <li>Available, none labeled - All systems which need to be labeled</li>
+    <li>Labeled, none released - All systems labeled but need to be released</li>
+    <li>Released - All systems with at least one released scan</li>
+  </ul>
+  <a href="#" class="popup_closebox">Close</a>
+</div>
+<script type="text/javascript">
+  options = {
+    maxDate: '+1y',
+    showOn: 'button',
+    buttonImage: '/images/calendar.png',
+    buttonImageOnly: true,
+    dateFormat: 'mm/dd/yy'
+  }
+  // date range from
+  $j(function() {
+    $j("#scan_search_start_date").datepicker(options);
+  });
+  // date range to
+  $j(function() {
+    $j("#scan_search_end_date").datepicker(options);
+  });
+
+  /**
+   *  Selected the first scan in the drop down list
+   */
+  function selectRecent(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('select')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('scans[scan[')==0){
+        if (tags[i].selectedIndex==0){
+          tags[i].selectedIndex=1
+        }else{
+          tags[i].selectedIndex=0
+        }
+      }
+    }
+  }
+  function selectReady(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('ready_to_publish')>0){
+        tags[i].checked=true
+      }
+    }
+  }
+  function verifySubmit(entries){
+    var status=false
+    if (checkSelectElement('scans_option','Select a valid action.')){
+      var element = document.getElementById('scans_option')
+      status=true
+      value = element.options[element.options.selectedIndex].value
+      if (value=='all'){
+        return confirm('Are you sure you want to label all '+ entries +' scans')
+      }
+      if (value=='selected'&& !hasChecked() ){
+        alert('You have not selected a scan to label.')
+        return false
+      }
+    }
+    return status
+  }
+
+  function hasChecked(){
+    var checked = false
+    var myform =document.forms['scans_form']
+    var tags = myform.getElementsByTagName('select')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('scan_id')>0){
+        if (tags[i].options.selectedIndex!=0){
+          return true
+        }
+      }
+    }
+    return checked
+  }
+</script>
+<script type="text/javascript">
+  /* popup functions   */
+  new Popup('system_scan_status_help','system_scan_status_help_link',{modal:true,position:'below'});
+
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'scan_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+
+</script>

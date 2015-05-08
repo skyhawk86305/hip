@@ -1,0 +1,1 @@
+page.replace_html("current_org_name" , show_current_org_name)

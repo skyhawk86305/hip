@@ -1,0 +1,61 @@
+<h1>Account Dashboard Report for Out of Cycle Scans</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_remote_tag :loading=>"Element.hide('find');Element.show('find_spinner')",
+  :complete=>"Element.hide('find_spinner');Element.show('find')",
+  :url => '/out_of_cycle/dashboard/search'  do%>
+
+  <p>
+    <%= label_tag "scan_type" %>
+    <%= select_tag :ooc_scan_type, options_for_select(ooc_scan_type_list.insert(0,["Choose Scan Type","choose"]),
+      {:selected=>ooc_scan_type, :disabled=>"--------------"})%>
+  </p>
+  <table>
+    <tr>
+      <td style='text-align: left;'><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+      <%= hidden_field_tag('reset_counts', 'n') %>
+      <p><%= submit_tag 'Get Report', :id=>"get", :disabled=>"true",
+      :onclick => "Form.getInputs(this.form, null, 'reset_counts')[0].value = 'n'" %></p>
+      <p><%= submit_tag "Reset Scan Counts", :id=>"reset", :disabled=>"true", :confirm => "Caution: Reseting Counts to 0,",
+      :onclick => "Form.getInputs(this.form, null, 'reset_counts')[0].value = 'y'" %></p></td>
+    </tr>
+  </table>
+<% end %>
+<div id="result"></div>
+<script type="text/javascript">  
+  (function($) {
+    $(document).ready(function() {
+      HIP.OocDashboard = new HIP.OocDashboard();
+    });
+  })(jQuery);
+
+(function($) {
+
+  window.HIP = {};
+
+  HIP.OocDashboard = function() {
+
+    var self = this;
+    $(document).ready(function() {
+      var $select = $('#ooc_scan_type');
+      self.updateFormButtons();
+      $select.bind('change', function() { self.updateFormButtons(); });
+    });
+  };
+
+  HIP.OocDashboard.prototype.updateFormButtons = function() {
+    var $get = $('#get'),
+    $reset   = $('#reset'),
+    $select  = $('#ooc_scan_type');
+    disabled = $select.val() == 'choose';
+    $get.attr('disabled', disabled);
+    $reset.attr('disabled', disabled);
+  };
+
+  HIP.Util = {};
+
+})(jQuery);
+  
+</script>

@@ -1,0 +1,96 @@
+<h1>Tasks</h1>
+
+<p style="color: green"><% flash[:notice] %></p>
+
+<p><%= link_to "New Task", new_admin_task_status_path %></p>
+
+<% form_remote_for @task,:method => "GET",
+  :loading=>"hideElement('find');showElement('find_spinner')",
+  :complete=>"hideElement('find_spinner');showElement('find')",
+  :url =>{ :controller => "/admin/task_statuses", :action => "search" }  do |f|%>
+
+  <p>
+    <%= f.label :instace_name%>
+    <%= f.select(:instance_name,["hourly","15minutes","finding_cache"],:include_blank => "All") %>
+  </p>
+
+  <p>
+    <%= f.label :task_name%>
+    <%= f.text_field :task_name  %><br/>
+  </p>
+  <p>
+    <%= f.label :task_status%>
+    <%= f.select :task_status,["failed","crashed","running","queued","success"].sort,:include_blank => "All"%>
+  </p>
+
+  <p>
+    <%= f.label :task_message%>
+    <%= f.text_field :task_message %>
+  </p>
+  <p>
+    <%= f.label :class_name%>
+    <%= f.text_field :class_name %>
+  </p>
+    <p>
+    <%= f.label :params%>
+    <%= f.text_field :params %>
+  </p>
+    <p>
+    <%= f.label :auto_retry%>
+    <%= f.select :auto_retry,['y','n'],:include_blank=>"All" %>
+  </p>
+  <p>
+    <%= f.label "Scheduled Between"%>
+    <%= f.text_field :start_scheduled_timestamp %> and <%= f.text_field :end_scheduled_timestamp %>
+  </p>
+  <p>
+    <%= f.label "Started Between"%>
+    <%= f.text_field :start_timestamp %> and <%= f.text_field :end_timestamp %>
+  </p>
+  <table>
+    <tr>
+      <td><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" /></td>
+      <td><%= f.submit 'find', {:id=>"find"} %></td>
+      <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:inline" }) %></td>
+      <td><%= label_tag :per_page, "Results Per Page"%>
+        <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+    </tr>
+  </table>
+
+<% end %>
+
+<div id="result">
+  <%#= render :partial=>"result" %>
+</div>
+
+ <script type="text/javascript">
+  options = {
+    maxDate: '+1y',
+    showOn: 'button',
+    buttonImage: '/images/calendar.png',
+    buttonImageOnly: true,
+    dateFormat: 'yy-mm-dd 00:00:00'
+  }
+  options_end={
+    maxDate: '+1y',
+    showOn: 'button',
+    buttonImage: '/images/calendar.png',
+    buttonImageOnly: true,
+    dateFormat: 'yy-mm-dd 23:59:59'
+  }
+  // date range from
+  $j(function() {
+    $j("#task_status_start_scheduled_timestamp").datepicker(options);
+  });
+    $j(function() {
+    $j("#task_status_end_scheduled_timestamp").datepicker(options_end);
+  });
+  
+   $j(function() {
+    $j("#task_status_start_timestamp").datepicker(options);
+  });
+    $j(function() {
+    $j("#task_status_end_timestamp").datepicker(options_end);
+  });
+  
+  </script>

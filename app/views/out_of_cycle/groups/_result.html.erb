@@ -1,0 +1,23 @@
+<hr/>
+<%= will_paginate @groups,:params=>{:params=>session[:ooc_group_search],:action=>"search"},:class => 'pagination ajax' %>
+<table width="100%">
+  <tr class="tbl_heading">
+    <th>Group Name</th>
+    <th>Group Status</th>
+    <th>Group Type</th>
+  </tr>
+  <% @groups.each do |group| %>
+  <tr class=<%= cycle("gray","white")  %> >
+    <td class="left"><%= link_to group.ooc_group_name, edit_out_of_cycle_ooc_group_path(group.ooc_group_id),
+  :disabled=>hide_element%> </td>
+
+    <td><%= group.ooc_group_status %> </td>
+
+    <td><%= group.ooc_group_type %> </td>
+  </tr>
+<% end %>
+</table>
+<%= will_paginate @groups,:params=>{:params=>session[:ooc_group_search],:action=>"search"},:class => 'pagination ajax' %>
+<% if @groups.blank? %>
+<p>No Groups Found</p>
+<%end%>

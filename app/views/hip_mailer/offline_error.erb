@@ -1,0 +1,7 @@
+<% if @message.respond_to?('backtrace') -%>
+<%= "At #{Time.now.utc.to_s} #{@task_name} on #{@instance} raised exception #{@message.class}, #{@message.message}" %>
+Backtrace follows:
+<%= @message.backtrace %>
+<% else -%>
+<%= @message %>
+<% end -%>

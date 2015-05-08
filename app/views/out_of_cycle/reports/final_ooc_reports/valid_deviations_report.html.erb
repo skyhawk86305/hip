@@ -1,0 +1,45 @@
+<h1>Out of Cycle Valid Deviation Tracking Template (#A-213C-02)</h1>
+This reports show Released Scans Only
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<br/>
+<% form_tag :action=>:valid_deviations_report do%>
+
+  <p>
+    <%= label_tag  "Scan Type"%> exception hc cycle
+    <%= hidden_field_tag :ooc_scan_type,"exception hc cycle"%>
+  </p>
+
+  <div style="display: inline" id="group_scan">
+    <%= render 'group_scan_lists' %>
+  </div> 
+  <p>
+    <%= submit_tag "Get Report",:id=>"find" %>
+  </p>
+<% end %>
+
+<script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+  Element.show('reports-2')
+  Element.show('ooc-reports')
+<%= remote_function(:update => "group_scan",
+  :url => { :action => :group_scan_lists,:ooc_scan_type=>"exception hc cycle" },
+  :complete=>"
+  if ($('ooc_group_id').value=='choose'  ) {
+  Form.Element.disable('find')
+  }else {Form.Element.enable('find')}")
+%>
+  });
+</script>
+
+<%= observe_field(:ooc_scan_type, :url => { :action => :group_scan_lists },
+  :update => :group_scan,
+  :with => :ooc_scan_type,
+  :loading =>"Form.Element.disable('find')",
+  :complete=>"if ($('ooc_group_id').value=='choose'){Form.Element.disable('find')}else{Form.Element.enable('find')}") %>
+
+<%= observe_field(:ooc_group_id,
+  :function=>"if ($('ooc_group_id').value=='choose') {Form.Element.disable('find')}else{Form.Element.enable('find')}") %>

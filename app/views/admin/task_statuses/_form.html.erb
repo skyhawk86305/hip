@@ -1,0 +1,72 @@
+<% form_for [:admin,@task] do |f| %>
+
+<% if @task.task_id %>
+<p>
+    <%= f.label :task_id%> <%= @task.task_id %>
+</p>
+<%end%>
+ <p>
+    <%= f.label :instace_name%>
+    <%= f.select(:instance_name,["hourly","15minutes"]) %>
+  </p>
+
+  <p>
+    <%= f.label :task_name%>
+    <%= f.text_field :task_name  %><br/>
+  </p>
+  <p>
+    <%= f.label :task_status%>
+    <%= f.select :task_status,["failed","crashed","running","queued","success"].sort%>
+  </p>
+
+  <p>
+    <%= f.label :task_message%>
+    <%= f.text_field :task_message %>
+  </p>
+  <p>
+    <%= f.label :class_name%>
+    <%= f.text_field :class_name %>
+  </p>
+    <p>
+    <%= f.label :params%>
+    <%= f.text_area :params ,:cols=>50,:rows=>4%>
+  </p>
+    <p>
+    <%= f.label :auto_retry%>
+    <%= f.select :auto_retry,['y','n'] %>
+  </p>
+  <p>
+    <%= f.label "Scheduled Time"%>
+    <%= f.text_field :start_scheduled_timestamp,:size=>22 %>
+  </p>
+  
+  <table>
+    <tr>
+      <td>
+        <%= f.submit 'save' %>
+      </td>
+      <td>
+        <%= submit_tag("reset", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" }) %>
+      </td>
+      <td>
+      <%= link_to "cancel",admin_task_statuses_path  %>  
+      </td>
+    </tr>
+  </table>
+   
+
+<%end%>
+  <script type="text/javascript">
+  options = {
+    maxDate: '+1y',
+    showOn: 'button',
+    buttonImage: '/images/calendar.png',
+    buttonImageOnly: true,
+    dateFormat: 'yy-mm-dd 00:00:00'
+  }
+  // date range from
+  $j(function() {
+    $j("#task_status_start_scheduled_timestamp").datepicker(options);
+  });
+  </script>
+  

@@ -1,0 +1,67 @@
+<p>
+  <span class="bold">Account Name:</span> <%= @org.org_name %>
+</p>
+<hr/>
+
+<%# @rolesgroups.each_with_index do |group,index| %>
+<% form_for [:admin,@org], :url=>'/admin/roles_groups/update', :html =>{ :name => "roles_group" } do |f|  %>
+  <%= f.error_messages %>
+  <%= hidden_field_tag  :org_id,@org.id.to_s %>
+  <table border="0">
+
+    <tr>
+      <th>&nbsp;</th>
+      <th>BlueGroups Name</th>
+      <th>BlueGroups App</th>
+      <th>Role</th>
+      <th>Category</th>
+    </tr>
+    <tbody id="body">
+
+      <% @rolesgroups.each do|group| %>
+        <% f.fields_for :roles_groups, group do |builder| %>
+          <%= render "roles_group_fields",:f=>builder,:group=>group %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to_add_fields "Add Group",f, :roles_groups%>
+  <p>
+    <%= f.submit 'save' %>
+  </p>
+<% end %>
+
+<%= link_to_remote "Get Accout Members List",
+  :url=>{:action=>"account_members",:id=>@org.id.to_s},
+  :before=>"$('spinner').show();$('ldap_link').hide();$('account_members').update()",
+  :complete=>"$('spinner').hide();$('ldap_link').show()",
+  :html=>{:id=>"ldap_link"} %>
+
+  <img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner"/>
+  
+<hr/>
+<div id="account_members"></div>
+
+
+<script type="text/javascript">
+  //<![CDATA[
+
+  function manageCategory(field,field_index){
+    index = field.selectedIndex
+    value = field.options[index].value
+    id = field.id
+
+    //category_field = 'org_roles_groups_attributes_'+field_index+'_category'
+    category_field = id.replace("role_name","category")
+    /*if (field_index==null){
+      category_field = 'org_roles_groups_category'
+    }*/
+    if (value=='Deviation SME'){
+      Element.show(category_field)
+    }else{
+      Element.hide(category_field)
+    }
+  }
+
+  //]]>
+</script>

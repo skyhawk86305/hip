@@ -1,0 +1,18 @@
+<h1>HC Cycle Executive Dashboard Report #141-01</h1>
+
+
+<br/>
+<% form_tag :action=>:executive_dashboard do%>
+  <p>
+    <%= label_tag "Select Year Month of Report" %>
+    <%= select_tag :date,options_for_select((@dirs),:selected=>Time.now.strftime("%Y-%m"))%>
+  </p>
+
+  <p style="clear:left">
+    <%= label_tag "Report Format" %>
+    <%= select_tag :format,options_for_select([["CSV"],["PDF"]]) %>
+  </p>
+  <p>
+    <%= submit_tag "Get Report" %>
+  </p>
+<% end %>

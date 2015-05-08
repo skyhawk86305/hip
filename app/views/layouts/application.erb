@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="Description" content="Application to manage Health Check security data in SecMart" />
+    <meta name="Keywords" scheme="iso8601" content="Security, Health, Check" />
+    <meta name="Owner" content="bergy@us.ibm.com" />
+    <meta name="Feedback" content="bergy@us.ibm.com" />
+    <meta name="Robots" content="index,nofollow" />
+    <meta name="Security" content="internal use only" />
+
+    <meta name="csrf-token" content="<%= session[:_csrf_token] %>" />
+
+    <%= javascript_include_tag 'prototype','effects','dragdrop','controls','popup', 'tooltip-v0.1'%>
+    <%= javascript_include_tag "w3-scripts" %>
+
+    <%= stylesheet_link_tag "w3-screen", "w3-interior.css", "w3-icons", "w3-interior-1-col" %>
+    <%= stylesheet_link_tag "w3-print", :media => "print"%>
+    <%= stylesheet_link_tag "popup"%>
+    <%= stylesheet_link_tag "style"%>
+
+    <!-- begin jquery UI -->
+    <%= stylesheet_link_tag "redmond/jquery-ui-1.8.16.custom.css"%>
+    <%= javascript_include_tag "jquery-1.7.1.min.js" %>
+    <%= javascript_include_tag "jquery-ui-1.8.16.custom.min.js" %>
+    <!-- end jquery UI -->
+
+    <%= javascript_include_tag "underscore-1.3.1.min.js" %>
+    <%= javascript_include_tag "backbone-0.9.1.min.js" %>
+    <%= javascript_include_tag "xregexp-1.5.1.min.js" %>
+
+    <%= javascript_include_tag "application" %>
+    <%= javascript_include_tag "hip" %>
+
+    <title><%= if @title then "HIP: #{@title}" else "Healthcheck Inspection Portal | HIP" end %></title>
+  </head>
+  <body id="w3-ibm-com" class="article" onload="showElement('<%= @show_element %>')">
+    <!-- start accessibility prolog -->
+    <div class="skip"><a href="#content-main" accesskey="2">Skip to main content</a></div>
+    <div class="skip"><a href="#left-nav" accesskey="n">Skip to navigation</a></div>
+    <div id="access-info">
+      <p class="access">The access keys for this page are:</p>
+      <ul class="access">
+        <li>ALT plus 0 links to this site's <a href="http://w3.ibm.com/w3/access-stmt.html" accesskey="0">Accessibility Statement.</a></li>
+        <li>ALT plus 1 links to the w3.ibm.com home page.</li>
+        <li>ALT plus 2 skips to main content.</li>
+        <li>ALT plus 4 skips to the search form.</li>
+        <li>ALT plus 9 links to the feedback page.</li>
+        <li>ALT plus N skips to navigation.</li>
+      </ul>
+      <p class="access">Additional accessibility information for w3.ibm.com can be found <a href="http://w3.ibm.com/w3/access-stmt.html">on the w3 Accessibility Statement page.</a></p>
+    </div>
+    <!-- end accessibility prolog -->
+    <!-- start masthead -->
+    <div id="masthead">
+      <h2 class="access">Start of masthead</h2>
+      <div id="prt-w3-sitemark"><%= image_tag "id-w3-sitemark-simple.gif", :alt => "", :width => 54, :height => 33 %></div>
+      <div id="prt-ibm-logo"><%= image_tag "id-ibm-logo-black.gif", :alt => "", :width => 44, :height => 15 %></div>
+      <div id="w3-sitemark"><%= image_tag "id-w3-sitemark-large.gif", :alt => "IBM Logo", :width => 266, :height => 70, :usemap => "#sitemark_map" %><map id="sitemark_map" name="sitemark_map"><area shape="rect" alt="Link to W3 Home Page" coords="0,0,130,70" href="http://w3.ibm.com/"  accesskey="1" /></map></div>
+      <div id="site-title-only">Healthcheck Inspection Portal</div>
+      <div id="ibm-logo"><%= image_tag "id-ibm-logo.gif", :alt => "", :width => 44, :height => 15 %></div>
+      <div id="persistent-nav"><a id="w3home" href="http://w3.ibm.com/"> w3 Home </a><a id="bluepages" href="http://w3.ibm.com/bluepages/"> BluePages </a><a id="helpnow" href="http://w3.ibm.com/help/"> HelpNow </a><a id="feedback" href="http://w3.ibm.com/feedback/" accesskey="9"> Feedback </a></div>
+      <div id="header-env">
+        <%= if RAILS_ENV != 'production'
+          adapter = SwareBase.connection.adapter_name
+          if adapter == 'IBM_DB'
+            "Non-production environment: #{RAILS_ENV}:#{adapter}:#{SwareBase.connection.instance_values['database']}"
+          elsif adapter == 'PostgreSQL'
+            "Non-production environment: #{RAILS_ENV}:#{adapter}"
+          else
+            RAILS_ENV
+          end
+        end
+      %>
+      </div>
+      <div id="header-search">
+        <form action="http://w3.ibm.com/search/do/search" method="get" id="search">
+          <table summary="W3 Search Form" cellspacing="0" cellpadding="0" class="header-search">
+            <tr><td class="label"><label for="header-search-field">Search w3</label></td><td class="field"><input id="header-search-field" name="qt" type="text" accesskey="4" /></td><td class="submit"><label class="access" for="header-search-btn">go button</label><input id="header-search-btn" type="image" alt="Go" src="<%= image_path 'btn-go-dark.gif' %>" /></td></tr>
+          </table>
+        </form>
+      </div>
+    </div>
+    <!-- Start masthead profile-links -->
+    <div id="profile-links">
+      <%= link_to "Sign out", :controller => '/home', :action => :logout %>
+    </div>
+    <!-- Stop masthead profile-links -->
+    <!-- stop masthead -->
+
+    <!-- start content -->
+    <div id="content">
+      <h1 class="access">Start of main content</h1>
+      <!-- start content head -->
+      <!-- Comment out breadcrumbs for now
+	<div id="content-head">
+	<p id="breadcrumbs"><a href="http://hip.secintel.ibm.com">HIP</a> &gt; </p>
+	</div>
+	-->
+      <!-- stop content head -->
+      <!-- start main content -->
+      <div id="content-main">
+        <div id="container">
+          <% unless system_msg.empty?  %>
+            <div id="system_msg">
+              <%= system_msg %>
+            </div>
+          <%end%>
+          <% unless controller_msg.empty?  %>
+            <div id="controller_msg">
+              <%= controller_msg %>
+            </div>
+          <%end%>
+          <%= flash_content_for(:error) -%>
+          <%= flash_content_for(:warning) -%>
+          <%= flash_content_for(:notice) -%>
+          <%= yield %>
+          <!--
+<%#*<hr/>%>
+<%#*<pre><%= session[:credential].to_yaml %></pre><hr/>%>
+<%#*<pre><%= controller.params.to_yaml %></pre><hr/>%>
+          -->
+        </div>
+        <p class="terms"><a href="http://w3.ibm.com/w3/info_terms_of_use.html">Terms of use</a></p>
+      </div>
+      <!-- stop main content -->
+    </div>
+    <!-- stop content -->
+    <!-- start navigation -->
+    <div id="navigation">
+      <h2 class="access">Start of left navigation</h2>
+      <!-- left nav -->
+      <div id="left-nav">
+        <div id="home" class="top-level">
+
+          <%= link_to_if(current_page?(:controller=>"/home",:action=>:index), "Home", {:controller => "home", :action => :index}, {:class => "active",:disabled=>true}) do
+            link_to( "Home", {:controller => "/home", :action => :index})
+          end
+        %>
+
+        </div>
+        <div id="reports-1" class="top-level">
+          <% if !current_user.nil? and (current_user.is_user_in_role?("GEO Focal") or current_user.is_user_in_role?("Admin")) %>
+            <%= link_to_if(controller_name=="amer_geo_reports", "Americas Geo Level Reports", "/reports/amer_geo_reports/index", {:class => "active"} ) do
+              link_to( "Americas Geo Level Reports", "/reports/amer_geo_reports/index")
+            end %>
+          <%else%>
+            <a title="Restricted Content">Americas Geo Level Reports</a>
+          <%end%>
+        </div>
+
+        <div id="ooc_reports" style="display:none">
+
+        </div>
+        <div  class="top-level">
+          <%= link_to_function "Account Level Reports", "hideElement('outofcycle'),hideElement('incycle'),toggleIdDisplay('reports-2')" %>
+          <div id="reports-2" style="display:none">
+            <div class="second-level incycle" style="border-top: 1px solid #fff;background:#cce5ff;">
+              <%= link_to_function "In Cycle", "Element.hide('outofcycle'),Element.hide('incycle'),Element.hide('ooc-reports'),toggleIdDisplay('incycle-reports')",:style=>"padding-left: 10px; border-top: 1px solid #fff" %>
+            </div>
+            <div id="incycle-reports" style="display:none">
+              <div class="third-level incycle" >
+                <%= link_to_if(controller_name=="interim_reports", "Interim Working Reports", "/reports/interim_reports/index", {:class => "active"} ) do
+                  link_to( "Interim Working Reports", "/reports/interim_reports/index")
+                end %>
+              </div>
+              <div class="third-level incycle" >
+                <%= link_to_if(controller_name=="cycle_end_reports", "Cycle End Report", "/reports/cycle_end_reports/index", {:class => "active"} ) do
+                  link_to( "Cycle End Reports", "/reports/cycle_end_reports/index")
+                end %>
+              </div>
+            </div>
+
+            <div class="second-level" style="border-top: 1px solid #fff; background:#cce5ff;">
+              <%= link_to_function "Out of Cycle", "Element.hide('outofcycle'),Element.hide('incycle'),Element.hide('incycle-reports'),toggleIdDisplay('ooc-reports')",:style=>"padding-left: 10px; border-top: 1px solid #fff" %>
+            </div>
+            <div id="ooc-reports" style="display:none">
+              <div class="third-level" >
+                <%= link_to_if(controller_name=="interim_reports", "Interim Working Reports",  "/out_of_cycle/reports/interim_reports/index", {:class => "active"} ) do
+                  link_to( "Interim Working Reports",  "/out_of_cycle/reports/interim_reports/index")
+                end %>
+              </div>
+              <div class="third-level" >
+                <%= link_to_if(controller_name=="final_ooc_reports", "Final OOC Report", "/out_of_cycle/reports/final_ooc_reports/index", {:class => "active"} ) do
+                  link_to( "Final OOC Reports", "/out_of_cycle/reports/final_ooc_reports/index")
+                end %>
+              </div>
+            </div>
+
+          </div>
+          <div id="mhc" class="top-level">
+            <%= link_to_if(controller_name=="mhc", "Upload Generic Tool Scans", "/mhc/index", {:class => "active"} ) do
+              link_to( "Upload Generic Tool Scans", "/mhc/index")
+            end %>
+          </div>
+          <div class="top-level">
+            <%= link_to_if(controller_name=="suppressions", "Define Suppressions", {:controller => "/suppressions", :action => :index,:cycle=>"suppress"}, {:class => "active"} ) do
+              link_to( "Define Suppressions", {:controller => "/suppressions", :action => :index,:cycle=>"suppress"})
+            end
+          %>
+          </div>
+          <div class="top-level incycle">
+
+            <%= link_to_function "In Cycle", "hideElement('outofcycle');toggleIdDisplay('incycle')",:style=>"padding-left: 10px;background:#C3FDB8; border-top: 1px solid #fff" %>
+
+          </div>
+          <div id="incycle" style="display:none;">
+            <div class="second-level incycle" style="padding-left: 12px; border-top: 1px solid #fff">
+              <p class="bold">Monitor Progress</p>
+            </div>
+            <div class="third-level incycle" style="background-color: #fff" >
+              <%= link_to_if(controller_name=="dashboard", "Account Dashboard", {:controller => "/dashboard", :action => :index}, {:class => "active"} ) do
+                link_to( "Account Dashboard", {:controller => "/dashboard", :action => :index})
+              end
+            %>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="hc_cycle_group_dashboard", "HC Cycle Group Dashboard", {:controller => "/hc_cycle_group_dashboard", :action => :index}, {:class => "active"} ) do
+                link_to( "HC Cycle Group Dashboard", {:controller => "/hc_cycle_group_dashboard", :action => :index})
+              end
+            %>
+            </div>
+            <div class="second-level incycle" style="padding-left: 12px; border-top: 1px solid #fff">
+              <p class="bold">Manage Inventory Scope</p>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="hc_groups", "Manage HC Cycle Groups", {:controller => "/hc_groups", :action => :index}, {:class => "active"} ) do
+                link_to( "Manage HC Cycle Groups", {:controller => "/hc_groups", :action => :index})
+              end
+            %>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="assets", "Assign Systems to Groups", {:controller => "/assets", :action => :index}, {:class => "active"} ) do
+                link_to( "Assign Systems to Groups", {:controller => "/assets", :action => :index})
+              end
+            %>
+            </div>
+            <div class="second-level incycle" style="padding-left: 12px;border-top: 1px solid #fff">
+              <p class="bold">Manage Scans</p>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(current_page?(:controller=>"scans",:action=>"index"), "Identify HC Cycle Scans", {:controller => "/scans", :action => :index}, {:class => "active"} ) do
+                link_to( "Identify HC Cycle Scans", {:controller => "/scans", :action => :index})
+              end
+            %>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="missed_scans", "Document Missed Scans", {:controller => "/missed_scans", :action => :index}, {:class => "active"} ) do
+                link_to( "Document Missed Scans", {:controller => "/missed_scans", :action => :index})
+              end
+            %>
+            </div>
+            <div class="second-level incycle" style="padding-left: 12px;border-top: 1px solid #fff">
+              <p class="bold">Manage Deviations</p>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="validation_groups", "Assign Deviation Validation Groups", {:controller => "/validation_groups", :action => :index}, {:class => "active"} ) do
+                link_to( "Assign Deviation Validation Groups", {:controller => "/validation_groups", :action => :index})
+              end
+            %>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="deviations", "Apply Suppressions", {:controller => "/deviations", :action => :index}, {:class => "active"} ) do
+                link_to( "Apply Suppressions", {:controller => "/deviations", :action => :index})
+              end
+            %>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="offline_suppressions", "Offline Suppressions", {:controller => "/offline_suppressions", :action => :index}, {:class => "active"} ) do
+                link_to( "Offline Suppressions", {:controller => "/offline_suppressions", :action => :index})
+              end
+            %>
+            </div>
+            <div class="second-level incycle" style="padding-left: 12px;border-top: 1px solid #fff">
+              <p class="bold">Complete HC Cycle</p>
+            </div>
+            <div class="third-level incycle">
+              <%= link_to_if(controller_name=="publish_scans", "Release Scans", {:controller => "/publish_scans", :action => :index}, {:class => "active"} ) do
+                link_to( "Release Scans", {:controller => "/publish_scans", :action => :index})
+              end
+            %>
+            </div>
+          </div>
+
+          <div class="top-level" >
+            <%= link_to_function "Out of Cycle", "hideElement('incycle');toggleIdDisplay('outofcycle')" %>
+          </div>
+          <div id="outofcycle"  style="display:none">
+            <div class="second-level" style="padding-left: 12px;background:#cce5ff;">
+              <p class="bold">Monitor OOC Progress</p>
+            </div>
+            <div class="third-level">
+
+              <%= link_to_if(controller_name=="dashboard", "Account Dashboard","/out_of_cycle/dashboard/index", {:class => "active"} ) do
+                link_to( "Account Dashboard", "/out_of_cycle/dashboard/index")
+              end
+            %>
+            </div>
+            <div class="second-level" style="padding-left: 12px;background:#cce5ff;">
+              <p class="bold">Manage OOC Inventory Scope</p>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="groups", "Manage OOC Groups","/out_of_cycle/groups/index", {:class => "active"} ) do
+                link_to( "Manage OOC Groups", "/out_of_cycle/groups/index")
+              end
+            %>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="assets", "Assign Systems to Groups", {:controller => "/out_of_cycle/assets", :action => :index}, {:class => "active"} ) do
+                link_to( "Assign Systems to Groups", {:controller => "/out_of_cycle/assets", :action => :index})
+              end
+            %>
+            </div>
+
+            <div class="third-level">
+              <a title="Not Implemented Yet">Copy Systems between Groups</a>
+<%#= link_to_if(controller_name=="copy_groups", "Copy Systems between Groups", "/out_of_cycle/copy_groups/index", {:class => "active"} ) do
+link_to( "Copy Systems between Groups", "/out_of_cycle/copy_groups/index")
+end
+%>
+            </div>
+            <div class="second-level" style="padding-left: 12px;background:#cce5ff;">
+              <p class="bold">Manage Scans</p>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="scans", "Identify OOC Scans","/out_of_cycle/scans/index", {:class => "active"} ) do
+                link_to( "Identify OOC Scans", "/out_of_cycle/scans/index")
+              end
+            %>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="missed_scans", "Document OOC Missed Scans",  "/out_of_cycle/missed_scans/index", {:class => "active"} ) do
+                link_to( "Document OOC Missed Scans","/out_of_cycle/missed_scans/index")
+              end
+            %>
+            </div>
+            <div class="second-level" style="padding-left: 12px;background:#cce5ff;border-top: 1px solid #fff">
+              <p class="bold">Manage Deviations</p>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="validation_groups", "Assign Deviation Validation Groups", "/out_of_cycle/validation_groups/index", {:class => "active"} ) do
+                link_to( "Assign Deviation Validation Groups", "/out_of_cycle/validation_groups/index")
+              end
+            %>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="deviations", "Apply Suppressions", "/out_of_cycle/deviations/index", {:class => "active"} ) do
+                link_to( "Apply Suppressions", "/out_of_cycle/deviations/index")
+              end
+            %>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="offline_suppressions", "Offline Suppressions", {:controller => "/out_of_cycle/offline_suppressions", :action => :index}, {:class => "active"} ) do
+                link_to( "Offline Suppressions", {:controller => "/out_of_cycle/offline_suppressions", :action => :index})
+              end
+            %>
+            </div>
+            <div class="second-level" style="padding-left: 12px;background:#cce5ff;border-top: 1px solid #fff">
+              <p class="bold">Complete OOC Scans</p>
+            </div>
+            <div class="third-level">
+              <%= link_to_if(controller_name=="release_scans", "Release Scans", "/out_of_cycle/release_scans/index", {:class => "active"} ) do
+                link_to( "Release Scans", "/out_of_cycle/release_scans/index")
+              end
+            %>
+            </div>
+          </div>
+          <% if is_admin? %>
+            <div class="top-level">
+              <%= link_to_function "Administration",
+                "hideElement('incycle'),hideElement('outofcycle'),toggleIdDisplay('admin')" %>
+            </div>
+            <div id="admin" style="display:none">
+              <div class="second-level">
+                <%= link_to_if((controller_name=="cbn"), "CBN", admin_cbn_path, {:class => "active"} ) do
+                  link_to( "CBN", admin_cbn_path)
+                end
+              %>
+              <div class="second-level">
+                <%= link_to_if((controller_name=="config"), "Config", admin_hip_configs_path, {:class => "active"} ) do
+                  link_to( "Config", admin_hip_configs_path)
+                end
+              %>
+                <div class="second-level">
+                  <%= link_to_if((controller_name=="roles"|| controller_name=="roles_groups"), "Roles", admin_roles_path, {:class => "active"} ) do
+                    link_to( "Roles", admin_roles_path)
+                  end
+                %>
+                </div>
+                <div class="second-level">
+                  <%= link_to_if((controller_name=="task_statuses"), "Tasks", admin_task_statuses_path, {:class => "active"} ) do
+                    link_to( "Tasks", admin_task_statuses_path)
+                  end
+                %>
+                </div>
+              </div>
+
+            <%end%>
+          </div>
+          <!-- start related links -->
+          <!-- ** If there's related links, html goes here.  Otherwise, remove this line ** -->
+          <!-- stop related links -->
+        </div>
+      </div>
+    </div>
+    <!-- stop navigation -->
+    <div id="progress" class="popup">
+      <p class="bold">Please wait, we are processing a lot of data!</p>
+      <p>
+        <img src="/images/spinner.gif" id="find_spinner"  alt="spinner" style="display:block;margin-left: auto;margin-right: auto" />
+      </p>
+    </div>
+
+    <script type="text/javascript">
+      //<![CDATA[
+      // to use add id=>'link_progress' to the link_to options
+      new Popup('progress','link_progress',{trigger:'click',position:'center'})
+    </script>
+  </body>
+</html>

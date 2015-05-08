@@ -1,0 +1,53 @@
+<hr/>
+<%form_remote_for :asset, :loading=>"Element.hide('asset_save');Element.show('asset_save_spinner')",:complete=>"Element.hide('asset_save_spinner');Element.show('asset_save')", 
+  :url =>"/out_of_cycle/copy_groups/update" do |f|%>
+  <table>
+    <tr>
+      <!--td><%=  select_tag "option", options_for_select([["Action","action"],["Assign Selected Records","selected"],["Assign All #{@assets.total_entries} Records","all"]], :selected=>"action"),:disabled=>hide_element %></td>
+      <td><%#= label_tag "Save filtered result as:" %>
+      <%#= select_tag "select_ooc_group_id", options_for_select(ooc_group_list_all(current_org_id,session[:ooc_asset_search][:ooc_group_type]).collect { |g|[ g.ooc_group_name, g.ooc_group_id]}.insert(0,["Select OOC Group","none"],["unassigned",""]),:selected=>"none"),
+        :disabled=>true %></td-->
+      <td><img src="/images/spinner.gif" id="asset_save_spinner" style="display: none;" alt="spinner"/></td>
+      <td><%= f.submit "Copy", {:id=>"asset_save", :onclick =>"return verifyCopy(#{@total_error},#{@total},#{@total_move},#{@total_deleted})",
+          :disabled=>hide_element} %></td>
+      <!--td><%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td-->
+
+    </tr>
+  </table>
+  <%= hidden_field_tag :group_target,params[:group_target] %>
+
+  Total Systems Found: <b><%= @assets.total_entries %></b> <br/>
+  <%= action_text("copy") %>: <b><%= @total_copy %></b> <br/>
+  <%= action_text("move") %>: <b><%= @total_move %></b> <br/>
+  <%= action_text("move_other") %>: <b><%= @total_move_other %></b> <br/>
+  <%= action_text("nothing") %>: <b><%= @total_nothing %></b> <br/>
+  <%= action_text("delete") %>: <b><%= @total_deleted %></b><br/>
+  <%= will_paginate @assets,:params=>{:params=>session[:ooc_copy_groups_search],:action=>"search"},
+    :class => 'pagination ajax'%>
+
+  <table style="clear:left" width="95%">
+    <tr class="tbl_heading">
+      <th>System Information</th>
+      <th>System Status</th>
+      <th>Action</th>
+    </tr>
+    <% @assets.each do |asset| %>
+      <tr class="<%= cycle("gray","white")%>">
+        <td class="left"><%= "<b>#{asset.host_name}</b><br/>
+    #{asset.ip_string_list}<br/>
+    #{asset.os_product}"
+        %> </td>
+        <td><%= asset.system_status%> </td>
+        <td>
+        <%= action_text(asset.action_code,asset.ooc_group_type,asset.ooc_group_name) if asset.ooc_group_name!=@group_src_name  %>
+        <%= action_text(asset.action_code) if asset.ooc_group_name==@group_src_name  %>
+        </td>
+      </tr>
+    <%  end #index of search_assets%>
+  </table>
+  <%= will_paginate @assets,:params=>{:params=>session[:ooc_copy_groups_search],:action=>"search"},
+    :class => 'pagination ajax'%>
+  <% if @assets.blank? %>
+    No Systems Found
+  <%end%>
+<%  end #remote form -%>

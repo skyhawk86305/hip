@@ -1,0 +1,26 @@
+<h1>HC CYCLE GROUP Dashboard for In-Cycle Scans	</h1>
+
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<p>
+  <b>Health Check Cycle: Month ending</b> <%= "#{Date.new(@period.year,@period.month_of_year,-1).strftime("%m/%d/%Y")}"  %> 	<br/>
+  <b>In Cycle Inventory Effective date:</b> <%= "#{@period.asset_freeze_timestamp.strftime("%m/%d/%Y %H:%M")} UTC"%> 	<br/>
+  <b>Screen Generated Date:</b> <%= "#{Time.now.strftime("%m/%d/%Y %H:%M")} UTC"  %>  <br/>
+</p>
+<br/>
+<% form_remote_tag :loading=>"Element.hide('find');Element.show('find_spinner')",:complete=>"Element.hide('find_spinner');Element.show('find')",:url => '/hc_cycle_group_dashboard/search'  do%>
+
+  <p>
+    <%= label_tag "HC Cycle Group" %>
+    <%= select_tag :hc_group_id, options_for_select(hc_group_list_all(current_org_id).collect { |g|[g.group_name,g.hc_group_id]}) %>
+  </p>
+  <table>
+        <tr>
+          <td><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+            <%= submit_tag 'Get Report',{:id=>"find"} %></td>
+        </tr>
+      </table>
+<% end %>
+
+  <div id="result"></div>

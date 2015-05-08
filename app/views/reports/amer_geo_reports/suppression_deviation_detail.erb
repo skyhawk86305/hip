@@ -1,0 +1,24 @@
+<h1>Suppression Deviation Detail Report</h1>
+
+
+<% @files.each do |files| %>
+  <% if !files[:files].nil? %>
+    <ul>
+      <li><%=Time.parse("#{files[:date]}-01").strftime("%b %Y")%></li>
+
+      <ul>
+
+        <% files[:files].each do |file| %>
+          <li><%= link_to file, :controller=>'/reports/amer_geo_reports', :action=>:get_file,:file=>"#{files[:date]}/#{file}" %>
+          </li>
+
+        <%end%>
+      </ul>
+
+    </ul>
+  <%end%>
+<%end%>
+
+<% if @files.size==0 %>
+  <p>No Reports for this Account and Year Month</p>
+<%end%>

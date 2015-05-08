@@ -1,0 +1,69 @@
+<hr/>
+<%form_remote_for :scans, :loading=>"hideElement('save');showElement('spinner')",:complete=>"hideElement('spinner');showElement('save')", 
+  :url =>{:controller => "scans", :action => "update" },:html=>{:name=>"scans_form"} do |f|%>
+
+  <table>
+    <tr>
+      <td> <%= f.select :option, options_for_select([["Action",0],["Label Selected","selected"],["Label All","all"],["Remove All Labels",'unlabel_all']]),:disabled=>hide_element  %></td>
+      <td>
+        <%= f.submit "Submit" ,:id=>"save",:onclick=>"return verifySubmit(#{@asset_scans.total_entries})" ,:disabled=>hide_element%>
+        <img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner"/>
+      </td>
+      <td> <%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td>
+    </tr>
+  </table>
+
+
+
+
+  <%= will_paginate @asset_scans,:params=>{:scan_search=>session[:scan_search],:action=>"search"},:class => 'pagination ajax' %>
+  <div>Total Records Found: <%= @asset_scans.total_entries %></div>
+  <table width="100%">
+    <tr class="tbl_heading">
+      <th>System Information</th>
+      <th>System Scan Status</th>
+      <th>Deviations | Scan | Tool<br/>
+        Select Recent: <%= check_box_tag :select_ready, "1",false,{:onclick=>"selectRecent()", :disabled=>hide_element} %></th>
+      <th>Scan Type</th>
+      <th>Remove Label?</th>
+      <th>Reason for Missing</th>
+
+    </tr>
+    <% @asset_scans.each_with_index do |as, index| %>
+      <% f.fields_for "scan[#{index}]" do |ff| %>
+        <tr id="row_<%=index%>" class="<%= cycle("gray","white")  %> left" >
+             <td class="left"><%= "<b>#{as.host_name}</b><br/> #{as.ip_string_list}<br/> #{as.os_product}<br/> #{as.group_name}" %> </td>
+             <td class="left"><%= as.system_scan_status %></td>
+             <td class="left">
+            <%=
+            if as.system_scan_status =~ /Missing/
+              "Missing"
+            elsif as.system_scan_status=="Released" and as.scan_id.nil?
+              #show drop down if the scan has been released
+             (!@scanlist[:unlabled][as.asset_id].nil?) &&  @scanlist[:unlabled][as.asset_id].size>1 ? ff.select(:scan_id,@scanlist[:unlabled][as.asset_id]): nil
+            elsif as.system_scan_status=="Released" and as.scan_type=="HC Cycle"
+              @scanlist[:labled][as.scan_id]
+            elsif as.system_scan_status=~/Available/ #and as.scan_id.nil?
+              #show drop down if none has been labeled yet
+              ff.select(:scan_id,@scanlist[:unlabled][as.asset_id])
+            elsif as.system_scan_status=~/Labeled/
+              #show the scan that was labeled
+              @scanlist[:labled][as.scan_id]
+            end
+          %>
+          </td>
+          <td class="left"><%= as.scan_type %> </td>
+          <td class="left"><%= (!as.scan_id or as.scan.publish_ready_timestamp?) ? nil : remove_label_link(as.scan_id,index, params[:page]) %> </td>
+          <td class="left"><%= as.system_scan_status=="Missing, reason provided" ? get_missed_scan_reason(as.asset_id): nil%> </td>
+
+        </tr>
+      <% end # end fields_for 
+      %>
+    <% end #end each loop 
+    %>
+  </table>
+<% end #end form %>
+<%= will_paginate @asset_scans,:params=>{:scan_search=>session[:scan_search],:action=>"search"},:class => 'pagination ajax' %>
+<% if @asset_scans.blank? %>
+  <p>No Scans Found</p>
+<%end%>

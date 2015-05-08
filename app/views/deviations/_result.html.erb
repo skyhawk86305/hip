@@ -1,0 +1,114 @@
+<hr/>
+<% form_remote_for :scan_findings, :loading=>"hideElement('save');showElement('spinner')",:complete=>"hideElement('spinner');showElement('save')",
+  :url =>{:controller => "deviations", :action => "update" },:html=>{:name=>"scan_findings_form"} do |f|%>
+
+  <%
+  grouped_options = 
+          [["Action","0"],['Suppress Selected','suppress'],["Suppress All #{@deviations.total_entries} Records","suppress_all"],['Remove Selected Suppression(s)','remove_suppression'],["Remove All #{@deviations.total_entries} Suppression(s)",'remove_all_suppressions']]
+  
+%>
+  <table>
+    <tr>
+      <td> <%= f.select :option, options_for_select(grouped_options),{:disabled=>hide_element}  %></td>
+      <td><%=f.select(:suppress_id,
+                exception_list(current_org_id).collect{|e| [e.suppress_name,e.suppress_id]},
+                {:include_blank=>"Select Suppression"},:disabled=>true)%></td>
+      <td>
+        <%= f.submit "Submit" ,:id=>"save",:onclick=>"return verifySubmit(#{@deviations.total_entries})" ,:disabled=>hide_element%>
+        <img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner"/>
+      </td>
+      <td>  <%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td>
+    </tr>
+  </table>
+
+  <%= will_paginate @deviations,:params=>{:deviation_search=>session[:deviation_search],:action=>"search"},
+    :class => 'pagination ajax'%>
+  <div>Total Records Found: <%= @deviations.total_entries %></div>
+  <table width="100%">
+   
+    <tr class="tbl_heading">
+
+      <th title="Select all for validation on this page only.">Select All: <br/><%= check_box_tag :select_latest, "1",false,{:onclick=>"selectFindings()", :disabled=>hide_element} %></th>
+
+      <th>System Information </th>
+      <th>Deviation Level</th>
+      <th>Deviation Text</th>
+      <th>Deviation Type</th>
+      <!--th>Deviation Status</th-->
+      <th>Suppression Date</th>
+      <th>Suppression Name</th>
+      <th>Suppression Status</th>
+      <th>Deviation Validation Group</th>
+      <th>HC Cycle Scan Timestamp</th>
+    </tr>
+    <% @deviations.each_with_index do |d,index| %>
+        <% f.fields_for "scan_finding[#{index}]" do |ff| %>
+        <%#= ff.hidden_field :suppress_id,{:value=>d.suppress_id} %>
+          <tr class="<%= cycle("gray","white") %>">
+        <%# the below field is used for validating findings, and to seperate from the suppression function.%>
+            <td><%= ff.check_box :finding_id,{:disabled=>hide_element},d.finding_id,''  %></td>
+            <td class="left"><%= "<b>#{d.host_name}</b><br/> #{d.ip_string_list}<br/> #{d.os_product}<br/> #{d.group_name}" %> </td>
+            <td><%= d.deviation_level %> </td>
+            <td class="left"><span id="trigger<%=index%>" class="popup_link" ><%= d.finding_text[0,100]%></span></td>
+            <td><%= d.title  %> </td>
+            <!--td><%= d.validation_status %> </td-->
+            <% if d.suppress_id.present? or suppress_status(d) != :expired %>
+              <td>
+                <% if (d.suppress_id.present? and d.suppress_date.nil?) %>
+                  Suppression Pending
+                <% elsif d.suppress_date.present? %>
+                  <%= (d.suppress_date.respond_to?(:strftime) ? d.suppress_date : Time.parse(d.suppress_date,"%Y-%m-%d %H:%M:%S.000000")).strftime("%Y-%m-%d %H:%M:%S") %>
+                <% end %>
+              </td>
+              <td class="suppression">
+                <% if d.suppress_id.present? %>
+                  <%= link_to d.suppress_name, {:controller => "/suppressions", :action => "edit", :id => d.suppress_id }, :target=>"_blank" %> 
+                <% else %>
+                  <%= d.suppress_name %>
+                <% end %>
+              </td>
+            <% else %>
+              <td class="suppression expired">
+                <!-- TODO: add date for expired -->
+              </td>
+              <td class="suppression expired">
+                <%= link_to d.non_current_suppress_name, {:controller => "/suppressions", :action => "edit", :id => d.non_current_suppress_id }, :target=>"_blank" %> 
+              </td>
+            <% end %>
+            <td class="suppression_status <%= suppress_status(d).to_s %>">
+              <%= suppress_status(d).to_s.titlecase %>
+            </td>
+            <td><%= d.cat_name.nil? ? d.sarm_cat_name : d.cat_name  %></td>
+            <td><%= (d.scan_start_timestamp.respond_to?(:strftime) ? d.scan_start_timestamp : Time.parse(d.scan_start_timestamp,"%Y-%m-%d %H:%M:%S.000000")).strftime("%Y-%m-%d %H:%M:%S") %></td>
+          </tr>
+        <%end #field_for%>
+    <%end%>
+  </table>
+<% end #form %>
+<%= will_paginate @deviations,:params=>{:deviation_search=>session[:deviation_search],:action=>"search"},
+  :class => 'pagination ajax'%>
+<% if @deviations.blank? %>
+  <p>No Deviations Found</p>
+<%end%>  
+<% @deviations.each_with_index do |d,index| %>
+    <div id="tooltip<%= index %>" class="popup" xstyle="display:none;width: 300px">
+      <p class="bold">Deviation Text</p>
+      <p>
+        <%= d.finding_text %>
+      </p>
+    </div>
+    <script type="text/javascript">
+      //<![CDATA[
+      new Popup('tooltip<%=index%>','trigger<%= index  %>')
+      $('trigger<%=index%>').observe('mousein', function() {
+        $('tooltip<%=index%>').popup.show();
+      });
+      $('trigger<%=index%>').observe('mouseout', function() {
+        $('tooltip<%=index%>').popup.hide();
+      });
+
+      //]]>
+    </script>
+<%end%>
+
+<%= observe_field(:scan_findings_option,:function=>"if ($('scan_findings_option').value!='suppress' && $('scan_findings_option').value!='suppress_all'  ) {Form.Element.disable('scan_findings_suppress_id')}else{Form.Element.enable('scan_findings_suppress_id')}") %>

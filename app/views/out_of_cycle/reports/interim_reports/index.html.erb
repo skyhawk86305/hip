@@ -1,0 +1,21 @@
+<h1>Out of Cycle Interim Working Reports</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<ul>
+
+  <li style="width: 80%"><%= link_to "Out of Cycle Group Scan Details (#213C-01)", :controller=>"/out_of_cycle/reports/interim_reports",:action=>:interim_scan_report %> - Point-In-Time status details on Deviations & Suppressions for BOTH RELEASED & NON-RELEASED scans. Report is provided for each Scan Type and Group.</li>
+  <li style="width: 80%"><%= link_to "Out of Cycle Inventory (Acct Lvl / CSV) (#222C-01) ", :action=>:inventory %> - Listing of the Account's COMPLETE CURRENT Inventory as captured in the latest import from SysReg </li>
+  <li style="width: 80%"><%= link_to "Out of Cycle Inventory With Group Assignment  (Acct Lvl / CSV) (#922C-01)", :controller=>"/out_of_cycle/reports/interim_reports",:action=>:inventory_group,:format=>"csv" %> - Listing of the Account's Complete Current Inventory with added detail providing the "Group Name" and  "Group Type" for every Group to which the each system has been assigned.</li>
+  <li style="width: 80%"><%= link_to "Out of Cycle Inventory With Scan Status (Acct/Lvl/ CSV) (#222C-02) ", :controller=>"/out_of_cycle/reports/interim_reports",:action=>:inventory_scan_status%> - Listing of the Account's Complete Current Inventory with added detail providing the  Group Type, Group Name, Group Status, Scan Status & Missing Reason for any systems assigned to the Group Type for the specified Scan Type. </li>
+  <li style="width: 80%"><%= link_to "Out of Cycle Interim Information & Warning Details (#252C-01)", :action=>:info_warning  %>  - Report of Info and Warning Message</li>
+</ul>
+
+<script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+    Element.show('reports-2')
+    Element.show('ooc-reports')
+
+  });
+</script>

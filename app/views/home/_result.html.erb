@@ -1,0 +1,24 @@
+<div id="current_id"></div>
+<%= will_paginate @orgs, :params=>{:org_name=>params[:org_name],:per_page=>params[:per_page]} ,:class => @paginate_ajax %>
+<div> Total Accounts <%= @orgs.total_entries %></div>
+<table width="100%">
+  <tr class="tbl_heading">
+    <th>&nbsp;</th>
+    <th>Account</th>
+    <th>Chip ID</th>
+  </tr>
+  <% for o in @orgs %>
+    <tr class="<%= cycle("gray","white")%>">
+      <td>
+          <%= button_to_remote("Select",
+            {:url=>{:controller => :home , :action=> :select_new_org,:current_org_id=>o}},:disabled=>current_org_id.to_s==o.id.to_s)%>
+      </td>
+      <td class="left" ><%= o.org_name %></td>
+      <td><%= o.org_ecm_account_id %> </td>
+    </tr>
+  <% end %>
+</table>
+<%= will_paginate @orgs, :params=>{:org_name=>params[:org_name],:per_page=>params[:per_page]} ,:class => @paginate_ajax %>
+<% if @orgs.blank? %>
+  <p>No Accounts Found</p>
+<%end%>

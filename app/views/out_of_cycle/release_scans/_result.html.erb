@@ -1,0 +1,65 @@
+<hr/>
+<%form_remote_for :scans, :loading=>"hideElement('save');showElement('spinner')",:complete=>"hideElement('spinner');showElement('save')", 
+  :url =>"/out_of_cycle/release_scans/update",:html=>{:name=>"scans_form",:id=>"scans_form"} do |f|%>
+  <table>
+    <tr>
+      <td><%= f.select :option, options_for_select([["Action",0],["Release Selected Records","selected"],["Release All #{@asset_scans.total_entries} Records","all"]]),:disabled=>hide_element  %></td>
+      <td>
+        <%= f.submit "Submit" ,:id=>"save",:onclick=>"return verifySubmit(#{@asset_scans.total_entries},#{@total_unvalidated})" ,:disabled=>hide_element%>
+        <img src="/images/spinner.gif" id="spinner" style="display: none;" alt="spinner"/>
+      </td>
+      <td><%= submit_tag("Reset Form", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" ,:disabled=>hide_element}) %></td>
+    </tr>
+  </table>
+
+  <%= will_paginate @asset_scans,:params=>{:params=>session[:ooc_publish_scan_search],:action=>"search"},:class => 'pagination ajax' %>
+
+  <table width="100%">
+    <tr valign="bottom">
+      <td colspan="4" class="left">
+        Total Records Found: <%= @asset_scans.total_entries %>
+      </td>
+      <td><span class="bold">Total Clean:</span><br/><%= @total_clean %></td>
+      <td><span class="bold">Total:</span><br/><%=@total_validated %></td>
+      <td><span class="bold">Total:</span><br/><%= @total_suppressed %></td>
+      <td><span class="bold">Total Released:</span><br/> <%=  @total_released %></td>
+    </tr>
+    <tr class="tbl_heading">
+      <th>All: <br/><%= check_box_tag :select_latest, "1",false,{:onclick=>"toggleReady()", :disabled=>hide_element} %>
+      </th>
+      <th>System Information</th>
+      <th>Deviations | Scan<!--br/>
+        Select Recent: <%#= check_box_tag :select_ready, "1",false,{:onclick=>"selectRecent()", :disabled=>hide_element} %> -->
+      </th>
+      <th>Scan Type</th>
+      <th>Clean Scans Zero Deviations</th>
+      <th>Total Valid Deviations</th>
+      <th>Total Suppressed Deviations</th>
+      <th>Released Date</th>
+    </tr>
+    <% @asset_scans.each_with_index do |as, index| %>
+      <% f.fields_for "scan[#{index}]" do |ff| %>
+        <tr class=<%= cycle("gray","white")  %> >
+          <td><%= (!as.publish_ready_timestamp? and !as.scan_id.nil?) ? ff.check_box( :scan_id,{:disabled=>hide_element}, as.scan_id,'0'):nil %></td>
+          <td class="left"><%= "<b>#{as.host_name}</b><br/> #{as.ip_string_list} <br/> #{as.os_product}<br/> #{as.ooc_group_name}" %> </td>
+
+          <td><%= as.scan_start_timestamp? ? "#{as.deviation_count} | #{Time.parse(as.scan_start_timestamp).strftime("%Y-%m-%d %H:%M:%S UTC")}":nil  %>   </td>
+          <td><%= as.ooc_scan_type %> </td>
+          <td><%= as.clean.to_s=="1" ? "Yes":"No" %> </td>
+          <td><%= as.deviation_count.to_i - as.count_suppressed.to_i  %> </td>
+          <td><%= as.count_suppressed  %> </td>         
+          <td><%= as.publish_ready_timestamp? ?  Time.parse(as.publish_ready_timestamp).strftime("%Y-%m-%d %H:%M:%S") : "Not Released" %>
+            <%= (!as.publish_ready_timestamp? and !as.scan_id.nil?) ? ff.hidden_field(:index,{:value=>index}):nil%>
+          </td>
+
+        </tr>
+      <% end # end fields_for 
+      %>
+    <% end #end each loop 
+    %>
+  </table>
+<% end #end form %>
+<%= will_paginate @asset_scans,:params=>{:params=>session[:ooc_publish_scan_search],:action=>"search"},:class => 'pagination ajax' %>
+<% if @asset_scans.blank? %>
+  <p>No Scans Found</p>
+<%end%>

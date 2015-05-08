@@ -1,0 +1,37 @@
+<h1>Manage HC Cycle Groups</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_remote_for @group, :url=>{:action=>:search} do |f|%>
+  <p>
+    <%= f.label :group_name_search, "HC Cycle Group"%>
+    <%= f.text_field :group_name_search %><br/>
+    Sort ASC: <%= radio_button_tag 'sort', 'ASC',true %> DESC <%= radio_button_tag 'sort', 'DESC',false %>
+  </p>
+
+  <p>
+  <table>
+    <tr>
+      <td><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+        <%= f.submit 'find',{:id=>"find"} %></td>
+      <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :type => "reset", :style=>"display:block" }) %></td>
+      <td>    <%= label_tag :per_page, "Results Per Page"%>
+        <%= select_tag :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+    </tr>
+  </table>
+  </p>
+<% end %>
+
+<% form_for @group, :action=>:create do |f| %>
+  <p>
+    <%= f.label :group_name %>
+    <%= f.text_field :group_name,:disabled=>hide_element %>
+    <%= f.submit 'add new group', :disabled=>hide_element  %>
+  </p>
+<%end%>
+<div id="result">
+  <% if @groups  # show all when index page loads.%>
+    <%= render :partial=> "result" %>
+  <%end %>
+</div>

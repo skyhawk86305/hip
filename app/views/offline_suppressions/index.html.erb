@@ -1,0 +1,224 @@
+<h1>Offline Suppressions</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<p>
+  Download a CSV file to apply suppressions offline and upload them later.  If
+  there are more than <%= APP['offline_suppression_background_count']  %>  deviations the CSV file will be created in the background
+  and you will be notified by email when it's ready.
+</p>
+<div id="container2">
+  <div id="container1" xstyle="width:1200px" >
+    <% form_remote_for @deviation_search, :html=>{:name=>"deviation_search",:method=>"GET"},
+      :loading=>"hideElement('find');showElement('find_spinner');$('result').update()",:complete=>"hideElement('find_spinner');showElement('find')",
+      :url =>{ :controller => :offline_suppressions, :action => :search }  do |f|%>
+
+      <div id="col1">
+        <p>
+          <%= f.label :hc_group_id, "HC Cycle Group"%>
+          <%= f.select :hc_group_id, hc_group_list(current_org_id).collect { |g|[ g.group_name, g.hc_group_id]},:selected=>hc_group_id,:include_blank=>"Select Group" %>
+        </p>
+        <p>
+          <%= f.label :system_name %>
+          <%= f.text_field :host_name %>
+        </p>
+        <p>
+          <%= f.label :ip_address, "IP Address"%>
+          <%= f.text_field :ip_address %>
+        </p>
+        <p>
+          <%= f.label "Operating System"%>
+          <%= f.select :os, Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] },  {:include_blank => "All" } %>
+        </p>
+
+        <p style="clear:left">
+          <%= f.hidden_field :org_id, :value=> current_org_id %>
+
+        <table>
+          <tr>
+            <td>
+              <img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+              <%= f.submit 'get file',{:id=>"find",:disabled=>true} %></td>
+            <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+          </tr>
+        </table>
+        </p>
+      </div>
+
+      <div id="col2">
+
+        <p style="clear:left">
+          <%= f.label :val_group, "Deviation Validation Group"%>
+          <%= f.select( :val_group,Vuln.category.collect{|c| c.sarm_cat_name}.insert(0,"All","unk"),:selected=>"All")  %>
+        </p>
+        <p>
+          <%= f.label :vuln_title, "Deviation Type"%>
+          <%= text_field_with_auto_complete :deviation_search, :vuln_title,
+            {:size=>"40"},
+            { :url =>  vulns_path(:js),:frequency=>"1.5",
+            :method => :get, :param_name=>'title'}%>
+        </p>
+        <p>
+          <%= f.label :vuln_text, "Deviation Text" %>
+          <%= f.text_field :vuln_text %>
+        </p>
+        <p>
+          <%= f.label :deviation_level, "Deviation Level"%>
+          <%= f.select(:deviation_level, options_for_select([
+                ["All"],
+                #["Compliant"],   <--- Removed until HIP processes compliant data
+               # ["Info"],
+                ["Violation"],
+                #["Warning"],
+              ]),:selected => "All") %>
+        </p>
+        <p>
+          <%= f.label :val_status, "Deviation Status"%>
+          <%= f.select(:val_status,options_for_select([
+                ["All"],
+                ["Valid","valid"],
+                ["Suppressed","suppressed"],
+              ]),:selected=>"not_validated")  %>
+        </p
+        <p>
+          <%= f.label "Suppression Name"%>
+          <%= f.select :suppress_id, exception_list_all(current_org_id).collect{|o| [ o.suppress_name, o.suppress_id ] }.insert(0,["All","all"]) %>
+        </p>
+
+
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="upload" style="margin:20px;clear:left" >
+<hr/>
+  <p>
+    Upload a CSV file of suppressions. 
+  </p>
+
+  <% form_tag "/offline_suppressions/upload",:multipart=>true,:onsubmit=>"return validate_form();" do -%>
+    <p>
+      <%= label_tag  :upload, 'File' -%>
+      <%= file_field_tag :upload ,:disabled=>hide_element -%>
+    </p>
+
+    <p>
+      <%= submit_tag "upload",:id=>"upload_button",:disabled=>hide_element %>
+    </p>
+  <%end%>
+</div>
+
+<div id="upload_result" style="margin:20px">
+	<% if @exception %>
+		<h3 style='color:red;'>An Error has occurred!  Please save your upload file and contact support.</h3>
+	<%end%>
+  <% unless @errors.size==0 %>
+    <h3>Errors from upload validation (First 500 rows)</h3>
+    <p>Correct these errors and submit your upload again</p>
+  <%end%>
+  <%= "<ul>" if @errors.size > 0 %>
+    <%  @errors.each do |error| %>
+      <li><%= error %></li>
+    <%end%>
+  <%= "</ul>" if @errors.size > 0 %>
+  <span class=""><%= @msg %></span>
+</div>
+
+
+
+<div id="result" style="margin:20px" ></div>
+
+
+<script  type="text/javascript">
+  document.observe("dom:loaded", function() {
+    if ($('deviation_search_hc_group_id').value==''  ) {
+      Form.Element.disable('find')
+    }else {Form.Element.enable('find')}
+  });
+
+  function validate_form(){
+    if ($('upload').value==''){
+      alert("Missing Upload File.");
+      return false;
+    }
+  }
+
+  function selectFindings(){
+    var scan_form =document.forms['scan_findings_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('finding_id')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+  
+  function setFindings(value){
+    var ele = document.getElementById('scan_findings_findings')
+    ele.value=value
+  }
+
+  function doPopup(findings){
+    new Popup('new_suppression_popup',null,{modal:true});
+    $('new_suppression_popup').popup.show();
+    setFindings(findings);
+  }
+
+
+  function verifySubmit(entries){
+    var status=false
+    if (checkSelectElement('scan_findings_option','Select a valid action.')){
+      var element = document.getElementById('scan_findings_option')
+      status=true
+      value = element.options[element.options.selectedIndex].value
+      if (value=='validate_all'){
+        text = element.options[element.options.selectedIndex].text
+        return confirm('Are you sure you want to '+ text +' deviations.')
+      }
+      if (value=='suppress_all' && checkSelectElement('scan_findings_suppress_id','Select a Suppression.') ){
+        text = element.options[element.options.selectedIndex].text
+        return confirm('Are you sure you want to '+ text +' deviations.')
+      }else {
+        // end processing, return back to page.
+        status=false
+      }
+      
+      if (value=='validate' && !hasChecked() ){
+        alert('You have not selected deviations to validate.')
+        return false
+      }
+      return true
+
+    }
+
+    return status
+  }
+  function hasChecked(){
+    var checked = false
+    var myform =document.forms['scan_findings_form']
+    var tags = myform.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('selected')>0){
+        if (tags[i].checked==true){
+          return true
+        }
+      }
+    }
+    return checked
+  }
+  
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'deviation_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+  
+</script>

@@ -1,0 +1,32 @@
+<h1>Manage Role Groups: <%= @role.role_name %></h1>
+
+<%= link_to "Add New Role Group", :action=>:new, :role_name=>@role.role_name %><br/><br/>
+
+<br/>
+
+<%= will_paginate @rolesgroups, :params=>{"role_name"=>@role.role_name} %>
+
+<table width="75%">
+  <tr>
+    <th>&nbsp;</th>
+
+    <th>BlueGroup</th>
+    <th>Category</th>
+    <th>GEO</th>
+    <th>Account</th>
+    <th>&nbsp;</th>
+  </tr>
+
+  <% for r in @rolesgroups %>
+    <tr class="<%= cycle("gray","white")%> ">
+      <td><%= link_to "edit", :action=>:edit2,:id=>r  %> </td>
+      <td><%= h r.blue_groups_name %></td>
+      <td><%=@role.has_associated_category.downcase=='y' ? r.category : "not associated" %></td>
+      <td><%=@role.has_associated_geo.downcase=='y' ? r.geo : "not associated" %> </td>
+      <td><%= @role.has_associated_org.downcase=='y' ? r.org_name : "not associated"  %></td>
+      <td><%= link_to "delete", { :action => "destroy", :id => r },:confirm => "Are you sure?", :method => :delete %> </td>
+    </tr>
+
+  <%end%>
+
+</table>

@@ -1,0 +1,19 @@
+<h1>Home</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_remote_tag :url =>{ :controller => :home, :action => "search_org" }  do  %>
+  <table>
+    <tr>
+      <td><%= label_tag :org_name, "Account Filter" %>
+        <%= text_field_tag :org_name,'', {:size=>40} %></td>
+      <td><%= label_tag :per_page,"Results Per Page"%>
+        <%= select_tag :per_page, options_for_select([["10"], ["25"],["50"],["100"]],:selected=>"25") %></td>
+      <td> <%= submit_tag 'filter' %></td>
+    </tr>
+  </table>
+<%= set_focus_to_id(:org_name) %>
+<%end%>
+
+<div id="result"><%= render :partial=>"result"%></div>

@@ -1,0 +1,23 @@
+<% # rendered during page load, and rendered from group_name_list.erb %>
+<% # 05-08-2013  Changed to add a checkbox option for multiple group name selection  %>
+<% # 05-08-2013  Addded ability to pass mutiple ooc_group_ids as a part of the options hash %>
+<% # 05-08-2013  in the check_box_tag     %>  
+<% # 06-03-2013 Added Groups to Select label tag    %>
+<p>
+     <%= label_tag :ooc_group_type, "Group Type"%>
+     <%= @ooc_group_type.present? ? @ooc_group_type:"Choose Scan Type" %>
+     <%= hidden_field_tag :ooc_group_type ,@ooc_group_type %>
+</p>
+     <% if @group_name_list.present? %>
+     <%= label_tag :groups, "Groups to Select" %>
+<br>
+     <% @group_name_list.each do |group_name|  %>
+       <%= group_ids = group_name.ooc_group_id   %>
+       <%= ooc_group_id = group_name.ooc_group_name    %>
+       <%= check_box_tag "ooc_group_id[]", group_ids %> 
+<br>
+      <% end %>
+     <% end %>
+</p>
+
+

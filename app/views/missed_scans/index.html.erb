@@ -1,0 +1,69 @@
+<h1>Document Missed Scans</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_remote_for  @missed_scans_search ,:method => "GET", :html=>{:name=>"get_missed"},
+  :loading=>"hideElement('find');showElement('find_spinner')",:complete=>"hideElement('find_spinner');showElement('find')",
+  :url =>{ :controller => :missed_scans, :action => :search }  do |f|%>
+  <p>
+    <%= f.label :hc_group_id, "HC Cycle Group" %>
+    <%= f.select :hc_group_id, options_for_select(hc_group_list(current_org_id).collect{ |g|[ g.group_name, g.hc_group_id]}.insert(0,"All"),:selected=>hc_group_id),{:include_blank=>"Select Group"},{:width=>"300", :style=>"width: 300px"} %>
+    <%= f.hidden_field :org_id,:value=>current_org_id %>
+  </p>
+  <p>
+    <%= f.label :host_name, "System Name"%>
+    <%= f.text_field :host_name%>
+  </p>
+  <p>
+    <%= f.label :ip_address, "IP Address" %>
+    <%= f.text_field :ip_address%>
+  </p>
+  <p>
+    <%= f.label :reason_id ,"Missed Scan Reason"%>
+    <%= f.select(:reason_id,
+      MissedScanReason.all(:order=>"missed_scan_reason").collect{|m| [m.missed_scan_reason, m.missed_scan_reason_id]}.insert(0,"All",["Not Specified Yet ","unassigned"]),{},{:width=>"300", :style=>"width: 300px"})  %>
+  </p>
+  <p>
+
+  </p>
+  <p>
+  <table>
+    <tr >
+      <td><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+        <%= f.submit 'find',{:id=>"find",:disabled=>true} %></td>
+      <td><%= submit_tag("start over", { :name => 'reset', :id => 'reset_button', :class => 'start-over', :type => "button", :style=>"display:block" }) %></td>
+      <td><%= f.label :per_page, "Results Per Page"%>
+        <%= f.select :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+    </tr>
+  </table>
+  </p>
+<% end %>
+
+<div id="result"></div>
+
+<script type="text/javascript">
+  function selectFindings(){
+    var scan_form =document.forms['missed_scan_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('tool_asset_id')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+  
+  (function($) {
+    $(document).ready(function() {
+      HIP.hcController = new HIP.HcController({
+        groupSelectId: 'missed_scan_search_hc_group_id'
+      });
+    });
+  })(jQuery);
+  
+</script>

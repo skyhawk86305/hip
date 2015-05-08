@@ -1,0 +1,2 @@
+module OutOfCycle::DashboardHelper
+end

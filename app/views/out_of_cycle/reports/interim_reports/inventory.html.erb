@@ -1,0 +1,24 @@
+<h1>Out of Cycle Inventory(#222C-01) </h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<% form_tag :action=>:inventory do%>
+  <%= hidden_field_tag :format,"csv" %>
+  <!--p style="clear:left">
+  <%= label_tag "Report Format" %>
+  <%= select_tag :format,options_for_select([["CSV","csv"],["PDF","pdf"]]) %>
+  </p-->
+  <p>
+    <%= submit_tag "Get Report" %>
+  </p>
+<% end %>
+
+<script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+    Element.show('reports-2')
+    Element.show('ooc-reports')
+
+  });
+</script>

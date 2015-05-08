@@ -1,0 +1,28 @@
+<p style="color: green"><% flash[:notice] %></p>
+
+<% form_for [:admin,@role]  do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :role_name %>
+    <%= f.text_field :role_name %>
+  </p>
+  <p>
+    <%= f.label :has_associated_category %>
+    <%= f.check_box :has_associated_category,{},'y','n' %>
+  </p>
+  <p>
+    <%= f.label :has_associated_org %>
+    <%= f.check_box :has_associated_org,{},'y','n' %>
+  </p>
+
+  <p>
+    <%= f.label :has_associated_geo %>
+    <%= f.check_box :has_associated_geo,{},'y','n' %>
+  </p>
+
+
+  <%= f.submit 'save' %>
+
+
+
+<% end %>

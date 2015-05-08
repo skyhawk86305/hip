@@ -1,0 +1,155 @@
+<h1>Release Out of Cycle Scans</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+<% form_remote_tag :loading=>"hideElement('find');showElement('find_spinner')",
+       :complete=>"hideElement('find_spinner');showElement('find')",
+       :url =>'/out_of_cycle/release_scans/search',
+       :html => {:class => 'hip-search hip-ooc-release-scans-search'} do %>
+  <%= hidden_field_tag :org_id, current_org_id%>
+  <div id="container2">
+    <div id="container1" style="width: 100%">
+
+      <div id="col1">
+             <p>
+          <%= label_tag  "Scan Type"%>
+          <%= select_tag :ooc_scan_type, options_for_select(ooc_scan_type_list.insert(0,["Choose Scan Type","choose"]),
+            {:selected=>ooc_scan_type,:disabled=>"--------------"})%>
+        </p>
+
+        <div style="display: inline" id="group_scan">
+          <%= render 'out_of_cycle/scans/group_scan_lists' %>
+        </div>
+
+      </div>
+      <div id="col2">
+        <p>
+          <%= label_tag :publish_status,"Release Status"%>
+          <%= select_tag :publish_status,options_for_select( [
+              ["All",""],
+              ["Released","published"],
+              ["Not Released","not_published"]
+            ]),:selected=>"" %>
+        </p>
+
+        <p>
+          <%= label_tag :system_name ,"System Name"%>
+          <%= text_field_tag :host_name %>
+        </p>
+        <p>
+          <%= label_tag :ip_address ,"IP Address"%>
+          <%= text_field_tag :ip_address %>
+        </p>
+
+      </div>
+
+    </div>
+    <div id="filter" style="clear:both;display:none">
+      <div id="container1">
+        <div id="col1">
+          <p>
+            <%= label_tag :os,"Operating System"%>
+            <%= select_tag :os, options_for_select(Os.os_product_list.collect{|o| [ o.os_product, o.os_product ] }.insert(0,["All",""])) %>
+          </p>
+          <p>
+            <%= label_tag :system_status,"System Status"%>
+            <%= select_tag :system_status, options_for_select(Asset.status_for_select.collect{|s| s.system_status}.insert(0,["All",""]))%>
+          </p>
+        </div>
+        <div id="col2">
+          <p>
+            <%= label_tag :val_status,"Scan Results" %>
+            <%= select_tag :val_status, options_for_select([
+                ["All",""],
+               # ["No Unvalidated Deviations","none"],
+               # ["1 or More Unvalidated Deviations","some"],
+                ["Clean Scans (ZERO Deviations)","clean"],
+              ]),:selected=>"" %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table style="clear:both">
+    <tr >
+      <td ><img src="/images/spinner.gif" id="find_spinner" style="display: none;" alt="spinner" />
+        <%= submit_tag 'find',{:id=>"find",:disabled=>true} %></td>
+      <td><%= submit_tag("start over", { :class => 'resetForm', :type => "button", :style=>"display:block" }) %></td>
+      <td>        <%= label_tag :per_page, "Results Per Page"%>
+        <%= select_tag :per_page, options_for_select(per_page_list,:selected=>per_page) %></td>
+    </tr>
+  </table>
+
+  <%= link_to_function "Show More Filter Options",
+    :onclick=>"Element.show('filter');Element.show('hide_filter_link');Element.hide('show_filter_link');",:id=>"show_filter_link" %>
+  <%= link_to_function "Hide Filter Options",
+    :onclick=>"Element.hide('filter');Element.hide('hide_filter_link');Element.show('show_filter_link');",:id=>"hide_filter_link",:style=>"display:none" %>
+<% end %>
+<div id="result"></div>
+
+<script type="text/javascript">
+
+   // load the group name and scan type defaults.
+  function verifySubmit(entries,unvalidated){
+
+    msg='You are attempting to release scans that have one or more unvalidated deviations. \n\
+\n\
+If you release these scans then the status of these deviations will automaticly change from \'UNVALIDATED\' to \'VALID\' \n\
+\n\
+Are you sure you want to release these scans?'
+    var status=false
+    if (checkSelectElement('scans_option','Select a valid action.')){
+      var element = document.getElementById('scans_option')
+      status=true
+      // if user selects all and confirms true, then test for
+      // unvalidated count and send message
+      if (element.options[element.options.selectedIndex].value=='all'){
+        if (confirm('Are you sure you want to release all '+ entries +' scans?')==false){
+          return false
+        }
+      }
+
+      return status
+    }
+  }
+
+  function hasUnvalidated(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('index')>0){
+        index = tags[i].value
+        if (document.getElementById('scans_scan_'+index+'__scan_id').checked==true){
+          
+          if(document.getElementById('scans_scan_'+index+'__unvalidated_count').value>0){
+            return true
+          }
+        }
+      }
+    }
+    return false
+  }
+
+  function toggleReady(){
+    var scan_form =document.forms['scans_form']
+    var tags = scan_form.getElementsByTagName('input')
+    for (var i = 0; i < tags.length; i++){
+      if (tags[i].name.indexOf('scan_id')>0){
+        if (tags[i].checked==false){
+
+          tags[i].checked=true
+        }else{
+          tags[i].checked=false
+        }
+      }
+    }
+  }
+
+</script>
+
+
+<script type="text/javascript">
+
+HIP.initOocSearch();
+
+</script>

@@ -1,0 +1,5 @@
+<ul class="auto_complete">
+  <% for vuln in @vulns do -%>
+      <li id="<%= vuln.id.join(",") %>"><%=h vuln.title -%></li>
+    <% end -%>
+  </ul>

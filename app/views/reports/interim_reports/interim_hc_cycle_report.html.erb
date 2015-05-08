@@ -1,0 +1,25 @@
+<h1>Interim HC Cycle Report</h1>
+<div id="current_org_name">
+  <%= show_current_org_name %>
+</div>
+
+<br/>
+<% form_tag :action=>:interim_hc_cycle_report do%>
+
+  <p>
+    <%= label_tag "HC Cycle Group" %>
+    <%= select_tag :hc_group_id, options_for_select(hc_group_list(current_org_id).collect { |g|[g.group_name,g.hc_group_id]},:include_blank => "Select One") %>
+  </p>
+  <p>
+    <%= submit_tag "Get Report" %>
+  </p>
+<% end %>
+
+  <script type="text/javascript">
+  // load the group name and scan type defaults.
+  document.observe("dom:loaded", function() {
+  Element.show('reports-2')
+  Element.show('incycle-reports')
+
+  });
+</script>
