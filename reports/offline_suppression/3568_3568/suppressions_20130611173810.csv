@@ -1,0 +1,8 @@
+Title: Offline Suppression Management
+Account Name: Case New Holland
+Group: Intranet-1,""
+File Create Time: 2013-06-11 17:38:10 UTC
+Available Suppressions:,test suppression
+WARNING: Do not remove or add lines above this line
+
+System Name,IP address,Operation System,Group Name,Deviation Level,Suppression Name,Suppression Date,Deviation Text,Deviation Status,Deviation Validation Group,HC Cycle Scan Timestamp,finding_vid,finding_hash,asset_id

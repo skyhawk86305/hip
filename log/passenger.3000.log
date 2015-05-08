@@ -1,0 +1,97 @@
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+[ pid=27509 thr=140518648665856 file=ext/nginx/HelperAgent.cpp:923 time=2013-06-10 17:11:26.563 ]: Couldn't forward the HTTP response back to the HTTP client: It seems the user clicked on the 'Stop' button in his browser.
+[ pid=27509 thr=140518648264448 file=ext/nginx/HelperAgent.cpp:923 time=2013-06-10 17:11:35.60 ]: Couldn't forward the HTTP response back to the HTTP client: It seems the user clicked on the 'Stop' button in his browser.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+[ pid=21690 thr=139755404130048 file=ext/nginx/HelperAgent.cpp:923 time=2013-06-11 19:23:58.352 ]: Couldn't forward the HTTP response back to the HTTP client: It seems the user clicked on the 'Stop' button in his browser.
+[ pid=21690 thr=139755404330752 file=ext/nginx/HelperAgent.cpp:923 time=2013-06-11 19:23:58.661 ]: Couldn't forward the HTTP response back to the HTTP client: It seems the user clicked on the 'Stop' button in his browser.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.
+/home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/activesupport-2.3.12/lib/active_support/inflector.rb:3:in `<top (required)>': iconv will be deprecated in the future, use String#encode instead.
+NOTE: Gem.source_index is deprecated, use Specification. It will be removed on or after 2011-11-01.
+Gem.source_index called from /home/gcwhite/.rvm/gems/ruby-1.9.3-p194/gems/rails-2.3.12/lib/rails/gem_dependency.rb:21.

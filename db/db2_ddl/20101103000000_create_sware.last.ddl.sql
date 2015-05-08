@@ -1,0 +1,8509 @@
+CONNECT TO SWARE_L}
+
+
+---------------------------------
+-- DDL Statements for Sequences
+---------------------------------
+
+
+CREATE SEQUENCE "SWARE   "."FACT_SCAN_SEQ" AS INTEGER
+	MINVALUE 1 MAXVALUE 2147483647
+	START WITH 1 INCREMENT BY 1
+	CACHE 20 NO CYCLE NO ORDER}
+
+ALTER SEQUENCE "SWARE   "."FACT_SCAN_SEQ" RESTART WITH 23125300}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ASSET_ORG"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ASSET_ORG"  (
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ENCRYPTION_REQUIRED_FLAG" CHAR(1) NOT NULL , 
+		  "SECMART_ENCRYPT_KEY_VERSION" INTEGER , 
+		  "ASSET_DATA_CURRENT_FLAG" CHAR(1) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(128) NOT NULL WITH DEFAULT CURRENT_USER )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+COMMENT ON COLUMN "SWARE   "."DIM_COMM_ASSET_ORG"."ASSET_DATA_CURRENT_FLAG" IS 'NOT CURRENTLY USED.  [y|n] indicates if data for this org is current.'}
+
+COMMENT ON COLUMN "SWARE   "."DIM_COMM_ASSET_ORG"."SECMART_ENCRYPT_KEY_VERSION" IS 'NOT CURRENTLY USED.  REQUIRED if encryption_required_flag=""y".  Do NOT use if encryption_required_flag=""n".'}
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ASSET_ORG"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET_ORG" 
+	ADD CONSTRAINT "DIM_ODS_ORG_E_R_PK" PRIMARY KEY
+		("ORG_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_SOFTWARE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_SOFTWARE"  (
+		  "SOFTWARE_ID" INTEGER NOT NULL , 
+		  "VENDOR_NAME" VARCHAR(40) NOT NULL , 
+		  "VENDOR_SHORT_NAME" VARCHAR(20) NOT NULL , 
+		  "SOFTWARE_NAME" VARCHAR(30) NOT NULL , 
+		  "SOFTWARE_SHORT_NAME" VARCHAR(20) NOT NULL , 
+		  "VERSION" VARCHAR(10) NOT NULL , 
+		  "RELEASE" VARCHAR(10) NOT NULL , 
+		  "PATCH_LEVEL" VARCHAR(10) NOT NULL , 
+		  "REMARK" VARCHAR(200) , 
+		  "MODIFICATION_LEVEL" VARCHAR(10) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_SOFTWARE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SOFTWARE" 
+	ADD CONSTRAINT "DIM_COMM_SOFT_PK" PRIMARY KEY
+		("SOFTWARE_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_SOFTWARE"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_SOFTWARE" 
+	ADD CONSTRAINT "DIM_COMM_SOFT_UK1" UNIQUE
+		("SOFTWARE_NAME",
+		 "VERSION",
+		 "RELEASE",
+		 "PATCH_LEVEL",
+		 "MODIFICATION_LEVEL")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_CAT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CAT"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "MANAGER_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "CATEGORY" VARCHAR(100) NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CAT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CAT" 
+	ADD CONSTRAINT "DIM_COMM_TACAT_PK" PRIMARY KEY
+		("TOOL_ASSET_ID",
+		 "CATEGORY")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_SOFT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SOFT"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "SOFTWARE_ID" INTEGER NOT NULL , 
+		  "COMPONENT_NAME" VARCHAR(20) , 
+		  "COMPONENT_VER" VARCHAR(20) , 
+		  "CONTENT_NAME" VARCHAR(20) , 
+		  "CONTENT_VER" VARCHAR(20) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SOFT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SOFT" 
+	ADD CONSTRAINT "DIM_COMM_TAS_PK" PRIMARY KEY
+		("TOOL_ASSET_ID",
+		 "SOFTWARE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_BATCH"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_BATCH"  (
+		  "SUBJECT" VARCHAR(20) , 
+		  "NAME" VARCHAR(20) , 
+		  "ACTIVITY" VARCHAR(20) , 
+		  "TRANSFORM_BATCH_ID" BIGINT , 
+		  "LOAD_BATCH_ID" BIGINT , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_BATCH"
+
+CREATE INDEX "SWARE   "."DIM_COMM_BAT_X1" ON "SWARE   "."DIM_COMM_BATCH" 
+		("TRANSFORM_BATCH_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_BATCH"
+
+CREATE INDEX "SWARE   "."DIM_COMM_BAT_X2" ON "SWARE   "."DIM_COMM_BATCH" 
+		("LOAD_BATCH_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_DATE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_DATE"  (
+		  "DATE_ID" SMALLINT NOT NULL , 
+		  "DATE" DATE , 
+		  "YEAR_ID" SMALLINT , 
+		  "YEAR" SMALLINT , 
+		  "QUARTER_ID" SMALLINT , 
+		  "QUARTER_OF_YEAR" SMALLINT , 
+		  "MONTH_ID" SMALLINT , 
+		  "MONTH_NAME" VARCHAR(10) , 
+		  "MONTH_OF_YEAR" SMALLINT , 
+		  "MONTH_OF_QUARTER" SMALLINT , 
+		  "WEEK_ID" SMALLINT , 
+		  "WEEKISO_ID" SMALLINT , 
+		  "WEEK_OF_YEAR" SMALLINT , 
+		  "WEEKISO_OF_YEAR" SMALLINT , 
+		  "WEEK_OF_QUARTER" SMALLINT , 
+		  "WEEK_OF_MONTH" SMALLINT , 
+		  "DAY_ID" SMALLINT , 
+		  "DAY_OF_MONTH" SMALLINT , 
+		  "DAY_OF_WEEK" SMALLINT , 
+		  "DAY_OF_YEAR" SMALLINT , 
+		  "DAY_NAME" VARCHAR(10) , 
+		  "DAY_WEEKEND_FLAG" CHAR(1) , 
+		  "DAY_WEEKPART" VARCHAR(7) , 
+		  "DAY_EPOCH_START" INTEGER , 
+		  "DAY_EPOCH_STOP" INTEGER , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_PK" PRIMARY KEY
+		("DATE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_SEVERITY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_SEVERITY"  (
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "SEVERITY_CD" CHAR(10) NOT NULL , 
+		  "SEVERITY_DESC" VARCHAR(254) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_SEVERITY"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SEVERITY" 
+	ADD CONSTRAINT "DIM_SEVERITY_PK" PRIMARY KEY
+		("SEVERITY_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_SEVERITY"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_SEVERITY" 
+	ADD CONSTRAINT "DIM_SEVERITY_UK1" UNIQUE
+		("SEVERITY_CD")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_CAT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_CAT"  (
+		  "CAT_ID" SMALLINT NOT NULL , 
+		  "CAT_NAME" VARCHAR(20) NOT NULL , 
+		  "CAT_DESC" VARCHAR(254) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_CAT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_CAT" 
+	ADD CONSTRAINT "DIM_COMM_CAT_PK" PRIMARY KEY
+		("CAT_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_PROTOCOL"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_PROTOCOL"  (
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "PROTOCOL_NAME" VARCHAR(40) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_PROTOCOL"
+
+ALTER TABLE "SWARE   "."DIM_IDS_PROTOCOL" 
+	ADD CONSTRAINT "DIM_PROTOCOL_PK" PRIMARY KEY
+		("PROTOCOL_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_PORT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_PORT"  (
+		  "PORT" INTEGER NOT NULL , 
+		  "PORT_CATEGORY" VARCHAR(20) NOT NULL , 
+		  "SERVICE_LIST" VARCHAR(2000) , 
+		  "SERVICE_CNT" SMALLINT NOT NULL , 
+		  "MALWARE_LIST" VARCHAR(2000) , 
+		  "MALWARE_CNT" SMALLINT NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_PORT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_PORT" 
+	ADD CONSTRAINT "DIM_COMM_PORT_PK" PRIMARY KEY
+		("PORT")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT"  (
+		  "PORT" INTEGER NOT NULL , 
+		  "PROTOCOL" VARCHAR(10) NOT NULL , 
+		  "TYPE" VARCHAR(10) NOT NULL , 
+		  "NAME" VARCHAR(64) NOT NULL , 
+		  "DESC" VARCHAR(254) , 
+		  "PRIMARY_FLAG" VARCHAR(1) , 
+		  "SOURCE" VARCHAR(10) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT" 
+	ADD CONSTRAINT "DIM_COMM_PORT_PPS_PK" PRIMARY KEY
+		("PORT",
+		 "PROTOCOL",
+		 "TYPE",
+		 "NAME",
+		 "SOURCE")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT"
+
+CREATE INDEX "SWARE   "."DIM_COMM_PORT_PPS_X1" ON "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT" 
+		("NAME" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_MODE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_MODE"  (
+		  "MODE_ID" SMALLINT NOT NULL , 
+		  "MODE_NAME" VARCHAR(10) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_MODE"
+
+ALTER TABLE "SWARE   "."DIM_IDS_MODE" 
+	ADD CONSTRAINT "DIM_IDS_MODE_PK" PRIMARY KEY
+		("MODE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_NETWORK"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_NETWORK"  (
+		  "NETWORK_ID" SMALLINT NOT NULL , 
+		  "NETWORK_NAME" VARCHAR(10) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_NETWORK"
+
+ALTER TABLE "SWARE   "."DIM_IDS_NETWORK" 
+	ADD CONSTRAINT "DIM_IDS_NETWORK_PK" PRIMARY KEY
+		("NETWORK_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_TYPE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_TYPE"  (
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "IDS_TYPE_NAME" VARCHAR(20) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_TYPE"
+
+ALTER TABLE "SWARE   "."DIM_IDS_TYPE" 
+	ADD CONSTRAINT "DIM_IDS_TYPE_PK" PRIMARY KEY
+		("IDS_TYPE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_INDUSTRY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_INDUSTRY"  (
+		  "INDUSTRY_ID" INTEGER NOT NULL , 
+		  "INDUSTRY_NAME" VARCHAR(30) NOT NULL , 
+		  "INDUSTRY_DESC" VARCHAR(254) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_INDUSTRY"
+
+ALTER TABLE "SWARE   "."DIM_COMM_INDUSTRY" 
+	ADD CONSTRAINT "DIM_COMM_IND_PK" PRIMARY KEY
+		("INDUSTRY_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_INDUSTRY"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_INDUSTRY" 
+	ADD CONSTRAINT "DIM_COMM_IND_UK1" UNIQUE
+		("INDUSTRY_NAME")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ORG_L1"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ORG_L1"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ORG_L1"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG_L1" 
+	ADD CONSTRAINT "DIM_COMM_ORGL1_PK" PRIMARY KEY
+		("ORG_L1_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ORG_IDS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ORG_IDS"  (
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ORG_IDS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG_IDS" 
+	ADD CONSTRAINT "DIM_COMM_ORGI_PK" PRIMARY KEY
+		("ORG_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ORG"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ORG"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_NAME" VARCHAR(80) NOT NULL , 
+		  "ORG_TYPE" VARCHAR(20) NOT NULL , 
+		  "ORG_LEVEL" SMALLINT NOT NULL , 
+		  "ORG_VREG_ID" INTEGER , 
+		  "ORG_ECM_ACCOUNT_ID" VARCHAR(20) , 
+		  "ORG_ECM_ACCOUNT_NAME" VARCHAR(80) , 
+		  "ORG_ECM_ACCOUNT_TYPE" VARCHAR(20) , 
+		  "ORG_PRIMARY_OWNER_ID" SMALLINT , 
+		  "ORG_BACKUP_OWNER_ID" SMALLINT , 
+		  "ORG_PARENT_ID" INTEGER , 
+		  "ORG_L1_NAME" VARCHAR(80) NOT NULL , 
+		  "ORG_L1_NAME_TINY" VARCHAR(20) , 
+		  "ORG_L1_NAME_SHORT" VARCHAR(30) , 
+		  "ORG_L1_NAME_VREG" VARCHAR(46) , 
+		  "ORG_L1_TYPE" VARCHAR(20) NOT NULL , 
+		  "ORG_L1_VREG_ID" INTEGER , 
+		  "ORG_L1_RTID_ID" INTEGER , 
+		  "ORG_L2_ID" INTEGER , 
+		  "ORG_L2_NAME" VARCHAR(80) , 
+		  "ORG_L2_TYPE" VARCHAR(20) , 
+		  "ORG_L2_VREG_ID" INTEGER , 
+		  "ORG_L3_ID" INTEGER , 
+		  "ORG_L3_NAME" VARCHAR(80) , 
+		  "ORG_L3_TYPE" VARCHAR(20) , 
+		  "ORG_L4_ID" INTEGER , 
+		  "ORG_L4_NAME" VARCHAR(80) , 
+		  "ORG_L4_TYPE" VARCHAR(20) , 
+		  "ORG_L5_ID" INTEGER , 
+		  "ORG_L5_NAME" VARCHAR(80) , 
+		  "ORG_L5_TYPE" VARCHAR(20) , 
+		  "ORG_STATUS" VARCHAR(10) , 
+		  "ORG_INDUSTRY_ID" INTEGER , 
+		  "ORG_INDUSTRY_NAME" VARCHAR(30) , 
+		  "ORG_COUNTRY_ID" SMALLINT , 
+		  "ORG_COUNTRY_NAME" VARCHAR(80) , 
+		  "ORG_ECM_INSTANCE" VARCHAR(20) , 
+		  "ORG_SERVICE_ECM" CHAR(1) , 
+		  "ORG_SERVICE_VULN" CHAR(1) , 
+		  "ORG_SERVICE_HEALTH" CHAR(1) , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_OPERATION" VARCHAR(20) , 
+		  "ORG_SERVICE_HIP" CHAR(1) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ORG"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_PK" PRIMARY KEY
+		("ORG_L1_ID",
+		 "ORG_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ASSET"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ASSET"  (
+		  "ORG_L1_ID" INTEGER , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" BIGINT NOT NULL , 
+		  "ENCRYPTION_FLAG" CHAR(1) NOT NULL , 
+		  "ASSET_TYPE" VARCHAR(20) NOT NULL , 
+		  "ASSET_CRITICALITY" VARCHAR(20) NOT NULL , 
+		  "HOST_NAME" VARCHAR(254) , 
+		  "DOMAIN_NAME" VARCHAR(254) , 
+		  "QUALIFIED_HOST_NAME" VARCHAR(254) , 
+		  "ASSET_DESC" VARCHAR(1000) , 
+		  "SUPPORT_TOWER" VARCHAR(20) , 
+		  "ASSET_LU_TIMESTAMP" TIMESTAMP , 
+		  "INTERNET_ACC_FLAG" CHAR(1) , 
+		  "NO_PORT_MEDIA" INTEGER , 
+		  "PARTITION_NAME" VARCHAR(20) , 
+		  "INSTALL_DATE" TIMESTAMP , 
+		  "SUNSET_DATE" TIMESTAMP , 
+		  "ETL_SRC_SYS_NAME" VARCHAR(50) , 
+		  "ETL_SRC_SYS_ID" VARCHAR(50) , 
+		  "HIGHEST_CLASS_NAME" VARCHAR(60) , 
+		  "SRC_SYS_NAME" VARCHAR(60) , 
+		  "STATUS_NAME" VARCHAR(30) , 
+		  "STATUS_TYPE" VARCHAR(30) , 
+		  "VENDOR_SHORT_NAME" VARCHAR(20) , 
+		  "OS_SHORT_NAME" VARCHAR(20) , 
+		  "OS_NAME" VARCHAR(100) , 
+		  "OS_VERSION" VARCHAR(10) , 
+		  "OS_RELEASE" VARCHAR(10) , 
+		  "OS_PATCH_LEVEL" VARCHAR(20) , 
+		  "OS_MODIFICATION_LEVEL" VARCHAR(10) , 
+		  "ROOM_NAME" VARCHAR(75) , 
+		  "ROOM_DESCRIPTION" VARCHAR(75) , 
+		  "ROOM_CA_LEVEL" VARCHAR(10) , 
+		  "ROOM_FLOOR" VARCHAR(25) , 
+		  "BUILDING_CODE" VARCHAR(20) , 
+		  "BUILDING_ADDRESS1" VARCHAR(50) , 
+		  "BUILDING_ADDRESS2" VARCHAR(50) , 
+		  "BUILDING_ADDRESS3" VARCHAR(50) , 
+		  "BUILDING_POSTAL_CODE" VARCHAR(80) , 
+		  "SITE_NAME" VARCHAR(50) , 
+		  "SITE_ACCOUNT_ID" BIGINT , 
+		  "CITY_NAME" VARCHAR(75) , 
+		  "STATE_PROVINCE_SHORT_NAME" VARCHAR(25) , 
+		  "STATE_PROVINCE_NAME" VARCHAR(75) , 
+		  "COUNTRY_SHORT_NAME" VARCHAR(25) , 
+		  "COUNTRY_NAME" VARCHAR(75) , 
+		  "SECMART_ENCRYPT_KEY_VERSION" INTEGER NOT NULL , 
+		  "SECMART_LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "IP_STRING_LIST" VARCHAR(1000) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ASSET"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET" 
+	ADD CONSTRAINT "DIM_COMM_ASSET_PK" PRIMARY KEY
+		("ASSET_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_X1" ON "SWARE   "."DIM_COMM_ASSET" 
+		("ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_X2" ON "SWARE   "."DIM_COMM_ASSET" 
+		("ORG_L1_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_X3" ON "SWARE   "."DIM_COMM_ASSET" 
+		("HOST_NAME" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_X4" ON "SWARE   "."DIM_COMM_ASSET" 
+		("QUALIFIED_HOST_NAME" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ASSET_CONN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ASSET_CONN"  (
+		  "ORG_L1_ID" INTEGER , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" BIGINT NOT NULL , 
+		  "CONNECTION_NAME" VARCHAR(40) NOT NULL , 
+		  "IP_STRING" VARCHAR(40) NOT NULL , 
+		  "NETMASK_STRING" VARCHAR(40) , 
+		  "NET_ADAPT_NAME" VARCHAR(20) , 
+		  "NET_ADAPT_PURP_NAME" VARCHAR(40) , 
+		  "NET_NAME" VARCHAR(40) , 
+		  "NET_IP_STRING" VARCHAR(40) , 
+		  "NET_NETMASK_STRING" VARCHAR(40) , 
+		  "NET_DERRIVED_START_IP_STRING" VARCHAR(40) , 
+		  "NET_DERRIVED_STOP_IP_STRING" VARCHAR(40) , 
+		  "NET_FUNCTION" VARCHAR(20) , 
+		  "NET_SHARED_FLAG" CHAR(3) , 
+		  "NET_IBM_SHARED_FLAG" CHAR(3) , 
+		  "SECMART_LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ASSET_CONN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET_CONN" 
+	ADD CONSTRAINT "DIM_COMM_AST_CN_PK" PRIMARY KEY
+		("ASSET_ID",
+		 "IP_STRING")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET_CONN"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_CONN_X1" ON "SWARE   "."DIM_COMM_ASSET_CONN" 
+		("ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET_CONN"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_CONN_X2" ON "SWARE   "."DIM_COMM_ASSET_CONN" 
+		("ORG_L1_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_ASSET_CONN"
+
+CREATE INDEX "SWARE   "."DIM_COMM_ASSET_CONN_X3" ON "SWARE   "."DIM_COMM_ASSET_CONN" 
+		("IP_STRING" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_PATCH_TYPE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_PATCH_TYPE"  (
+		  "PATCH_TYPE_ID" SMALLINT NOT NULL , 
+		  "PATCH_TYPE_NAME" VARCHAR(10) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_PATCH_TYPE"
+
+ALTER TABLE "SWARE   "."DIM_PATCH_TYPE" 
+	ADD CONSTRAINT "DIM_PATCH_TYPE_PK" PRIMARY KEY
+		("PATCH_TYPE_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_PATCH_TYPE"
+
+
+ALTER TABLE "SWARE   "."DIM_PATCH_TYPE" 
+	ADD CONSTRAINT "DIM_PATCH_TYPE_UK1" UNIQUE
+		("PATCH_TYPE_NAME")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_PATCH_STATUS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_PATCH_STATUS"  (
+		  "PATCH_STATUS_ID" SMALLINT NOT NULL , 
+		  "PATCH_STATUS_NAME" VARCHAR(20) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_PATCH_STATUS"
+
+ALTER TABLE "SWARE   "."DIM_PATCH_STATUS" 
+	ADD CONSTRAINT "DIM_STATUS_PK" PRIMARY KEY
+		("PATCH_STATUS_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_PATCH_STATUS"
+
+
+ALTER TABLE "SWARE   "."DIM_PATCH_STATUS" 
+	ADD CONSTRAINT "DIM_STATUS_UK1" UNIQUE
+		("PATCH_STATUS_NAME")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_PATCH_SEVERITY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_PATCH_SEVERITY"  (
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "SEVERITY_CD" CHAR(10) NOT NULL , 
+		  "SEVERITY_DESC" VARCHAR(254) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_PATCH_SEVERITY"
+
+ALTER TABLE "SWARE   "."DIM_PATCH_SEVERITY" 
+	ADD CONSTRAINT "DIM_SEVERITY_PK" PRIMARY KEY
+		("SEVERITY_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_PATCH_SEVERITY"
+
+
+ALTER TABLE "SWARE   "."DIM_PATCH_SEVERITY" 
+	ADD CONSTRAINT "DIM_SEVERITY_UK1" UNIQUE
+		("SEVERITY_CD")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_OS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_OS"  (
+		  "OS_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +100000  
+		    INCREMENT BY +1  
+		    MINVALUE +100000  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "OS_TYPE" VARCHAR(20) NOT NULL , 
+		  "OS_PRODUCT" VARCHAR(20) NOT NULL , 
+		  "VENDOR_NAME" VARCHAR(40) NOT NULL , 
+		  "OS_NAME" VARCHAR(40) NOT NULL , 
+		  "OS_VER" VARCHAR(40) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_OS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_OS" 
+	ADD CONSTRAINT "DIM_COMM_OS_PK" PRIMARY KEY
+		("OS_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_OS"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_OS" 
+	ADD CONSTRAINT "DIM_COMM_OS_UK1" UNIQUE
+		("OS_TYPE",
+		 "OS_NAME",
+		 "OS_VER")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACT_PATCH"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACT_PATCH"  (
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "ROW_FROM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ROW_TO_TIMESTAMP" TIMESTAMP , 
+		  "DELETE_FLAG" CHAR(1) NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "SOURCE_TOOL_ID" SMALLINT NOT NULL , 
+		  "PATCH_TYPE_ID" SMALLINT NOT NULL , 
+		  "CODS_ASSET_ID" INTEGER NOT NULL , 
+		  "STATUS_ID" SMALLINT NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "DISCOVERED_DATE_ID" SMALLINT NOT NULL , 
+		  "DUE_DATE_ID" SMALLINT NOT NULL , 
+		  "INSTALLED_DATE_ID" SMALLINT NOT NULL , 
+		  "COMMENTS" VARCHAR(254) , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID" ) , 
+		  ( "STATUS_ID" ) , 
+		  ( "SEVERITY_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."FACT_PATCH"
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_PK" PRIMARY KEY
+		("TOOL_ASSET_ID",
+		 "VULN_ID",
+		 "ROW_FROM_TIMESTAMP")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_PATCH"
+
+CREATE INDEX "SWARE   "."FACT_PATCH_X1" ON "SWARE   "."FACT_PATCH" 
+		("ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_PATCH"
+
+CREATE INDEX "SWARE   "."FACT_PATCH_X2" ON "SWARE   "."FACT_PATCH" 
+		("TOOL_ASSET_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_PATCH"
+
+CREATE INDEX "SWARE   "."FACT_PATCH_X3" ON "SWARE   "."FACT_PATCH" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_PATCH"
+
+CREATE INDEX "SWARE   "."FACT_PATCH_X4" ON "SWARE   "."FACT_PATCH" 
+		("CODS_ASSET_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "SCAN_DATE_ID" SMALLINT NOT NULL , 
+		  "SCAN_START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_STOP_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_SERVICE" VARCHAR(40) NOT NULL , 
+		  "EXTRACT_BATCH_ID" BIGINT , 
+		  "TRANSFORM_BATCH_ID" BIGINT , 
+		  "LOAD_BATCH_ID" BIGINT , 
+		  "SOURCE_SCAN_ID" VARCHAR(40) , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP , 
+		  "HOST_STATUS" VARCHAR(20) , 
+		  "SCANNER_HOST_NAME" VARCHAR(100) , 
+		  "SCAN_PARMS" VARCHAR(10) , 
+		  "SCAN_ID" INTEGER )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID" ) , 
+		  ( "SCAN_DATE_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN" 
+	ADD CONSTRAINT "DIM_COMM_TAS_PK" PRIMARY KEY
+		("TOOL_ASSET_ID",
+		 "TOOL_ID",
+		 "SCAN_STOP_TIMESTAMP")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN"
+
+CREATE INDEX "SWARE   "."DIM_COMM_TAS_X1" ON "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN" 
+		("ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_PATCH_VULN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_PATCH_VULN"  (
+		  "VULN_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1000000  
+		    INCREMENT BY +1  
+		    MINVALUE +1000000  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "VULN_ADVISORY_NO" VARCHAR(60) NOT NULL , 
+		  "VULN_VENDOR_CD" VARCHAR(254) NOT NULL , 
+		  "VULN_MS_PROD_NAME" VARCHAR(254) NOT NULL , 
+		  "VULN_MS_BULLETIN_ID" VARCHAR(60) NOT NULL , 
+		  "VULN_MS_QNO" VARCHAR(60) NOT NULL , 
+		  "VULN_MS_REASON" VARCHAR(254) NOT NULL , 
+		  "VULN_CVE" VARCHAR(60) NOT NULL , 
+		  "VULN_OS_NAME" VARCHAR(1000) , 
+		  "VULN_NAME" VARCHAR(254) NOT NULL , 
+		  "VULN_DESC" VARCHAR(5000) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_PATCH_VULN"
+
+ALTER TABLE "SWARE   "."DIM_PATCH_VULN" 
+	ADD CONSTRAINT "DIM_PATCHVULN_PK" PRIMARY KEY
+		("VULN_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_PATCH_VULN"
+
+
+ALTER TABLE "SWARE   "."DIM_PATCH_VULN" 
+	ADD CONSTRAINT "DIM_PATCHVULN_UK1" UNIQUE
+		("VULN_ADVISORY_NO",
+		 "VULN_VENDOR_CD",
+		 "VULN_MS_PROD_NAME",
+		 "VULN_MS_BULLETIN_ID",
+		 "VULN_MS_QNO",
+		 "VULN_MS_REASON",
+		 "VULN_CVE")}
+
+
+ALTER TABLE "SWARE   "."DIM_PATCH_VULN" ALTER COLUMN "VULN_ID" RESTART WITH 1011099}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."Z_DIM_COMM_TOOL_ASSET"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."Z_DIM_COMM_TOOL_ASSET"  (
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "MANAGER_ID" INTEGER , 
+		  "SOURCE_ASSET_ID" VARCHAR(40) NOT NULL , 
+		  "IP_STRING" VARCHAR(20) , 
+		  "IP_INT" BIGINT , 
+		  "HOST_NAME" VARCHAR(80) , 
+		  "OS_SOURCE_TEXT" VARCHAR(40) NOT NULL , 
+		  "TOOL" VARCHAR(20) WITH DEFAULT 'itim' , 
+		  "ORG_ID" SMALLINT WITH DEFAULT 0 , 
+		  "OS_ID" SMALLINT WITH DEFAULT 0 , 
+		  "LAST_TOOL_LOGIN_TIMESTAMP" TIMESTAMP , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) WITH DEFAULT 'unk' )   
+		 IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."Z_DIM_COMM_TOOL_ASSET_CONN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."Z_DIM_COMM_TOOL_ASSET_CONN"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "NETWORK_ID" INTEGER , 
+		  "IP_STRING" VARCHAR(15) NOT NULL , 
+		  "IP_INT" BIGINT NOT NULL , 
+		  "MAC_ADDRESS" VARCHAR(20) , 
+		  "HOST_NAME" VARCHAR(80) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET"  (
+		  "TOOL_ASSET_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "MANAGER_ID" INTEGER , 
+		  "SOURCE_ASSET_ID" VARCHAR(60) NOT NULL , 
+		  "SOURCE_ORG_ID" VARCHAR(60) , 
+		  "IP_STRING" VARCHAR(20) , 
+		  "IP_INT" BIGINT , 
+		  "HOST_NAME" VARCHAR(80) , 
+		  "OS_SOURCE_TEXT" VARCHAR(40) NOT NULL , 
+		  "TOOL" VARCHAR(20) WITH DEFAULT 'itim' , 
+		  "ORG_ID" SMALLINT WITH DEFAULT 0 , 
+		  "OS_ID" SMALLINT WITH DEFAULT 0 , 
+		  "LAST_TOOL_LOGIN_TIMESTAMP" TIMESTAMP , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) WITH DEFAULT 'unk' )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET" 
+	ADD CONSTRAINT "DIM_COMM_TA_PK" PRIMARY KEY
+		("TOOL_ASSET_ID")}
+
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET" ALTER COLUMN "TOOL_ASSET_ID" RESTART WITH 227500}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "NETWORK_ID" INTEGER , 
+		  "IP_STRING" VARCHAR(15) NOT NULL , 
+		  "IP_INT" BIGINT NOT NULL , 
+		  "MAC_ADDRESS" VARCHAR(24) , 
+		  "HOST_NAME" VARCHAR(80) , 
+		  "PRIMARY_CONN_FLAG" CHAR(1) NOT NULL WITH DEFAULT 'n' , 
+		  "PRIMARY_CONN_RULE" CHAR(8) NOT NULL WITH DEFAULT 'implicit' , 
+		  "CONN_DESC" VARCHAR(254) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN" 
+	ADD CONSTRAINT "DIM_COMM_TAC_PK" PRIMARY KEY
+		("TOOL_ASSET_ID",
+		 "IP_INT")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."Z_DIM_COMM_TOOL_ASSET_SCAN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."Z_DIM_COMM_TOOL_ASSET_SCAN"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "SCAN_DATE_ID" SMALLINT NOT NULL , 
+		  "SCAN_START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_STOP_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_SERVICE" VARCHAR(40) NOT NULL , 
+		  "EXTRACT_BATCH_ID" BIGINT , 
+		  "TRANSFORM_BATCH_ID" BIGINT , 
+		  "LOAD_BATCH_ID" BIGINT , 
+		  "SOURCE_SCAN_ID" VARCHAR(40) , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_MSS"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "NID_SERVICE_FLAG" CHAR(1) , 
+		  "HID_SERVICE_FLAG" CHAR(1) , 
+		  "MODE" VARCHAR(10) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(40) , 
+		  "SOURCE_MANUFACTURER" VARCHAR(80) , 
+		  "SOURCE_SOFTWARE_VER" VARCHAR(80) , 
+		  "SOURCE_STATUS" VARCHAR(20) , 
+		  "SOURCE_SENSOR_TYPE" VARCHAR(20) , 
+		  "SOURCE_SENSOR_TYPE_DETAIL" VARCHAR(20) , 
+		  "SOURCE_MACHINE_PLATFORM" VARCHAR(80) , 
+		  "SOURCE_PRIMARY_FUNCTION" VARCHAR(80) , 
+		  "SOURCE_PRIMARY_APPLICATION" VARCHAR(80) , 
+		  "SOURCE_IDS_CONFIG_TYPE" VARCHAR(40) , 
+		  "SOURCE_NETWORK_SEG_TYPE" VARCHAR(40) , 
+		  "SOURCE_INLINE_APPLIANCE_MODE" VARCHAR(40) , 
+		  "SOURCE_STACKED_FLAG" CHAR(3) , 
+		  "SOURCE_MONITORED_BY" VARCHAR(15) , 
+		  "SOURCE_IP_EXT_STRING" VARCHAR(20) , 
+		  "SOURCE_OS_NAME" VARCHAR(60) , 
+		  "SOURCE_TIMEZONE" VARCHAR(60) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_MSS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_MSS" 
+	ADD CONSTRAINT "DIM_COMM_TAM_PK" PRIMARY KEY
+		("TOOL_ASSET_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."Z_STAGING_DIM_COMM_TOOL_ASSET_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."Z_STAGING_DIM_COMM_TOOL_ASSET_MSS"  (
+		  "SOURCE_DEVICE_ID" VARCHAR(40) , 
+		  "SOURCE_CUST_DEVICE_NAME" VARCHAR(120) , 
+		  "SOURCE_MACHINE_HOST_NAME" VARCHAR(120) , 
+		  "SOURCE_MACHINE_PLATFORM" VARCHAR(40) , 
+		  "SOURCE_CUST_ID" VARCHAR(20) , 
+		  "SOURCE_STATUS" VARCHAR(60) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_MANUFACTURER" VARCHAR(60) , 
+		  "SOURCE_SOFTWARE_VERSION" VARCHAR(60) , 
+		  "SOURCE_SENSOR_TYPE" VARCHAR(40) , 
+		  "SOURCE_PRIMARY_FUNCTION" VARCHAR(80) , 
+		  "SOURCE_PRIMARY_APPLICATION" VARCHAR(80) , 
+		  "SOURCE_IDS_CONFIG_TYPE" VARCHAR(40) , 
+		  "SOURCE_NETWORK_SEG_TYPE" VARCHAR(40) , 
+		  "SOURCE_INLINE_APPLIANCE_MODE" VARCHAR(40) , 
+		  "SOURCE_STACKED_FLAG" CHAR(3) , 
+		  "SOURCE_MANAGED_BY" VARCHAR(40) , 
+		  "SOURCE_MONITORED_BY" VARCHAR(15) , 
+		  "SOURCE_CLUSTER_FW_NAME" VARCHAR(60) , 
+		  "SOURCE_IDS_CONFIG_TYPE2" VARCHAR(60) , 
+		  "SOURCE_FW_TYPE_AND_VER" VARCHAR(60) , 
+		  "SOURCE_DEFAULT_GATEWAY" VARCHAR(120) , 
+		  "SOURCE_IP_EXT_STRING" VARCHAR(20) , 
+		  "SOURCE_OS_NAME" VARCHAR(60) , 
+		  "SOURCE_NLR_THRESHOLD" VARCHAR(60) , 
+		  "SOURCE_POLL_PERIOD" VARCHAR(40) , 
+		  "SOURCE_SITE_NAME" VARCHAR(120) , 
+		  "SOURCE_SITE_ID" VARCHAR(40) , 
+		  "SOURCE_DATA_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_INDEX_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_TIMEZONE" VARCHAR(60) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."Z_STAGING_DIM_COMM_ORG_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."Z_STAGING_DIM_COMM_ORG_MSS"  (
+		  "SOURCE_CUST_ID" VARCHAR(20) , 
+		  "SOURCE_CUST_NAME" VARCHAR(80) , 
+		  "SOURCE_PARTNER_ID" VARCHAR(20) , 
+		  "SOURCE_PARTNER_NAME" VARCHAR(80) , 
+		  "SOURCE_CUSTOMER_CATEGORY" VARCHAR(60) , 
+		  "SOURCE_INDUSTRY" VARCHAR(120) , 
+		  "SOURCE_REGULATED" VARCHAR(10) , 
+		  "SOURCE_MIDS" VARCHAR(10) , 
+		  "SOURCE_NUM_IDS" SMALLINT , 
+		  "SOURCE_MPS" VARCHAR(10) , 
+		  "SOURCE_MFS" VARCHAR(10) , 
+		  "SOURCE_NUM_FW" SMALLINT , 
+		  "SOURCE_SELM" VARCHAR(10) , 
+		  "SOURCE_VMS" VARCHAR(10) , 
+		  "SOURCE_NUM_EXT_IP" INTEGER , 
+		  "SOURCE_NUM_INT_IP" INTEGER , 
+		  "SOURCE_NUM_SCANNED" SMALLINT , 
+		  "SOURCE_LMS" VARCHAR(10) , 
+		  "SOURCE_EAM" VARCHAR(10) , 
+		  "SOURCE_NUM_DEVICES" SMALLINT , 
+		  "SOURCE_THIRD_PARTY" VARCHAR(10) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_SIA" VARCHAR(10) , 
+		  "SOURCE_SIA_NAME" VARCHAR(60) , 
+		  "SOURCE_PCI_DSS" VARCHAR(10) , 
+		  "SOURCE_HIPAA" VARCHAR(10) , 
+		  "SOURCE_GLBA" VARCHAR(10) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_DEVICE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_DEVICE"  (
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "DEVICE_HOSTNAME" VARCHAR(120) , 
+		  "DEVICE_IP_STRING" VARCHAR(20) , 
+		  "DEVICE_SOURCE_ID" VARCHAR(60) , 
+		  "DEVICE_SOURCE_OS_NAME" VARCHAR(40) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_SOURCE_ID" VARCHAR(60) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_DEVICE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DEVICE" 
+	ADD CONSTRAINT "DIM_COMM_DEV_PK" PRIMARY KEY
+		("DEVICE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."STAGING_IDS_SIG_TYPE_DAILY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."STAGING_IDS_SIG_TYPE_DAILY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER , 
+		  "BATCH_ID" INTEGER )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "BATCH_ID" ) ) 
+		 } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."STAGING_IDS_DEV_SEV_SIG_TYPE_DAILY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."STAGING_IDS_DEV_SEV_SIG_TYPE_DAILY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER , 
+		  "BATCH_ID" INTEGER )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "BATCH_ID" ) ) 
+		 } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "ROW_FROM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ROW_TO_TIMESTAMP" TIMESTAMP , 
+		  "NETWORK_ID" INTEGER , 
+		  "IP_STRING" VARCHAR(40) NOT NULL , 
+		  "IP_INT" VARCHAR(40) NOT NULL , 
+		  "MAC_ADDRESS" VARCHAR(40) , 
+		  "HOST_NAME" VARCHAR(254) , 
+		  "PRIMARY_CONN_FLAG" CHAR(1) NOT NULL WITH DEFAULT 'n' , 
+		  "PRIMARY_CONN_RULE" CHAR(8) NOT NULL WITH DEFAULT 'implicit' , 
+		  "CONN_DESC" VARCHAR(254) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TACH_PK" PRIMARY KEY
+		("TOOL_ASSET_ID",
+		 "IP_INT",
+		 "ROW_FROM_TIMESTAMP")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"  (
+		  "TOOL_ASSET_VID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "TOOL_ASSET_ID" INTEGER NOT NULL , 
+		  "ROW_FROM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ROW_TO_TIMESTAMP" TIMESTAMP , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "MANAGER_ID" INTEGER NOT NULL WITH DEFAULT 0 , 
+		  "SOURCE_ASSET_ID" VARCHAR(60) NOT NULL , 
+		  "SOURCE_ORG_ID" VARCHAR(60) , 
+		  "IP_STRING_PRIMARY" VARCHAR(40) , 
+		  "IP_INT_PRIMARY" VARCHAR(40) , 
+		  "IP_STRING_LIST" VARCHAR(1000) , 
+		  "HOST_NAME" VARCHAR(254) , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "ORG_ID" SMALLINT WITH DEFAULT 0 , 
+		  "OS_ID" SMALLINT WITH DEFAULT 0 , 
+		  "OS_SOURCE_TEXT" VARCHAR(254) , 
+		  "SYSTEM_STATUS" VARCHAR(10) NOT NULL , 
+		  "ENCRYPTION_FLAG" CHAR(1) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) WITH DEFAULT 'unk' , 
+		  "HC_AUTO_FLAG" CHAR(1) NOT NULL WITH DEFAULT 'u' , 
+		  "HC_AUTO_INTERVAL_WEEKS" SMALLINT , 
+		  "HC_MANUAL_FLAG" CHAR(1) , 
+		  "HC_MANUAL_INTERVAL_WEEKS" SMALLINT , 
+		  "SECURITY_POLICY_NAME" VARCHAR(40) , 
+		  "DISASTER_RECOVERY_FLAG" CHAR(1) WITH DEFAULT 'n' , 
+		  "INTERNET_ACCESSIBLE_FLAG" CHAR(1) NOT NULL WITH DEFAULT 'n' , 
+		  "VITAL_BUSINESS_PROCESS_FLAG" CHAR(1) NOT NULL WITH DEFAULT 'n' , 
+		  "HC_START_DATE" DATE )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_PK" PRIMARY KEY
+		("TOOL_ASSET_VID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_UK1" UNIQUE
+		("ORG_L1_ID",
+		 "TOOL_ID",
+		 "MANAGER_ID",
+		 "SOURCE_ASSET_ID",
+		 "ROW_FROM_TIMESTAMP")}
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+CREATE INDEX "SWARE   "."DIM_COMM_TAH_X1" ON "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+		("ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+CREATE INDEX "SWARE   "."DIM_COMM_TAH_X2" ON "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+		("TOOL_ASSET_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" ALTER COLUMN "TOOL_ASSET_VID" RESTART WITH 417760}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_SIG"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_SIG"  (
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "SIG_TITLE" VARCHAR(254) NOT NULL , 
+		  "SIG_SOURCE" VARCHAR(60) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_SIG"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SIG" 
+	ADD CONSTRAINT "DIM_COMM_SIG_PK" PRIMARY KEY
+		("SIG_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_VULN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_VULN"  (
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "TITLE" VARCHAR(200) , 
+		  "VULN_RELEASE_DATE" INTEGER , 
+		  "RISK_TYPE_ID" INTEGER , 
+		  "RISK_TYPE_NAME" VARCHAR(80) , 
+		  "RISK_TYPE_ORD" INTEGER , 
+		  "RATING_ID" INTEGER , 
+		  "RATING_NAME" VARCHAR(80) , 
+		  "REPORTED_VER" INTEGER , 
+		  "FIXED_VER" INTEGER , 
+		  "TYPES_ID" INTEGER , 
+		  "TYPES_NAME" VARCHAR(40) , 
+		  "REF_ID" INTEGER , 
+		  "REF_NAME" VARCHAR(200) , 
+		  "REF_TITLE" VARCHAR(200) , 
+		  "REF_SUMMARY" VARCHAR(1000) , 
+		  "REF_INFO" VARCHAR(4096) , 
+		  "REF_VERIFY" VARCHAR(4096) , 
+		  "REF_FIX" VARCHAR(4096) , 
+		  "REF_NSA_FILE_NAME" VARCHAR(100) , 
+		  "REF_EXPLOIT" VARCHAR(4096) , 
+		  "VERIFY_ID" INTEGER , 
+		  "VERIFY_NAME" VARCHAR(40) , 
+		  "PROTOCOL_TELNET_FLAG" VARCHAR(3) NOT NULL , 
+		  "PROTOCOL_HTTP_FLAG" VARCHAR(3) NOT NULL , 
+		  "PROTOCOL_FTP_FLAG" VARCHAR(3) NOT NULL , 
+		  "PROTOCOL_DNS_FLAG" VARCHAR(3) NOT NULL , 
+		  "PROTOCOL_FINGER_FLAG" VARCHAR(3) NOT NULL , 
+		  "PROTOCOL_SUNRPC_FLAG" VARCHAR(3) NOT NULL , 
+		  "SARM_CAT_NAME" VARCHAR(20) , 
+		  "SARM_CAT_DESC" VARCHAR(254) , 
+		  "OS_NAME_LIST" VARCHAR(1000) , 
+		  "OS_VARIANT_NAME_LIST" VARCHAR(1000) , 
+		  "OS_DISTRO_NAME_LIST" VARCHAR(1000) , 
+		  "OS_DISTRO_VERSION_NAME_LIST" VARCHAR(1000) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_VULN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN" 
+	ADD CONSTRAINT "DIM_COMM_VULN_PK" PRIMARY KEY
+		("VULN_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_X1" ON "SWARE   "."DIM_COMM_VULN" 
+		("TITLE" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_VULN_OS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_VULN_OS"  (
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "OS_ROW_ID" INTEGER NOT NULL , 
+		  "OS_ID" INTEGER , 
+		  "OS_NAME" VARCHAR(100) , 
+		  "OS_VARIANT_ID" INTEGER , 
+		  "OS_VARIANT_NAME" VARCHAR(80) , 
+		  "OS_DISTRO_ID" INTEGER , 
+		  "OS_DISTRO_NAME" VARCHAR(80) , 
+		  "OS_DISTRO_VERSION_ID" INTEGER , 
+		  "OS_DISTRO_VERSION_NAME" VARCHAR(200) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_VULN_OS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN_OS" 
+	ADD CONSTRAINT "DIM_COMM_VULN_OS_PK" PRIMARY KEY
+		("OS_ROW_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN_OS"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_OS_X1" ON "SWARE   "."DIM_COMM_VULN_OS" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN_OS"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_OS_X2" ON "SWARE   "."DIM_COMM_VULN_OS" 
+		("OS_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN_OS"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_OS_X3" ON "SWARE   "."DIM_COMM_VULN_OS" 
+		("OS_NAME" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_VULN_APP"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_VULN_APP"  (
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "APP_ROW_ID" INTEGER NOT NULL , 
+		  "APP_NAME" VARCHAR(254) , 
+		  "LU_TIMESTAMP" TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_VULN_APP"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN_APP" 
+	ADD CONSTRAINT "DIM_COMM_VULN_APP_PK" PRIMARY KEY
+		("APP_ROW_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN_APP"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_APP_X1" ON "SWARE   "."DIM_COMM_VULN_APP" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_VULN_SOURCE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_VULN_SOURCE"  (
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "VULN_MAP_ROW_ID" INTEGER NOT NULL , 
+		  "SOURCE_ID" INTEGER , 
+		  "SOURCE_KEY" VARCHAR(200) , 
+		  "SOURCE_URL" VARCHAR(300) , 
+		  "COMMENT" VARCHAR(200) , 
+		  "SOURCE_NAME" VARCHAR(20) , 
+		  "SHORT_DESC" VARCHAR(20) , 
+		  "DESCRIPTION" VARCHAR(255) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_VULN_SOURCE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN_SOURCE" 
+	ADD CONSTRAINT "DIM_COMM_VULN_SOURCE_PK" PRIMARY KEY
+		("VULN_MAP_ROW_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN_SOURCE"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_SOURCE_X1" ON "SWARE   "."DIM_COMM_VULN_SOURCE" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_VULN_SOURCE"
+
+CREATE INDEX "SWARE   "."DIM_COMM_VULN_SOURCE_X2" ON "SWARE   "."DIM_COMM_VULN_SOURCE" 
+		("SOURCE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_REMED"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_REMED"  (
+		  "REM_ID" SMALLINT NOT NULL , 
+		  "REM_NAME" VARCHAR(20) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_REMED"
+
+ALTER TABLE "SWARE   "."DIM_IDS_REMED" 
+	ADD CONSTRAINT "DIM_IDS_REMED_PK" PRIMARY KEY
+		("REM_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_QUALITY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_QUALITY"  (
+		  "QUALITY_ID" SMALLINT NOT NULL , 
+		  "DEVICE_TIMESTAMP" CHAR(1) NOT NULL , 
+		  "DEVICE_ID" CHAR(1) NOT NULL , 
+		  "IDS_TYPE_ID" CHAR(1) NOT NULL , 
+		  "PROTOCOL_ID" CHAR(1) NOT NULL , 
+		  "SOURCE_IP_INT" CHAR(1) NOT NULL , 
+		  "DEST_IP_INT" CHAR(1) NOT NULL , 
+		  "EVENT_CNT" CHAR(1) NOT NULL , 
+		  "ACTION_ID" CHAR(1) NOT NULL , 
+		  "SEVERITY_ID" CHAR(1) NOT NULL , 
+		  "SIG_ID" CHAR(1) NOT NULL , 
+		  "SOURCE_GEOIP_ID" CHAR(1) NOT NULL , 
+		  "DEST_GEOIP_ID" CHAR(1) NOT NULL , 
+		  "SOURCE_ASSET_ID" CHAR(1) NOT NULL , 
+		  "DEST_ASSET_ID" CHAR(1) NOT NULL , 
+		  "EVERYTHING_ELSE" CHAR(1) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_PK" PRIMARY KEY
+		("QUALITY_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_IDS_ACTION"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_IDS_ACTION"  (
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "ACTION_NAME" VARCHAR(20) NOT NULL , 
+		  "ACTION_CATEGORY" VARCHAR(20) NOT NULL , 
+		  "ACTION_DESC" VARCHAR(254) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_IDS_ACTION"
+
+ALTER TABLE "SWARE   "."DIM_IDS_ACTION" 
+	ADD CONSTRAINT "DIM_IDS_ACTION_PK" PRIMARY KEY
+		("ACTION_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "SCAN_DATE_ID" SMALLINT NOT NULL , 
+		  "SCAN_START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_STOP_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_SERVICE" VARCHAR(40) NOT NULL , 
+		  "SCAN_ID" INTEGER NOT NULL WITH DEFAULT 0 , 
+		  "SOURCE_SCAN_ID" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "HOST_STATUS" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "SCANNER_HOST_NAME" VARCHAR(254) NOT NULL WITH DEFAULT 'unk' , 
+		  "SCAN_PARMS" VARCHAR(128) NOT NULL WITH DEFAULT 'unk' , 
+		  "EXTRACT_BATCH_ID" INTEGER NOT NULL WITH DEFAULT 0 , 
+		  "TRANSFORM_BATCH_ID" INTEGER NOT NULL WITH DEFAULT 0 , 
+		  "LOAD_BATCH_ID" INTEGER NOT NULL WITH DEFAULT 0 , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+CREATE INDEX "SWARE   "."DIM_COMM_TASH_X1" ON "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+		("ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+CREATE INDEX "SWARE   "."DIM_COMM_TASH_X2" ON "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+		("SCAN_DATE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+CREATE INDEX "SWARE   "."DIM_COMM_TASH_X3" ON "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+		("SCAN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TASH_UK1" UNIQUE
+		("SCAN_ID")}
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TASH_PK" PRIMARY KEY
+		("ASSET_ID",
+		 "TOOL_ID",
+		 "SCAN_STOP_TIMESTAMP")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."STAGING_SCAN_FINDING"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."STAGING_SCAN_FINDING"  (
+		  "FINDING_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "HOST_IP_INT" VARCHAR(100) NOT NULL WITH DEFAULT '0' , 
+		  "HOST_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "SCAN_TOOL_ID" SMALLINT NOT NULL , 
+		  "FINDING_TEXT" VARCHAR(100) NOT NULL WITH DEFAULT 'unk' )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."STAGING_SCAN_FINDING"
+
+ALTER TABLE "SWARE   "."STAGING_SCAN_FINDING" 
+	ADD CONSTRAINT "STAGING_SCANFIND_PK" PRIMARY KEY
+		("FINDING_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."STAGING_SCAN_FINDING"
+
+
+ALTER TABLE "SWARE   "."STAGING_SCAN_FINDING" 
+	ADD CONSTRAINT "STAGING_SCANFIND_UK1" UNIQUE
+		("ORG_L1_ID",
+		 "ASSET_ID",
+		 "HOST_IP_INT",
+		 "HOST_NAME",
+		 "SCAN_TOOL_ID",
+		 "FINDING_TEXT")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACT_IDS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACT_IDS"  (
+		  "ROW_ID" BIGINT NOT NULL , 
+		  "SEM_EVENT_CD" VARCHAR(20) , 
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SEM_DATE_ID" SMALLINT NOT NULL , 
+		  "SEM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "SOURCE_IP_INT1" BIGINT , 
+		  "SOURCE_IP_INT2" BIGINT , 
+		  "SOURCE_PORT" INTEGER , 
+		  "SOURCE_GEOIP_ID" INTEGER NOT NULL , 
+		  "SOURCE_ASSET_ID" INTEGER NOT NULL , 
+		  "DEST_IP_INT1" BIGINT , 
+		  "DEST_IP_INT2" BIGINT , 
+		  "DEST_PORT" INTEGER , 
+		  "DEST_GEOIP_ID" INTEGER NOT NULL , 
+		  "DEST_ASSET_ID" INTEGER NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL , 
+		  "QUALITY_ID" SMALLINT NOT NULL )   
+		 INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY
+--		 PARTITION BY RANGE("DEVICE_DATE_ID") 
+--		 (PART "3285" STARTING(3285) ENDING(3285) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3623" STARTING(3623) ENDING(3623) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3624" STARTING(3624) ENDING(3624) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3625" STARTING(3625) ENDING(3625) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3626" STARTING(3626) ENDING(3626) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3627" STARTING(3627) ENDING(3627) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3628" STARTING(3628) ENDING(3628) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3629" STARTING(3629) ENDING(3629) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3630" STARTING(3630) ENDING(3630) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3631" STARTING(3631) ENDING(3631) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3632" STARTING(3632) ENDING(3632) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3633" STARTING(3633) ENDING(3633) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3634" STARTING(3634) ENDING(3634) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3635" STARTING(3635) ENDING(3635) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3636" STARTING(3636) ENDING(3636) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3637" STARTING(3637) ENDING(3637) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3638" STARTING(3638) ENDING(3638) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3639" STARTING(3639) ENDING(3639) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3640" STARTING(3640) ENDING(3640) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3641" STARTING(3641) ENDING(3641) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3642" STARTING(3642) ENDING(3642) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3643" STARTING(3643) ENDING(3643) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3644" STARTING(3644) ENDING(3644) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3645" STARTING(3645) ENDING(3645) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3646" STARTING(3646) ENDING(3646) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3647" STARTING(3647) ENDING(3647) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3648" STARTING(3648) ENDING(3648) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3649" STARTING(3649) ENDING(3649) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3650" STARTING(3650) ENDING(3650) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3651" STARTING(3651) ENDING(3651) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3652" STARTING(3652) ENDING(3652) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3653" STARTING(3653) ENDING(3653) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3654" STARTING(3654) ENDING(3654) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3655" STARTING(3655) ENDING(3655) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3656" STARTING(3656) ENDING(3656) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3657" STARTING(3657) ENDING(3657) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3658" STARTING(3658) ENDING(3658) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3659" STARTING(3659) ENDING(3659) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3660" STARTING(3660) ENDING(3660) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3661" STARTING(3661) ENDING(3661) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3662" STARTING(3662) ENDING(3662) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3663" STARTING(3663) ENDING(3663) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3664" STARTING(3664) ENDING(3664) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3665" STARTING(3665) ENDING(3665) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3666" STARTING(3666) ENDING(3666) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3667" STARTING(3667) ENDING(3667) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3668" STARTING(3668) ENDING(3668) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3669" STARTING(3669) ENDING(3669) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3670" STARTING(3670) ENDING(3670) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3671" STARTING(3671) ENDING(3671) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3672" STARTING(3672) ENDING(3672) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3673" STARTING(3673) ENDING(3673) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3674" STARTING(3674) ENDING(3674) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3675" STARTING(3675) ENDING(3675) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3676" STARTING(3676) ENDING(3676) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3677" STARTING(3677) ENDING(3677) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3678" STARTING(3678) ENDING(3678) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3679" STARTING(3679) ENDING(3679) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3680" STARTING(3680) ENDING(3680) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3681" STARTING(3681) ENDING(3681) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3682" STARTING(3682) ENDING(3682) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3683" STARTING(3683) ENDING(3683) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3684" STARTING(3684) ENDING(3684) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3685" STARTING(3685) ENDING(3685) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3686" STARTING(3686) ENDING(3686) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3687" STARTING(3687) ENDING(3687) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3688" STARTING(3688) ENDING(3688) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3689" STARTING(3689) ENDING(3689) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3690" STARTING(3690) ENDING(3690) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3691" STARTING(3691) ENDING(3691) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3692" STARTING(3692) ENDING(3692) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3693" STARTING(3693) ENDING(3693) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3694" STARTING(3694) ENDING(3694) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3695" STARTING(3695) ENDING(3695) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3696" STARTING(3696) ENDING(3696) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3697" STARTING(3697) ENDING(3697) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3698" STARTING(3698) ENDING(3698) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3699" STARTING(3699) ENDING(3699) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3700" STARTING(3700) ENDING(3700) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3701" STARTING(3701) ENDING(3701) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3702" STARTING(3702) ENDING(3702) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3703" STARTING(3703) ENDING(3703) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3704" STARTING(3704) ENDING(3704) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3705" STARTING(3705) ENDING(3705) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3706" STARTING(3706) ENDING(3706) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3707" STARTING(3707) ENDING(3707) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3708" STARTING(3708) ENDING(3708) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3709" STARTING(3709) ENDING(3709) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3710" STARTING(3710) ENDING(3710) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3711" STARTING(3711) ENDING(3711) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3712" STARTING(3712) ENDING(3712) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3713" STARTING(3713) ENDING(3713) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3714" STARTING(3714) ENDING(3714) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3715" STARTING(3715) ENDING(3715) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3716" STARTING(3716) ENDING(3716) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3717" STARTING(3717) ENDING(3717) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3718" STARTING(3718) ENDING(3718) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3719" STARTING(3719) ENDING(3719) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3720" STARTING(3720) ENDING(3720) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3721" STARTING(3721) ENDING(3721) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3722" STARTING(3722) ENDING(3722) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3723" STARTING(3723) ENDING(3723) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3724" STARTING(3724) ENDING(3724) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3725" STARTING(3725) ENDING(3725) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3726" STARTING(3726) ENDING(3726) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3727" STARTING(3727) ENDING(3727) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3728" STARTING(3728) ENDING(3728) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3729" STARTING(3729) ENDING(3729) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3730" STARTING(3730) ENDING(3730) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3731" STARTING(3731) ENDING(3731) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3732" STARTING(3732) ENDING(3732) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3733" STARTING(3733) ENDING(3733) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3734" STARTING(3734) ENDING(3734) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3735" STARTING(3735) ENDING(3735) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3736" STARTING(3736) ENDING(3736) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3737" STARTING(3737) ENDING(3737) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3738" STARTING(3738) ENDING(3738) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3739" STARTING(3739) ENDING(3739) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3740" STARTING(3740) ENDING(3740) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3741" STARTING(3741) ENDING(3741) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3742" STARTING(3742) ENDING(3742) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3743" STARTING(3743) ENDING(3743) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3744" STARTING(3744) ENDING(3744) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3745" STARTING(3745) ENDING(3745) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3746" STARTING(3746) ENDING(3746) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3747" STARTING(3747) ENDING(3747) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3748" STARTING(3748) ENDING(3748) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3749" STARTING(3749) ENDING(3749) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3750" STARTING(3750) ENDING(3750) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3751" STARTING(3751) ENDING(3751) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3752" STARTING(3752) ENDING(3752) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3753" STARTING(3753) ENDING(3753) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3754" STARTING(3754) ENDING(3754) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3755" STARTING(3755) ENDING(3755) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3756" STARTING(3756) ENDING(3756) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3757" STARTING(3757) ENDING(3757) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3758" STARTING(3758) ENDING(3758) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3759" STARTING(3759) ENDING(3759) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3760" STARTING(3760) ENDING(3760) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3761" STARTING(3761) ENDING(3761) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3762" STARTING(3762) ENDING(3762) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3763" STARTING(3763) ENDING(3763) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3764" STARTING(3764) ENDING(3764) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3765" STARTING(3765) ENDING(3765) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3766" STARTING(3766) ENDING(3766) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3767" STARTING(3767) ENDING(3767) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3768" STARTING(3768) ENDING(3768) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3769" STARTING(3769) ENDING(3769) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3770" STARTING(3770) ENDING(3770) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3771" STARTING(3771) ENDING(3771) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3772" STARTING(3772) ENDING(3772) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3773" STARTING(3773) ENDING(3773) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3774" STARTING(3774) ENDING(3774) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3775" STARTING(3775) ENDING(3775) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3776" STARTING(3776) ENDING(3776) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3777" STARTING(3777) ENDING(3777) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3778" STARTING(3778) ENDING(3778) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3779" STARTING(3779) ENDING(3779) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3780" STARTING(3780) ENDING(3780) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3781" STARTING(3781) ENDING(3781) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3782" STARTING(3782) ENDING(3782) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3783" STARTING(3783) ENDING(3783) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3784" STARTING(3784) ENDING(3784) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3785" STARTING(3785) ENDING(3785) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3786" STARTING(3786) ENDING(3786) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3787" STARTING(3787) ENDING(3787) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3788" STARTING(3788) ENDING(3788) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3789" STARTING(3789) ENDING(3789) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3790" STARTING(3790) ENDING(3790) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3791" STARTING(3791) ENDING(3791) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3792" STARTING(3792) ENDING(3792) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3793" STARTING(3793) ENDING(3793) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3794" STARTING(3794) ENDING(3794) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3795" STARTING(3795) ENDING(3795) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3796" STARTING(3796) ENDING(3796) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3797" STARTING(3797) ENDING(3797) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3798" STARTING(3798) ENDING(3798) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3799" STARTING(3799) ENDING(3799) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3800" STARTING(3800) ENDING(3800) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3801" STARTING(3801) ENDING(3801) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3802" STARTING(3802) ENDING(3802) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3803" STARTING(3803) ENDING(3803) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3804" STARTING(3804) ENDING(3804) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3805" STARTING(3805) ENDING(3805) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3806" STARTING(3806) ENDING(3806) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3807" STARTING(3807) ENDING(3807) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3808" STARTING(3808) ENDING(3808) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3809" STARTING(3809) ENDING(3809) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3810" STARTING(3810) ENDING(3810) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3811" STARTING(3811) ENDING(3811) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3812" STARTING(3812) ENDING(3812) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3813" STARTING(3813) ENDING(3813) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3814" STARTING(3814) ENDING(3814) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3815" STARTING(3815) ENDING(3815) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3816" STARTING(3816) ENDING(3816) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3817" STARTING(3817) ENDING(3817) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3818" STARTING(3818) ENDING(3818) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3819" STARTING(3819) ENDING(3819) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3820" STARTING(3820) ENDING(3820) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3821" STARTING(3821) ENDING(3821) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3822" STARTING(3822) ENDING(3822) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3823" STARTING(3823) ENDING(3823) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3824" STARTING(3824) ENDING(3824) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3825" STARTING(3825) ENDING(3825) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3826" STARTING(3826) ENDING(3826) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3827" STARTING(3827) ENDING(3827) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3828" STARTING(3828) ENDING(3828) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3829" STARTING(3829) ENDING(3829) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3830" STARTING(3830) ENDING(3830) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3831" STARTING(3831) ENDING(3831) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3832" STARTING(3832) ENDING(3832) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3833" STARTING(3833) ENDING(3833) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3834" STARTING(3834) ENDING(3834) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3835" STARTING(3835) ENDING(3835) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3836" STARTING(3836) ENDING(3836) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3837" STARTING(3837) ENDING(3837) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3838" STARTING(3838) ENDING(3838) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3839" STARTING(3839) ENDING(3839) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3840" STARTING(3840) ENDING(3840) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3841" STARTING(3841) ENDING(3841) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3842" STARTING(3842) ENDING(3842) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3843" STARTING(3843) ENDING(3843) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3844" STARTING(3844) ENDING(3844) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3845" STARTING(3845) ENDING(3845) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3846" STARTING(3846) ENDING(3846) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3847" STARTING(3847) ENDING(3847) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3848" STARTING(3848) ENDING(3848) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3849" STARTING(3849) ENDING(3849) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3850" STARTING(3850) ENDING(3850) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3851" STARTING(3851) ENDING(3851) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3852" STARTING(3852) ENDING(3852) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3853" STARTING(3853) ENDING(3853) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3854" STARTING(3854) ENDING(3854) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3855" STARTING(3855) ENDING(3855) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3856" STARTING(3856) ENDING(3856) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3857" STARTING(3857) ENDING(3857) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3858" STARTING(3858) ENDING(3858) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3859" STARTING(3859) ENDING(3859) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3860" STARTING(3860) ENDING(3860) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3861" STARTING(3861) ENDING(3861) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3862" STARTING(3862) ENDING(3862) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3863" STARTING(3863) ENDING(3863) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3864" STARTING(3864) ENDING(3864) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3865" STARTING(3865) ENDING(3865) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3866" STARTING(3866) ENDING(3866) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3867" STARTING(3867) ENDING(3867) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3868" STARTING(3868) ENDING(3868) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3869" STARTING(3869) ENDING(3869) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3870" STARTING(3870) ENDING(3870) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3871" STARTING(3871) ENDING(3871) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3872" STARTING(3872) ENDING(3872) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3873" STARTING(3873) ENDING(3873) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3874" STARTING(3874) ENDING(3874) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3875" STARTING(3875) ENDING(3875) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3876" STARTING(3876) ENDING(3876) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3877" STARTING(3877) ENDING(3877) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3878" STARTING(3878) ENDING(3878) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3879" STARTING(3879) ENDING(3879) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3880" STARTING(3880) ENDING(3880) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3881" STARTING(3881) ENDING(3881) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3882" STARTING(3882) ENDING(3882) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3883" STARTING(3883) ENDING(3883) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3884" STARTING(3884) ENDING(3884) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3885" STARTING(3885) ENDING(3885) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3886" STARTING(3886) ENDING(3886) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3887" STARTING(3887) ENDING(3887) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3888" STARTING(3888) ENDING(3888) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3889" STARTING(3889) ENDING(3889) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3890" STARTING(3890) ENDING(3890) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3891" STARTING(3891) ENDING(3891) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3892" STARTING(3892) ENDING(3892) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3893" STARTING(3893) ENDING(3893) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3894" STARTING(3894) ENDING(3894) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3895" STARTING(3895) ENDING(3895) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3896" STARTING(3896) ENDING(3896) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3897" STARTING(3897) ENDING(3897) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3898" STARTING(3898) ENDING(3898) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3899" STARTING(3899) ENDING(3899) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3900" STARTING(3900) ENDING(3900) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3901" STARTING(3901) ENDING(3901) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3902" STARTING(3902) ENDING(3902) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3903" STARTING(3903) ENDING(3903) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3904" STARTING(3904) ENDING(3904) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3905" STARTING(3905) ENDING(3905) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3906" STARTING(3906) ENDING(3906) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3907" STARTING(3907) ENDING(3907) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3908" STARTING(3908) ENDING(3908) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3909" STARTING(3909) ENDING(3909) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3910" STARTING(3910) ENDING(3910) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3911" STARTING(3911) ENDING(3911) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3912" STARTING(3912) ENDING(3912) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3913" STARTING(3913) ENDING(3913) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3914" STARTING(3914) ENDING(3914) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3915" STARTING(3915) ENDING(3915) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3916" STARTING(3916) ENDING(3916) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3917" STARTING(3917) ENDING(3917) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3918" STARTING(3918) ENDING(3918) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3919" STARTING(3919) ENDING(3919) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3920" STARTING(3920) ENDING(3920) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3921" STARTING(3921) ENDING(3921) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3922" STARTING(3922) ENDING(3922) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3923" STARTING(3923) ENDING(3923) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3924" STARTING(3924) ENDING(3924) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3925" STARTING(3925) ENDING(3925) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3926" STARTING(3926) ENDING(3926) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3927" STARTING(3927) ENDING(3927) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3928" STARTING(3928) ENDING(3928) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3929" STARTING(3929) ENDING(3929) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3930" STARTING(3930) ENDING(3930) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3931" STARTING(3931) ENDING(3931) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3932" STARTING(3932) ENDING(3932) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3933" STARTING(3933) ENDING(3933) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3934" STARTING(3934) ENDING(3934) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3935" STARTING(3935) ENDING(3935) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3936" STARTING(3936) ENDING(3936) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3937" STARTING(3937) ENDING(3937) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3938" STARTING(3938) ENDING(3938) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3939" STARTING(3939) ENDING(3939) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3940" STARTING(3940) ENDING(3940) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3941" STARTING(3941) ENDING(3941) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3942" STARTING(3942) ENDING(3942) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3943" STARTING(3943) ENDING(3943) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3944" STARTING(3944) ENDING(3944) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3945" STARTING(3945) ENDING(3945) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3946" STARTING(3946) ENDING(3946) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3947" STARTING(3947) ENDING(3947) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3948" STARTING(3948) ENDING(3948) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3949" STARTING(3949) ENDING(3949) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3950" STARTING(3950) ENDING(3950) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3951" STARTING(3951) ENDING(3951) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3952" STARTING(3952) ENDING(3952) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3953" STARTING(3953) ENDING(3953) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3954" STARTING(3954) ENDING(3954) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3955" STARTING(3955) ENDING(3955) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3956" STARTING(3956) ENDING(3956) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3957" STARTING(3957) ENDING(3957) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3959" STARTING(3959) ENDING(3959) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3960" STARTING(3960) ENDING(3960) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3961" STARTING(3961) ENDING(3961) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3962" STARTING(3962) ENDING(3962) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3963" STARTING(3963) ENDING(3963) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3964" STARTING(3964) ENDING(3964) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3965" STARTING(3965) ENDING(3965) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3966" STARTING(3966) ENDING(3966) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3967" STARTING(3967) ENDING(3967) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3968" STARTING(3968) ENDING(3968) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3969" STARTING(3969) ENDING(3969) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3970" STARTING(3970) ENDING(3970) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3971" STARTING(3971) ENDING(3971) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3972" STARTING(3972) ENDING(3972) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3973" STARTING(3973) ENDING(3973) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3974" STARTING(3974) ENDING(3974) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3975" STARTING(3975) ENDING(3975) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3976" STARTING(3976) ENDING(3976) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3977" STARTING(3977) ENDING(3977) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3978" STARTING(3978) ENDING(3978) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3979" STARTING(3979) ENDING(3979) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3980" STARTING(3980) ENDING(3980) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3981" STARTING(3981) ENDING(3981) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3982" STARTING(3982) ENDING(3982) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3983" STARTING(3983) ENDING(3983) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3984" STARTING(3984) ENDING(3984) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3985" STARTING(3985) ENDING(3985) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3986" STARTING(3986) ENDING(3986) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3987" STARTING(3987) ENDING(3987) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3988" STARTING(3988) ENDING(3988) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3989" STARTING(3989) ENDING(3989) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3990" STARTING(3990) ENDING(3990) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3991" STARTING(3991) ENDING(3991) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3992" STARTING(3992) ENDING(3992) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3993" STARTING(3993) ENDING(3993) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3994" STARTING(3994) ENDING(3994) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3995" STARTING(3995) ENDING(3995) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3996" STARTING(3996) ENDING(3996) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3997" STARTING(3997) ENDING(3997) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3998" STARTING(3998) ENDING(3998) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "3999" STARTING(3999) ENDING(3999) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4000" STARTING(4000) ENDING(4000) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4001" STARTING(4001) ENDING(4001) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4002" STARTING(4002) ENDING(4002) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4003" STARTING(4003) ENDING(4003) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4004" STARTING(4004) ENDING(4004) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4005" STARTING(4005) ENDING(4005) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4006" STARTING(4006) ENDING(4006) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4007" STARTING(4007) ENDING(4007) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4008" STARTING(4008) ENDING(4008) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4009" STARTING(4009) ENDING(4009) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4010" STARTING(4010) ENDING(4010) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4011" STARTING(4011) ENDING(4011) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4012" STARTING(4012) ENDING(4012) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4013" STARTING(4013) ENDING(4013) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4014" STARTING(4014) ENDING(4014) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4015" STARTING(4015) ENDING(4015) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4016" STARTING(4016) ENDING(4016) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4017" STARTING(4017) ENDING(4017) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "4018" STARTING(4018) ENDING(4018) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K") 
+--		 ORGANIZE BY ( 
+--		  ( "IDS_TYPE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_IDS"
+
+CREATE INDEX "SWARE   "."FACT_IDS_X1" ON "SWARE   "."FACT_IDS" 
+		("DEVICE_ID" ASC)
+--		PARTITIONED
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_IDS"
+
+CREATE INDEX "SWARE   "."FACT_IDS_X2" ON "SWARE   "."FACT_IDS" 
+		("SIG_ID" ASC)
+--		PARTITIONED
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ORG_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ORG_MSS"  (
+		  "SOURCE_CUST_ID" VARCHAR(20) NOT NULL , 
+		  "SOURCE_CUST_MRR" DECIMAL(10,2) , 
+		  "SOURCE_CUST_STATUS" VARCHAR(20) , 
+		  "SOURCE_CUST_NAME" VARCHAR(80) , 
+		  "SOURCE_PARTNER_ID" VARCHAR(20) , 
+		  "SOURCE_PARTNER_NAME" VARCHAR(80) , 
+		  "SOURCE_CUSTOMER_CATEGORY" VARCHAR(60) , 
+		  "SOURCE_INDUSTRY" VARCHAR(120) , 
+		  "SOURCE_REGULATED" VARCHAR(10) , 
+		  "SOURCE_MIDS" VARCHAR(10) , 
+		  "SOURCE_NUM_IDS" SMALLINT , 
+		  "SOURCE_MPS" VARCHAR(10) , 
+		  "SOURCE_MFS" VARCHAR(10) , 
+		  "SOURCE_NUM_FW" SMALLINT , 
+		  "SOURCE_SELM" VARCHAR(10) , 
+		  "SOURCE_VMS" VARCHAR(10) , 
+		  "SOURCE_NUM_EXT_IP" INTEGER , 
+		  "SOURCE_NUM_INT_IP" INTEGER , 
+		  "SOURCE_NUM_SCANNERS" SMALLINT , 
+		  "SOURCE_LMS" VARCHAR(10) , 
+		  "SOURCE_EAM" VARCHAR(10) , 
+		  "SOURCE_NUM_DEVICES" SMALLINT , 
+		  "SOURCE_THIRD_PARTY" VARCHAR(10) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_SIA" VARCHAR(10) , 
+		  "SOURCE_SIA_NAME" VARCHAR(60) , 
+		  "SOURCE_PCI_DSS" VARCHAR(10) , 
+		  "SOURCE_HIPAA" VARCHAR(10) , 
+		  "SOURCE_GLBA" VARCHAR(10) , 
+		  "INDUSTRY_ID" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_SECTION_CD" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_SECTION_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_SECTION_SHORT_NAME" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_DIVISION_CD" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_DIVISION_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_DIVISION_SHORT_NAME" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "CONS_DB_IP_STRING" VARCHAR(20) , 
+		  "CONS_DB_HOSTNAME" VARCHAR(80) , 
+		  "FW_DB_IP_STRING" VARCHAR(20) , 
+		  "FW_DB_HOSTNAME" VARCHAR(80) , 
+		  "LMS_AGG_IP_STRING" VARCHAR(20) , 
+		  "LMS_AGG_HOSTNAME" VARCHAR(80) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ORG_MSS"
+
+ALTER TABLE "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ORG_MSS" 
+	ADD CONSTRAINT "STAGING_DCO_MSS_PK" PRIMARY KEY
+		("SOURCE_CUST_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ASSET_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ASSET_MSS"  (
+		  "SOURCE_DEVICE_ID" VARCHAR(40) NOT NULL , 
+		  "SOURCE_CUST_DEVICE_NAME" VARCHAR(120) , 
+		  "SOURCE_MACHINE_HOST_NAME" VARCHAR(120) , 
+		  "SOURCE_MACHINE_PLATFORM" VARCHAR(40) , 
+		  "SOURCE_CUST_ID" VARCHAR(20) , 
+		  "SOURCE_STATUS" VARCHAR(60) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_MANUFACTURER" VARCHAR(60) , 
+		  "SOURCE_SOFTWARE_VERSION" VARCHAR(60) , 
+		  "SOURCE_SENSOR_TYPE" VARCHAR(40) , 
+		  "SOURCE_PRIMARY_FUNCTION" VARCHAR(80) , 
+		  "SOURCE_PRIMARY_APPLICATION" VARCHAR(80) , 
+		  "SOURCE_IDS_CONFIG_TYPE" VARCHAR(40) , 
+		  "SOURCE_NETWORK_SEG_TYPE" VARCHAR(40) , 
+		  "SOURCE_INLINE_APPLIANCE_MODE" VARCHAR(40) , 
+		  "SOURCE_STACKED_FLAG" CHAR(3) , 
+		  "SOURCE_MANAGED_BY" VARCHAR(40) , 
+		  "SOURCE_MONITORED_BY" VARCHAR(15) , 
+		  "SOURCE_CLUSTER_FW_NAME" VARCHAR(60) , 
+		  "SOURCE_IDS_CONFIG_TYPE2" VARCHAR(60) , 
+		  "SOURCE_FW_TYPE_AND_VER" VARCHAR(60) , 
+		  "SOURCE_DEFAULT_GATEWAY" VARCHAR(120) , 
+		  "SOURCE_IP_EXT_STRING" VARCHAR(20) , 
+		  "SOURCE_OS_NAME" VARCHAR(60) , 
+		  "SOURCE_NLR_THRESHOLD" VARCHAR(60) , 
+		  "SOURCE_POLL_PERIOD" VARCHAR(40) , 
+		  "SOURCE_SITE_NAME" VARCHAR(120) , 
+		  "SOURCE_SITE_ID" VARCHAR(40) , 
+		  "SOURCE_DATA_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_INDEX_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_TIMEZONE" VARCHAR(60) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ASSET_MSS"
+
+ALTER TABLE "SWARE   "."ZZ_STAGING_DIM_COMM_TOOL_ASSET_MSS" 
+	ADD CONSTRAINT "STAGING_DCTA_MSS_PK" PRIMARY KEY
+		("SOURCE_DEVICE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."Z_FACTS_IDS_SIG_TYPE_DAILY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."Z_FACTS_IDS_SIG_TYPE_DAILY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER , 
+		  "BATCH_ID" INTEGER )   
+		 IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."STAGING_DIM_COMM_ORG_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."STAGING_DIM_COMM_ORG_MSS"  (
+		  "SOURCE_CUST_ID" VARCHAR(20) NOT NULL , 
+		  "SOURCE_CUST_MRR" DECIMAL(10,2) , 
+		  "SOURCE_CUST_STATUS" VARCHAR(20) , 
+		  "SOURCE_CUST_NAME" VARCHAR(80) , 
+		  "SOURCE_PARTNER_ID" VARCHAR(20) , 
+		  "SOURCE_PARTNER_NAME" VARCHAR(80) , 
+		  "SOURCE_CUSTOMER_CATEGORY" VARCHAR(60) , 
+		  "SOURCE_INDUSTRY" VARCHAR(120) , 
+		  "SOURCE_REGULATED" VARCHAR(10) , 
+		  "SOURCE_MIDS" VARCHAR(10) , 
+		  "SOURCE_NUM_IDS" SMALLINT , 
+		  "SOURCE_MPS" VARCHAR(10) , 
+		  "SOURCE_MFS" VARCHAR(10) , 
+		  "SOURCE_NUM_FW" SMALLINT , 
+		  "SOURCE_SELM" VARCHAR(10) , 
+		  "SOURCE_VMS" VARCHAR(10) , 
+		  "SOURCE_NUM_EXT_IP" INTEGER , 
+		  "SOURCE_NUM_INT_IP" INTEGER , 
+		  "SOURCE_NUM_SCANNERS" SMALLINT , 
+		  "SOURCE_LMS" VARCHAR(10) , 
+		  "SOURCE_EAM" VARCHAR(10) , 
+		  "SOURCE_NUM_DEVICES" SMALLINT , 
+		  "SOURCE_THIRD_PARTY" VARCHAR(10) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_SIA" VARCHAR(10) , 
+		  "SOURCE_SIA_NAME" VARCHAR(60) , 
+		  "SOURCE_PCI_DSS" VARCHAR(10) , 
+		  "SOURCE_HIPAA" VARCHAR(10) , 
+		  "SOURCE_GLBA" VARCHAR(10) , 
+		  "INDUSTRY_ID" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_SECTION_CD" CHAR(1) NOT NULL WITH DEFAULT '0' , 
+		  "IND_SECTION_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_SECTION_SHORT_NAME" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_DIVISION_CD" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_DIVISION_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_DIVISION_SHORT_NAME" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "CONS_DB_IP_STRING" VARCHAR(20) , 
+		  "CONS_DB_HOSTNAME" VARCHAR(80) , 
+		  "FW_DB_IP_STRING" VARCHAR(20) , 
+		  "FW_DB_HOSTNAME" VARCHAR(80) , 
+		  "LMS_AGG_IP_STRING" VARCHAR(20) , 
+		  "LMS_AGG_HOSTNAME" VARCHAR(80) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."STAGING_DIM_COMM_ORG_MSS"
+
+ALTER TABLE "SWARE   "."STAGING_DIM_COMM_ORG_MSS" 
+	ADD CONSTRAINT "STAGING_DCO_MSS_PK" PRIMARY KEY
+		("SOURCE_CUST_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."STAGING_DIM_COMM_TOOL_ASSET_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."STAGING_DIM_COMM_TOOL_ASSET_MSS"  (
+		  "SOURCE_DEVICE_ID" VARCHAR(40) NOT NULL , 
+		  "SOURCE_CUST_DEVICE_NAME" VARCHAR(120) , 
+		  "SOURCE_MACHINE_HOST_NAME" VARCHAR(120) , 
+		  "SOURCE_MACHINE_PLATFORM" VARCHAR(40) , 
+		  "SOURCE_CUST_ID" VARCHAR(20) , 
+		  "SOURCE_STATUS" VARCHAR(60) , 
+		  "SOURCE_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_MANUFACTURER" VARCHAR(60) , 
+		  "SOURCE_SOFTWARE_VERSION" VARCHAR(60) , 
+		  "SOURCE_SENSOR_TYPE" VARCHAR(40) , 
+		  "SOURCE_PRIMARY_FUNCTION" VARCHAR(100) , 
+		  "SOURCE_PRIMARY_APPLICATION" VARCHAR(80) , 
+		  "SOURCE_IDS_CONFIG_TYPE" VARCHAR(40) , 
+		  "SOURCE_NETWORK_SEG_TYPE" VARCHAR(40) , 
+		  "SOURCE_INLINE_APPLIANCE_MODE" VARCHAR(40) , 
+		  "SOURCE_STACKED_FLAG" CHAR(3) , 
+		  "SOURCE_MANAGED_BY" VARCHAR(40) , 
+		  "SOURCE_MONITORED_BY" VARCHAR(15) , 
+		  "SOURCE_CLUSTER_FW_NAME" VARCHAR(60) , 
+		  "SOURCE_IDS_CONFIG_TYPE2" VARCHAR(60) , 
+		  "SOURCE_FW_TYPE_AND_VER" VARCHAR(60) , 
+		  "SOURCE_DEFAULT_GATEWAY" VARCHAR(120) , 
+		  "SOURCE_IP_EXT_STRING" VARCHAR(60) , 
+		  "SOURCE_OS_NAME" VARCHAR(60) , 
+		  "SOURCE_NLR_THRESHOLD" VARCHAR(60) , 
+		  "SOURCE_POLL_PERIOD" VARCHAR(40) , 
+		  "SOURCE_SITE_NAME" VARCHAR(120) , 
+		  "SOURCE_SITE_ID" VARCHAR(40) , 
+		  "SOURCE_DATA_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_INDEX_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_TIMEZONE" VARCHAR(60) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."STAGING_DIM_COMM_TOOL_ASSET_MSS"
+
+ALTER TABLE "SWARE   "."STAGING_DIM_COMM_TOOL_ASSET_MSS" 
+	ADD CONSTRAINT "STAGING_DCTA_MSS_PK" PRIMARY KEY
+		("SOURCE_DEVICE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_DEVICE_MSS"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_DEVICE_MSS"  (
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "DEVICE_HOSTNAME" VARCHAR(120) , 
+		  "DEVICE_IP_STRING" VARCHAR(20) , 
+		  "DEVICE_SOURCE_ID" VARCHAR(60) , 
+		  "DEVICE_SOURCE_OS_NAME" VARCHAR(40) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_SOURCE_ID" VARCHAR(60) , 
+		  "SOURCE_DEV_ID" VARCHAR(40) , 
+		  "SOURCE_DEV_CUST_DEVICE_NAME" VARCHAR(120) , 
+		  "SOURCE_DEV_MACHINE_HOST_NAME" VARCHAR(120) , 
+		  "SOURCE_DEV_MACHINE_PLATFORM" VARCHAR(40) , 
+		  "SOURCE_DEV_CUST_ID" VARCHAR(20) , 
+		  "SOURCE_DEV_STATUS" VARCHAR(60) , 
+		  "SOURCE_DEV_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_DEV_MANUFACTURER" VARCHAR(60) , 
+		  "SOURCE_DEV_SOFTWARE_VERSION" VARCHAR(60) , 
+		  "SOURCE_DEV_SENSOR_TYPE" VARCHAR(40) , 
+		  "SOURCE_DEV_PRIMARY_FUNCTION" VARCHAR(80) , 
+		  "SOURCE_DEV_PRIMARY_APPLICATION" VARCHAR(80) , 
+		  "SOURCE_DEV_IDS_CONFIG_TYPE" VARCHAR(40) , 
+		  "SOURCE_DEV_NETWORK_SEG_TYPE" VARCHAR(40) , 
+		  "SOURCE_DEV_INLINE_APPLIANCE_MODE" VARCHAR(40) , 
+		  "SOURCE_DEV_STACKED_FLAG" CHAR(3) , 
+		  "SOURCE_DEV_MANAGED_BY" VARCHAR(40) , 
+		  "SOURCE_DEV_MONITORED_BY" VARCHAR(15) , 
+		  "SOURCE_DEV_CLUSTER_FW_NAME" VARCHAR(60) , 
+		  "SOURCE_DEV_IDS_CONFIG_TYPE2" VARCHAR(60) , 
+		  "SOURCE_DEV_FW_TYPE_AND_VER" VARCHAR(60) , 
+		  "SOURCE_DEV_DEFAULT_GATEWAY" VARCHAR(120) , 
+		  "SOURCE_DEV_IP_EXT_STRING" VARCHAR(20) , 
+		  "SOURCE_DEV_OS_NAME" VARCHAR(60) , 
+		  "SOURCE_DEV_NLR_THRESHOLD" VARCHAR(60) , 
+		  "SOURCE_DEV_POLL_PERIOD" VARCHAR(40) , 
+		  "SOURCE_DEV_SITE_NAME" VARCHAR(120) , 
+		  "SOURCE_DEV_SITE_ID" VARCHAR(40) , 
+		  "SOURCE_DEV_DATA_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_DEV_INDEX_RETENTION_PERIOD" VARCHAR(40) , 
+		  "SOURCE_DEV_TIMEZONE" VARCHAR(60) , 
+		  "SOURCE_CUST_ID" VARCHAR(20) , 
+		  "SOURCE_CUST_NAME" VARCHAR(80) , 
+		  "SOURCE_CUST_PARTNER_ID" VARCHAR(20) , 
+		  "SOURCE_CUST_PARTNER_NAME" VARCHAR(80) , 
+		  "SOURCE_CUST_CATEGORY" VARCHAR(60) , 
+		  "SOURCE_CUST_INDUSTRY" VARCHAR(120) , 
+		  "SOURCE_CUST_REGULATED" VARCHAR(10) , 
+		  "SOURCE_CUST_MIDS" VARCHAR(10) , 
+		  "SOURCE_CUST_NUM_IDS" SMALLINT , 
+		  "SOURCE_CUST_MPS" VARCHAR(10) , 
+		  "SOURCE_CUST_MFS" VARCHAR(10) , 
+		  "SOURCE_CUST_NUM_FW" SMALLINT , 
+		  "SOURCE_CUST_SELM" VARCHAR(10) , 
+		  "SOURCE_CUST_VMS" VARCHAR(10) , 
+		  "SOURCE_CUST_NUM_EXT_IP" INTEGER , 
+		  "SOURCE_CUST_NUM_INT_IP" INTEGER , 
+		  "SOURCE_CUST_NUM_SCANNERS" SMALLINT , 
+		  "SOURCE_CUST_LMS" VARCHAR(10) , 
+		  "SOURCE_CUST_EAM" VARCHAR(10) , 
+		  "SOURCE_CUST_NUM_DEVICES" SMALLINT , 
+		  "SOURCE_CUST_THIRD_PARTY" VARCHAR(10) , 
+		  "SOURCE_CUST_SERVICE_NAME" VARCHAR(60) , 
+		  "SOURCE_CUST_SIA" VARCHAR(10) , 
+		  "SOURCE_CUST_SIA_NAME" VARCHAR(60) , 
+		  "SOURCE_CUST_PCI_DSS" VARCHAR(10) , 
+		  "SOURCE_CUST_HIPAA" VARCHAR(10) , 
+		  "SOURCE_CUST_GLBA" VARCHAR(10) , 
+		  "SOURCE_CUST_MRR" DECIMAL(10,2) , 
+		  "SOURCE_CUST_STATUS" VARCHAR(20) , 
+		  "INDUSTRY_ID" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_SECTION_CD" CHAR(1) NOT NULL WITH DEFAULT '0' , 
+		  "IND_SECTION_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_SECTION_SHORT_NAME" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_DIVISION_CD" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "IND_DIVISION_NAME" VARCHAR(200) NOT NULL WITH DEFAULT 'unk' , 
+		  "IND_DIVISION_SHORT_NAME" VARCHAR(40) NOT NULL WITH DEFAULT 'unk' , 
+		  "CONS_DB_IP_STRING" VARCHAR(20) , 
+		  "CONS_DB_HOSTNAME" VARCHAR(80) , 
+		  "FW_DB_IP_STRING" VARCHAR(20) , 
+		  "FW_DB_HOSTNAME" VARCHAR(80) , 
+		  "LMS_AGG_IP_STRING" VARCHAR(20) , 
+		  "LMS_AGG_HOSTNAME" VARCHAR(80) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_DEVICE_MSS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DEVICE_MSS" 
+	ADD CONSTRAINT "DIM_COMM_DEVI_PK" PRIMARY KEY
+		("DEVICE_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_ACTION"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_ACTION"  (
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "ACTION_NAME" VARCHAR(20) NOT NULL , 
+		  "ACTION_CATEGORY" VARCHAR(20) NOT NULL , 
+		  "ACTION_DESC" VARCHAR(254) )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_ACTION"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ACTION" 
+	ADD CONSTRAINT "DIM_COMM_ACTION_PK" PRIMARY KEY
+		("ACTION_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_PROTOCOL"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_PROTOCOL"  (
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "PROTOCOL_NAME" VARCHAR(40) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_PROTOCOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_PROTOCOL" 
+	ADD CONSTRAINT "DIM_PROTOCOL_PK" PRIMARY KEY
+		("PROTOCOL_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_DIRECTION"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_DIRECTION"  (
+		  "DIRECTION_ID" SMALLINT NOT NULL , 
+		  "DIRECTION_NAME" VARCHAR(20) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_DIRECTION"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DIRECTION" 
+	ADD CONSTRAINT "DIM_COMM_DIRECTION_PK" PRIMARY KEY
+		("DIRECTION_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_IDS_DEV_SEV_SIG_TYPE_DAILY_NONMQT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_IDS_DEV_SEV_SIG_TYPE_DAILY_NONMQT"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_DEV_SEV_SIG_TYPE_DAILY_NONMQT"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_DSSTDN_X2" ON "SWARE   "."FACTS_IDS_DEV_SEV_SIG_TYPE_DAILY_NONMQT" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_DEV_SEV_SIG_TYPE_DAILY_NONMQT"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_DSSTDN_X3" ON "SWARE   "."FACTS_IDS_DEV_SEV_SIG_TYPE_DAILY_NONMQT" 
+		("SIG_ID" ASC)
+		
+		 ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_IDS_SIG_TYPE_DAILY_NONMQT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_IDS_SIG_TYPE_DAILY_NONMQT"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_SIG_TYPE_DAILY_NONMQT"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_STDN_X1" ON "SWARE   "."FACTS_IDS_SIG_TYPE_DAILY_NONMQT" 
+		("SIG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_SIG_TYPE_DAILY_NONMQT"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_STDN_X2" ON "SWARE   "."FACTS_IDS_SIG_TYPE_DAILY_NONMQT" 
+		("IDS_TYPE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY"
+
+CREATE INDEX "SWARE   "."CONSDB_IDS_DSAM_X1" ON "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY"
+
+CREATE INDEX "SWARE   "."CONSDB_IDS_DSAM_X2" ON "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY" 
+		("SIG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "DIRECTION_ID" SMALLINT NOT NULL , 
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" BIGINT NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY"
+
+CREATE INDEX "SWARE   "."CONSDB_FW_DDAM_X1" ON "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "DIRECTION_ID" SMALLINT NOT NULL , 
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "PORT" INTEGER NOT NULL , 
+		  "EVENT_CNT" BIGINT NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY"
+
+CREATE INDEX "SWARE   "."CONSDB_FW_DDAPPM_X1" ON "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_TOOL"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_TOOL"  (
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "TOOL_NAME" VARCHAR(20) NOT NULL , 
+		  "MANAGER_NAME" VARCHAR(20) NOT NULL , 
+		  "HC_TYPE" CHAR(1) NOT NULL , 
+		  "VULN_TYPE" CHAR(1) NOT NULL , 
+		  "PATCH_TYPE" CHAR(1) NOT NULL , 
+		  "IDS_TYPE" CHAR(1) NOT NULL , 
+		  "FW_TYPE" CHAR(1) NOT NULL , 
+		  "ASSET_TYPE" CHAR(1) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_PK" PRIMARY KEY
+		("TOOL_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_UK1" UNIQUE
+		("TOOL_NAME",
+		 "MANAGER_NAME")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."MISC_SCAN_REJECT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."MISC_SCAN_REJECT"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 50) , 
+		  "HOST_NAME" VARCHAR(100) , 
+		  "HOST_IP_STRING" VARCHAR(40) , 
+		  "HOST_ID_GEN" VARCHAR(100) NOT NULL GENERATED ALWAYS AS (COALESCE(HOST_IP_STRING, HOST_NAME)) , 
+		  "SCAN_TOOL_ID" SMALLINT NOT NULL , 
+		  "SCAN_ID" INTEGER NOT NULL , 
+		  "SCAN_START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_START_DATE_ID" SMALLINT NOT NULL , 
+		  "SCAN_START_DATE_ID_GEN" SMALLINT NOT NULL GENERATED ALWAYS AS (SCAN_START_DATE_ID / 30) , 
+		  "OS_NAME" VARCHAR(100) NOT NULL , 
+		  "NUM_FINDINGS" INTEGER NOT NULL , 
+		  "REJECT_REASON" VARCHAR(254) NOT NULL , 
+		  "FILENAME" VARCHAR(254) NOT NULL , 
+		  "SUB_FILENAME" VARCHAR(254) , 
+		  "REJECT_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "REJECT_PROGRAM" VARCHAR(100) NOT NULL , 
+		  "EXTRACT_BATCH_ID" INTEGER NOT NULL , 
+		  "TRANSFORM_BATCH_ID" INTEGER NOT NULL , 
+		  "LOAD_BATCH_ID" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID_GEN" ) , 
+		  ( "SCAN_START_DATE_ID_GEN" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."MISC_SCAN_REJECT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_REJECT" 
+	ADD CONSTRAINT "MISC_SCAN_REJECT_PK" PRIMARY KEY
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "SCAN_ID",
+		 "HOST_ID_GEN",
+		 "LU_TIMESTAMP")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."MISC_SCAN_REJECT"
+
+CREATE INDEX "SWARE   "."MISC_SCAN_REJECT_X1" ON "SWARE   "."MISC_SCAN_REJECT" 
+		("HOST_IP_STRING" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."MISC_SCAN_REJECT"
+
+CREATE INDEX "SWARE   "."MISC_SCAN_REJECT_X2" ON "SWARE   "."MISC_SCAN_REJECT" 
+		("HOST_NAME" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" BIGINT NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2"
+
+CREATE INDEX "SWARE   "."CONSDB_IDS_DSAM2_X1" ON "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2"
+
+CREATE INDEX "SWARE   "."CONSDB_IDS_DSAM2_X2" ON "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2" 
+		("SIG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACT_SCAN_BKUP"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACT_SCAN_BKUP"  (
+		  "FINDING_VID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "ROW_FROM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ROW_FROM_DATE_ID" SMALLINT NOT NULL , 
+		  "ROW_TO_TIMESTAMP" TIMESTAMP , 
+		  "ROW_TO_DATE_ID" SMALLINT , 
+		  "ROW_TO_DATE_ID_GEN" SMALLINT GENERATED ALWAYS AS (ROW_TO_DATE_ID / 30) , 
+		  "SCAN_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 10) , 
+		  "SCAN_SERVICE" VARCHAR(10) NOT NULL , 
+		  "SCAN_TOOL_ID" SMALLINT NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "PORT" INTEGER NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "QUALITY_ID" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "FINDING_HASH" VARCHAR(16) NOT NULL , 
+		  "FINDING_TEXT" VARCHAR(700) NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACT_SCAN"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACT_SCAN"  (
+		  "FINDING_VID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "ROW_FROM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ROW_FROM_DATE_ID" SMALLINT NOT NULL , 
+		  "ROW_TO_TIMESTAMP" TIMESTAMP , 
+		  "ROW_TO_DATE_ID" SMALLINT , 
+		  "ROW_TO_DATE_ID_GEN" SMALLINT GENERATED ALWAYS AS (ROW_TO_DATE_ID / 30) , 
+		  "SCAN_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 10) , 
+		  "SCAN_SERVICE" VARCHAR(10) NOT NULL , 
+		  "SCAN_TOOL_ID" SMALLINT NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "PORT" INTEGER NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "CAT_NAME" VARCHAR(20) , 
+		  "QUALITY_ID" SMALLINT NOT NULL WITH DEFAULT 0 , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "FINDING_HASH" VARCHAR(16) NOT NULL , 
+		  "FINDING_TEXT" VARCHAR(700) NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID_GEN" ) , 
+		  ( "ROW_TO_DATE_ID_GEN" ) , 
+		  ( "SEVERITY_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."FACT_SCAN"
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_PK" PRIMARY KEY
+		("FINDING_VID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."FACT_SCAN"
+
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_UK1" UNIQUE
+		("FINDING_ID",
+		 "ROW_FROM_TIMESTAMP")}
+
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_UK2" UNIQUE
+		("ASSET_ID",
+		 "FINDING_HASH",
+		 "PORT",
+		 "PROTOCOL_ID",
+		 "ROW_FROM_TIMESTAMP")}
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_SCAN"
+
+CREATE INDEX "SWARE   "."FACT_SCAN_X1" ON "SWARE   "."FACT_SCAN" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_SCAN"
+
+CREATE INDEX "SWARE   "."FACT_SCAN_X2" ON "SWARE   "."FACT_SCAN" 
+		("ROW_FROM_DATE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_SCAN"
+
+CREATE INDEX "SWARE   "."FACT_SCAN_X3" ON "SWARE   "."FACT_SCAN" 
+		("ASSET_ID" ASC,
+		 "FINDING_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_SCAN"
+
+CREATE INDEX "SWARE   "."FACT_SCAN_X4" ON "SWARE   "."FACT_SCAN" 
+		("LU_TIMESTAMP" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+ALTER TABLE "SWARE   "."FACT_SCAN" ALTER COLUMN "FINDING_VID" RESTART WITH 23125426}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT"  (
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL , 
+		  "FINDING_VID" INTEGER NOT NULL , 
+		  "PUBLISH_DATE_ID" SMALLINT NOT NULL , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "SCAN_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 10) , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "SCAN_ID" INTEGER NOT NULL , 
+		  "VALIDATE_FLAG" CHAR(1) , 
+		  "SUPPRESS_FLAG" CHAR(1) , 
+		  "CONSOLIDATE_FLAG" CHAR(1) , 
+		  "PUBLISH_FLAG" CHAR(1) , 
+		  "SUPPRESS_ID" INTEGER , 
+		  "PORT" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "SCAN_TOOL_ID" SMALLINT NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 INDEX IN "TS_INDEX1_4K"
+--		 PARTITION BY RANGE("PUBLISH_DATE_ID") 
+--		 (PART "201006" STARTING(3805) ENDING(3834) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201007" STARTING(3835) ENDING(3865) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201008" STARTING(3866) ENDING(3896) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201009" STARTING(3897) ENDING(3926) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201010" STARTING(3927) ENDING(3957) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201011" STARTING(3958) ENDING(3987) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201012" STARTING(3988) ENDING(4018) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K") 
+--		 ORGANIZE BY ( 
+--		  ( "PUBLISH_DATE_ID" ) , 
+--		  ( "ORG_L1_ID_GEN" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_PK" PRIMARY KEY
+		("ASSET_ID",
+		 "BATCH_ID",
+		 "FINDING_VID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_IDS_DEV_DAILY_NONMQT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_IDS_DEV_DAILY_NONMQT"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_DEV_DAILY_NONMQT"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_DD_X2" ON "SWARE   "."FACTS_IDS_DEV_DAILY_NONMQT" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL , 
+		  "CHANGE_SCORE" SMALLINT NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_SED_X1" ON "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT" 
+		("SIG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "SCORE_ID" SMALLINT NOT NULL , 
+		  "VALUE" SMALLINT NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_DSD_X1" ON "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY" 
+		("DEVICE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_DSD_X2" ON "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY" 
+		("SCORE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_DSD_X3" ON "SWARE   "."FACTS_IDS_DEV_SCORE_DAILY" 
+		("DEVICE_DATE_ID" ASC,
+		 "VALUE" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_IDS_SIG_SCORE_DAILY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_IDS_SIG_SCORE_DAILY"  (
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "SCORE_ID" SMALLINT NOT NULL , 
+		  "VALUE" SMALLINT NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "DEVICE_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_SIG_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_SSD_X1" ON "SWARE   "."FACTS_IDS_SIG_SCORE_DAILY" 
+		("SIG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_IDS_SIG_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_IDS_SSD_X2" ON "SWARE   "."FACTS_IDS_SIG_SCORE_DAILY" 
+		("SCORE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY"  (
+		  "SCAN_DATE_ID" SMALLINT NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "SCORE_ID" SMALLINT NOT NULL , 
+		  "VALUE" SMALLINT NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL )   
+		 IN "TS_SUM1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "SCAN_DATE_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_VSD_X1" ON "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_VSD_X2" ON "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY" 
+		("SCORE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_VSD_X3" ON "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY" 
+		("SCAN_DATE_ID" ASC,
+		 "VALUE" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_COMM_SCORE"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_COMM_SCORE"  (
+		  "SCORE_ID" SMALLINT NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +32767  
+		    NO CYCLE  
+		    NO CACHE  
+		    NO ORDER ) , 
+		  "SCORE_PARENT_ID" SMALLINT , 
+		  "SCORE_NAME" VARCHAR(40) NOT NULL , 
+		  "SCORE_CODE_NAME" VARCHAR(40) NOT NULL , 
+		  "SCORE_CODE_TYPE" VARCHAR(40) NOT NULL , 
+		  "SCORE_ENGINE" VARCHAR(20) NOT NULL , 
+		  "SCORE_TYPE" VARCHAR(20) NOT NULL , 
+		  "SCORE_SUMMARY_TYPE" VARCHAR(20) , 
+		  "SCORE_SUMMARY_WEIGHT" DOUBLE , 
+		  "SCORE_DESC" VARCHAR(254) , 
+		  "SCORE_DESC_LONG" VARCHAR(4000) , 
+		  "SCORE_URL" VARCHAR(200) , 
+		  "SUBJECT_NAME" VARCHAR(20) NOT NULL , 
+		  "SUBJECT_ASPECT" VARCHAR(20) NOT NULL , 
+		  "SUBJECT_LEVEL" SMALLINT NOT NULL , 
+		  "SUBJECT_RETENTION_DAYS" SMALLINT NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_PK" PRIMARY KEY
+		("SCORE_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_UK2" UNIQUE
+		("SUBJECT_NAME",
+		 "SUBJECT_ASPECT",
+		 "SCORE_NAME")}
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."STAGING_SCAN_ORG_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."STAGING_SCAN_ORG_PERIOD"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "HIP_PERIOD_ID" INTEGER NOT NULL , 
+		  "ASSET_FREEZE_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."STAGING_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."STAGING_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "STAGING_SCAN_ORG_PER_PK" PRIMARY KEY
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 30) , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "VALIDATE_FLAG" CHAR(1) NOT NULL , 
+		  "SUPPRESS_FLAG" CHAR(1) NOT NULL , 
+		  "PUBLISH_FLAG" CHAR(1) NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "CAT_NAME" VARCHAR(20) NOT NULL , 
+		  "FINDING_CNT" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "PERIOD_MONTH_ID" ) , 
+		  ( "ORG_L1_ID_GEN" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_AM_PERIOD_X1" ON "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD" 
+		("PERIOD_MONTH_ID" ASC,
+		 "ORG_L1_ID" ASC,
+		 "ORG_ID" ASC,
+		 "ASSET_VID" ASC)
+		
+		 ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "SCAN_ID" INTEGER NOT NULL , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "VALIDATE_FLAG" CHAR(1) NOT NULL , 
+		  "SUPPRESS_FLAG" CHAR(1) NOT NULL , 
+		  "PUBLISH_FLAG" CHAR(1) NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "CAT_NAME" VARCHAR(20) NOT NULL , 
+		  "FINDING_CNT" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "PERIOD_MONTH_ID" ) , 
+		  ( "ORG_L1_ID" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_AVM_PERIOD_X1" ON "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+		("PERIOD_MONTH_ID" ASC,
+		 "ORG_L1_ID" ASC,
+		 "ORG_ID" ASC,
+		 "ASSET_VID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_AVM_PERIOD_X2" ON "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+		("VULN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 30) , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "SUPPRESS_ID" INTEGER NOT NULL , 
+		  "FINDING_CNT" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "PERIOD_MONTH_ID" ) , 
+		  ( "ORG_L1_ID_GEN" ) ) 
+		 } 
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD_X1" ON "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD" 
+		("PERIOD_MONTH_ID" ASC,
+		 "ORG_L1_ID" ASC,
+		 "ORG_ID" ASC,
+		 "ASSET_VID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "FINDING_CNT" INTEGER NOT NULL , 
+		  "SYSTEM_CNT" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "PERIOD_MONTH_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_ORG_VULN_PERIOD_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "ORG_L1_ID",
+		 "ORG_ID",
+		 "VULN_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD_X1" ON "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD" 
+		("ORG_L1_ID" ASC,
+		 "ORG_ID" ASC)
+		
+		 ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD_X2" ON "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD" 
+		("VULN_ID" ASC)
+		
+		 ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."MISC_COMM_AUTH"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."MISC_COMM_AUTH"  (
+		  "AUTH_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "USER_NAME" VARCHAR(80) NOT NULL , 
+		  "USER_DESC" VARCHAR(80) NOT NULL , 
+		  "USER_ROLE" VARCHAR(80) NOT NULL , 
+		  "USER_ORG" VARCHAR(80) NOT NULL , 
+		  "USER_TYPE" VARCHAR(10) NOT NULL , 
+		  "APPLICATION_NAME" VARCHAR(40) NOT NULL , 
+		  "SUBJECT_AREA" VARCHAR(20) , 
+		  "ORG_L1_ID" INTEGER , 
+		  "ORG_ID" INTEGER , 
+		  "METRIC_TYPE_SECURITY" CHAR(5) NOT NULL WITH DEFAULT 'none' , 
+		  "METRIC_TYPE_PROCESS" CHAR(5) NOT NULL WITH DEFAULT 'none' , 
+		  "METRIC_TYPE_FINANCIAL" CHAR(5) NOT NULL WITH DEFAULT 'none' , 
+		  "STATUS" VARCHAR(10) NOT NULL WITH DEFAULT 'open' , 
+		  "REVALIDATION_DATE" DATE , 
+		  "REVALIDATION_USER" VARCHAR(20) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_PK" PRIMARY KEY
+		("AUTH_ID")}
+
+
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" ALTER COLUMN "AUTH_ID" RESTART WITH 40}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "YEAR" SMALLINT NOT NULL , 
+		  "QUARTER_ID" SMALLINT NOT NULL , 
+		  "QUARTER_OF_YEAR" SMALLINT NOT NULL , 
+		  "MONTH_NAME" VARCHAR(10) NOT NULL , 
+		  "MONTH_OF_YEAR" SMALLINT NOT NULL , 
+		  "MONTH_OF_QUARTER" SMALLINT NOT NULL , 
+		  "DAYS_IN_MONTH" SMALLINT NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_PERIOD_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_ASSET_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "IP_STRING_PRIMARY" VARCHAR(40) , 
+		  "IP_INT_PRIMARY" VARCHAR(40) , 
+		  "IP_STRING_LIST" VARCHAR(1000) , 
+		  "HOST_NAME" VARCHAR(254) , 
+		  "OS_ID" SMALLINT NOT NULL , 
+		  "OS_TYPE" VARCHAR(20) NOT NULL , 
+		  "OS_PRODUCT" VARCHAR(20) NOT NULL , 
+		  "OS_VENDOR_NAME" VARCHAR(40) NOT NULL , 
+		  "OS_NAME" VARCHAR(40) NOT NULL , 
+		  "OS_VER" VARCHAR(40) NOT NULL , 
+		  "SYSTEM_STATUS" VARCHAR(10) NOT NULL , 
+		  "ENCRYPTION_FLAG" CHAR(1) NOT NULL , 
+		  "HC_AUTO_FLAG" CHAR(1) NOT NULL , 
+		  "HC_INTERVAL_WEEKS" SMALLINT , 
+		  "HC_MANUAL_FLAG" CHAR(1) , 
+		  "HC_MANUAL_INTERVAL_WEEKS" SMALLINT , 
+		  "SECURITY_POLICY_NAME" VARCHAR(40) , 
+		  "DISASTER_RECOVERY_FLAG" CHAR(1) , 
+		  "INTERNET_ACCESSIBLE_FLAG" CHAR(1) , 
+		  "VITAL_BUSINESS_PROCESS_FLAG" CHAR(1) , 
+		  "HC_START_DATE" DATE , 
+		  "HC_GROUP_ID" INTEGER NOT NULL , 
+		  "HC_GROUP_NAME" VARCHAR(80) NOT NULL , 
+		  "HC_CREATION_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ASSET_PER_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ASSET_PER_UK1" UNIQUE
+		("PERIOD_MONTH_ID",
+		 "ASSET_ID")}
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_ASSET_PER_X1" ON "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+		("LU_TIMESTAMP" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_ASSET_PER_X2" ON "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+		("ASSET_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_ASSET_PER_X3" ON "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+		("ORG_L1_ID" ASC,
+		 "ORG_ID" ASC,
+		 "HOST_NAME" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_ASSET_PER_X4" ON "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+		("ORG_L1_ID" ASC,
+		 "ORG_ID" ASC,
+		 "IP_INT_PRIMARY" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "YEAR" SMALLINT NOT NULL , 
+		  "QUARTER_ID" SMALLINT NOT NULL , 
+		  "QUARTER_OF_YEAR" SMALLINT NOT NULL , 
+		  "MONTH_NAME" VARCHAR(10) NOT NULL , 
+		  "MONTH_OF_YEAR" SMALLINT NOT NULL , 
+		  "MONTH_OF_QUARTER" SMALLINT NOT NULL , 
+		  "DAYS_IN_MONTH" SMALLINT NOT NULL , 
+		  "PERIOD_OVERRIDE_FLAG" CHAR(1) NOT NULL , 
+		  "HIP_PERIOD_ID" INTEGER NOT NULL , 
+		  "ASSET_FREEZE_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_PK" PRIMARY KEY
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")}
+
+
+-- DDL Statements for unique constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_UK1" UNIQUE
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "YEAR",
+		 "MONTH_OF_YEAR")}
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_ORG_PERIOD_X1" ON "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+		("PERIOD_MONTH_ID" ASC,
+		 "ORG_L1_ID" ASC,
+		 "ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "SCAN_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "TOOL_NAME" VARCHAR(20) NOT NULL , 
+		  "SCAN_DATE_ID" SMALLINT NOT NULL , 
+		  "SCAN_START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_STOP_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SCAN_TYPE" VARCHAR(20) , 
+		  "PUBLISH_READY_TIMESTAMP" TIMESTAMP , 
+		  "PUBLISH_READY_USERID" VARCHAR(20) , 
+		  "PUBLISH_TIMESTAMP" TIMESTAMP , 
+		  "PUBLISH_DATE_ID" SMALLINT , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SCAN_PER_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "SCAN_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SCAN_PER_X1" ON "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+		("SCAN_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SCAN_PER_X2" ON "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+		("ASSET_VID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SCAN_PER_X3" ON "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+		("ORG_L1_ID" ASC,
+		 "ORG_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SCAN_PER_X4" ON "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+		("LU_TIMESTAMP" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "SUPPRESS_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "SUPPRESS_NAME" VARCHAR(100) NOT NULL , 
+		  "SUPPRESS_DESC" VARCHAR(500) , 
+		  "SUPPRESS_START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SUPPRESS_START_DATE_ID" SMALLINT NOT NULL , 
+		  "SUPPRESS_STOP_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SUPPRESS_STOP_DATE_ID" SMALLINT NOT NULL , 
+		  "SUPPRESS_CLASS" VARCHAR(25) NOT NULL , 
+		  "SUPPRESS_STATUS" VARCHAR(15) , 
+		  "SUPPRESS_AUTO_FLAG" CHAR(1) NOT NULL , 
+		  "SUPPRESS_SCOPE" VARCHAR(40) NOT NULL , 
+		  "VULN_ID" INTEGER , 
+		  "ASSET_VID" INTEGER , 
+		  "ASSET_ID" INTEGER , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SUPPRESS_PER_X1" ON "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+		("SUPPRESS_STOP_DATE_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SUPPRESS_PER_X2" ON "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+		("LU_TIMESTAMP" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "SUPPRESS_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "HC_GROUP_ID" INTEGER NOT NULL , 
+		  "HC_GROUP_NAME" VARCHAR(80) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGP_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID",
+		 "HC_GROUP_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SGP_X1" ON "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD" 
+		("ORG_L1_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SGP_X2" ON "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD" 
+		("LU_TIMESTAMP" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "SUPPRESS_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "FINDING_VID" INTEGER NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGF_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID",
+		 "FINDING_ID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SGF_X1" ON "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD" 
+		("ORG_L1_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD"
+
+CREATE INDEX "SWARE   "."DIM_SCAN_SGF_X2" ON "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD" 
+		("LU_TIMESTAMP" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACTS_SCAN_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACTS_SCAN_PERIOD"  (
+		  "PERIOD_MONTH_ID" SMALLINT NOT NULL , 
+		  "FINDING_VID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 30) , 
+		  "ASSET_VID" INTEGER NOT NULL , 
+		  "TOOL_ID" SMALLINT NOT NULL , 
+		  "SCAN_ID" INTEGER NOT NULL , 
+		  "VULN_ID" INTEGER NOT NULL , 
+		  "VALIDATE_FLAG" CHAR(1) NOT NULL , 
+		  "SUPPRESS_FLAG" CHAR(1) NOT NULL , 
+		  "SUPPRESS_ID" INTEGER , 
+		  "SUPPRESS_CNT" SMALLINT NOT NULL , 
+		  "RELEASE_FLAG" CHAR(1) NOT NULL , 
+		  "AUTO_RELEASE_FLAG" CHAR(1) NOT NULL , 
+		  "RELEASE_DATE_ID" SMALLINT NOT NULL , 
+		  "PUBLISH_FLAG" CHAR(1) NOT NULL , 
+		  "PUBLISH_DATE_ID" SMALLINT NOT NULL , 
+		  "PORT" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "CAT_NAME" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "RESULT" VARCHAR(10) , 
+		  "FINDING_TEXT" VARCHAR(700) )   
+		   
+		 INDEX IN "TS_INDEX1_4K"
+--		 PARTITION BY RANGE("PERIOD_MONTH_ID") 
+--		 (PART "201006" STARTING(126) ENDING(126) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201007" STARTING(127) ENDING(127) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201008" STARTING(128) ENDING(128) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201009" STARTING(129) ENDING(129) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201010" STARTING(130) ENDING(130) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201011" STARTING(131) ENDING(131) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K", 
+--		 PART "201012" STARTING(132) ENDING(132) IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K") 
+--		 ORGANIZE BY ( 
+--		  ( "ORG_L1_ID_GEN" ) , 
+--		  ( "PUBLISH_DATE_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_PK" PRIMARY KEY
+		("PERIOD_MONTH_ID",
+		 "FINDING_VID")}
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_PERIOD_X1" ON "SWARE   "."FACTS_SCAN_PERIOD" 
+		("PERIOD_MONTH_ID" ASC,
+		 "ORG_L1_ID" ASC,
+		 "ORG_ID" ASC,
+		 "ASSET_VID" ASC)
+--		PARTITIONED
+		
+		 ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+CREATE INDEX "SWARE   "."FACTS_SCAN_PERIOD_X2" ON "SWARE   "."FACTS_SCAN_PERIOD" 
+		("VULN_ID" ASC)
+--		PARTITIONED
+		
+		 ALLOW REVERSE SCANS}
+
+------------------------------------------------
+-- DDL Statements for table "SWARE   "."FACT_IDS_DETACH"
+------------------------------------------------
+ 
+
+CREATE TABLE "SWARE   "."FACT_IDS_DETACH"  (
+		  "ROW_ID" BIGINT NOT NULL , 
+		  "SEM_EVENT_CD" VARCHAR(20) , 
+		  "DEVICE_DATE_ID" SMALLINT NOT NULL , 
+		  "DEVICE_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SEM_DATE_ID" SMALLINT NOT NULL , 
+		  "SEM_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "DEVICE_ID" INTEGER NOT NULL , 
+		  "IDS_TYPE_ID" SMALLINT NOT NULL , 
+		  "PROTOCOL_ID" SMALLINT NOT NULL , 
+		  "SOURCE_IP_INT1" BIGINT , 
+		  "SOURCE_IP_INT2" BIGINT , 
+		  "SOURCE_PORT" INTEGER , 
+		  "SOURCE_GEOIP_ID" INTEGER NOT NULL , 
+		  "SOURCE_ASSET_ID" INTEGER NOT NULL , 
+		  "DEST_IP_INT1" BIGINT , 
+		  "DEST_IP_INT2" BIGINT , 
+		  "DEST_PORT" INTEGER , 
+		  "DEST_GEOIP_ID" INTEGER NOT NULL , 
+		  "DEST_ASSET_ID" INTEGER NOT NULL , 
+		  "SIG_ID" INTEGER NOT NULL , 
+		  "SEVERITY_ID" SMALLINT NOT NULL , 
+		  "ACTION_ID" SMALLINT NOT NULL , 
+		  "EVENT_CNT" INTEGER NOT NULL , 
+		  "BATCH_ID" INTEGER NOT NULL , 
+		  "QUALITY_ID" SMALLINT NOT NULL )   
+		   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K" NOT LOGGED INITIALLY  
+		 ORGANIZE BY ( 
+		  ( "IDS_TYPE_ID" ) ) 
+		 } 
+
+COMMENT ON TABLE "SWARE   "."FACT_IDS_DETACH" IS '3958'}
+
+
+
+
+
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_IDS_DETACH"
+
+CREATE INDEX "SWARE   "."SQL101101002720300" ON "SWARE   "."FACT_IDS_DETACH" 
+		("DEVICE_ID" ASC)
+		PCTFREE 10 ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "SWARE   "."FACT_IDS_DETACH"
+
+CREATE INDEX "SWARE   "."SQL101101002720310" ON "SWARE   "."FACT_IDS_DETACH" 
+		("SIG_ID" ASC)
+		PCTFREE 10 ALLOW REVERSE SCANS}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_ASSET_ORG"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET_ORG" 
+	ADD CONSTRAINT "DIM_C_A_O_CK1" CHECK 
+		( ENCRYPTION_REQUIRED_FLAG IN ('y','n'))
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_ASSET_ORG"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET_ORG" 
+	ADD CONSTRAINT "DIM_C_A_O_CK2" CHECK 
+		( ASSET_DATA_CURRENT_FLAG IN ('y','n'))
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SOFT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SOFT" 
+	ADD CONSTRAINT "DIM_COMM_TAS_FK4" FOREIGN KEY
+		("SOFTWARE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SOFTWARE"
+		("SOFTWARE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DATEID_CK" CHECK 
+		(DATE_ID BETWEEN 0 and 10000)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DATE_CK" CHECK 
+		(DATE BETWEEN '2000-01-01' AND '2019-12-31')
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYID_CK" CHECK 
+		(DAY_ID BETWEEN 1 AND 10000)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYNM_CK" CHECK 
+		(DAY_NAME IN ('sunday','monday','tuesday','wednesday','thursday','friday','saturday'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYOM_CK" CHECK 
+		(DAY_OF_MONTH BETWEEN 1 AND 31)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYOW_CK" CHECK 
+		(DAY_OF_WEEK BETWEEN 1 AND 7)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYOY_CK" CHECK 
+		(DAY_OF_YEAR BETWEEN 1 AND 366)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYWKEF_CK" CHECK 
+		(DAY_WEEKEND_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_DAYWKPT_CK" CHECK 
+		(DAY_WEEKPART     IN ('weekend','weekday'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_EPOCHSP_CK" CHECK 
+		(DAY_EPOCH_STOP   between 946684800 AND 1577836800)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_EPOCHST_CK" CHECK 
+		(DAY_EPOCH_START  between 946684800 AND 1577836800)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_MONID_CK" CHECK 
+		(MONTH_ID BETWEEN 1 AND 240)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_MONNM_CK" CHECK 
+		(MONTH_NAME IN ('january','february','march','april','may','june','july','august','september','october','november','december'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_MONOQ_CK" CHECK 
+		(MONTH_OF_QUARTER BETWEEN 1 AND 4)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_MONOYR_CK" CHECK 
+		(MONTH_OF_YEAR BETWEEN 1 AND 12)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_QTRID_CK" CHECK 
+		(QUARTER_ID BETWEEN 1 AND 80)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_QTROYR_CK" CHECK 
+		(QUARTER_OF_YEAR BETWEEN 1 AND 4)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_WEEKID_CK" CHECK 
+		(WEEK_ID BETWEEN 1 AND 1000)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_WEEKIID_CK" CHECK 
+		(WEEKISO_ID BETWEEN 1 AND 1000)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_WEEKOM_CK" CHECK 
+		(WEEK_OF_MONTH BETWEEN 1 AND 5)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_WEEKOQ_CK" CHECK 
+		(WEEK_OF_QUARTER BETWEEN 1 AND 18)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_WEEKOY_CK" CHECK 
+		(WEEK_OF_YEAR BETWEEN 1 AND 54)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_WIOY_CK" CHECK 
+		(WEEKISO_OF_YEAR BETWEEN 1 AND 54)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_YEARID_CK" CHECK 
+		(YEAR_ID BETWEEN 1 AND 20)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_DATE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DATE" 
+	ADD CONSTRAINT "DIMDATE_YEAR_CK" CHECK 
+		(YEAR BETWEEN 2000 AND 2019)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT"
+
+ALTER TABLE "SWARE   "."DIM_COMM_PORT_PROTOCOL_SOFT" 
+	ADD CONSTRAINT "DIM_COMM_PORT_PPS_FK1" FOREIGN KEY
+		("PORT")
+	REFERENCES "SWARE   "."DIM_COMM_PORT"
+		("PORT")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_ORG"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK2" FOREIGN KEY
+		("ORG_INDUSTRY_ID")
+	REFERENCES "SWARE   "."DIM_COMM_INDUSTRY"
+		("INDUSTRY_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK3" FOREIGN KEY
+		("ORG_L1_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_L1"
+		("ORG_L1_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK4" FOREIGN KEY
+		("ORG_L2_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK5" FOREIGN KEY
+		("ORG_L3_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK6" FOREIGN KEY
+		("ORG_L4_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK7" FOREIGN KEY
+		("ORG_L5_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_ORG" 
+	ADD CONSTRAINT "DIM_COMM_ORG_FK8" FOREIGN KEY
+		("ORG_PARENT_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_ASSET"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET" 
+	ADD CONSTRAINT "DIM_COMM_ASSET_CK2" CHECK 
+		( ENCRYPTION_FLAG IN ('y','n'))
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_ASSET_CONN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_ASSET_CONN" 
+	ADD CONSTRAINT "DIM_C_A_C_FK2" FOREIGN KEY
+		("ASSET_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ASSET"
+		("ASSET_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACT_PATCH"
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK1" FOREIGN KEY
+		("DISCOVERED_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK13" FOREIGN KEY
+		("CODS_ASSET_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ASSET"
+		("ASSET_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK14" FOREIGN KEY
+		("PATCH_TYPE_ID")
+	REFERENCES "SWARE   "."DIM_PATCH_TYPE"
+		("PATCH_TYPE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK2" FOREIGN KEY
+		("DUE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK3" FOREIGN KEY
+		("INSTALLED_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK6" FOREIGN KEY
+		("ORG_L1_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_L1"
+		("ORG_L1_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK7" FOREIGN KEY
+		("ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK8" FOREIGN KEY
+		("STATUS_ID")
+	REFERENCES "SWARE   "."DIM_PATCH_STATUS"
+		("PATCH_STATUS_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_FK9" FOREIGN KEY
+		("SEVERITY_ID")
+	REFERENCES "SWARE   "."DIM_PATCH_SEVERITY"
+		("SEVERITY_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACT_PATCH"
+
+ALTER TABLE "SWARE   "."FACT_PATCH" 
+	ADD CONSTRAINT "FACT_PATCH_CK2" CHECK 
+		(DELETE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN" 
+	ADD CONSTRAINT "DIM_COMM_TAS_FK1" FOREIGN KEY
+		("SCAN_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN" 
+	ADD CONSTRAINT "DIM_COMM_TAS_FK6" FOREIGN KEY
+		("ORG_L1_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_L1"
+		("ORG_L1_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN" 
+	ADD CONSTRAINT "DIM_COMM_TAS_FK7" FOREIGN KEY
+		("ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN" 
+	ADD CONSTRAINT "DIM_COMM_TAS_CK1" CHECK 
+		(SCAN_SERVICE IN ('health','vuln','patch'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET" 
+	ADD CONSTRAINT "DIM_COMM_TA_CK1" CHECK 
+		(TOOL IN ('epo','itim','imss','smln','fusion','iss-remedy','unk','sysreg','vsa','qwesthct','tscm','trt')
+)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN" 
+	ADD CONSTRAINT "DIM_COMM_TAC_FK3" FOREIGN KEY
+		("TOOL_ASSET_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET"
+		("TOOL_ASSET_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN" 
+	ADD CONSTRAINT "DIM_COMM_TAC_CK1" CHECK 
+		(PRIMARY_CONN_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN" 
+	ADD CONSTRAINT "DIM_COMM_TAC_CK2" CHECK 
+		(PRIMARY_CONN_RULE IN ('explicit','implicit'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_TOOL_ASSET_MSS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_MSS" 
+	ADD CONSTRAINT "DIM_COMM_TAM_FK3" FOREIGN KEY
+		("TOOL_ASSET_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET"
+		("TOOL_ASSET_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_DEVICE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DEVICE" 
+	ADD CONSTRAINT "DIM_COMM_DEV_FK3" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET"
+		("TOOL_ASSET_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TACH_CK1" CHECK 
+		(PRIMARY_CONN_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_CONN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TACH_CK2" CHECK 
+		(PRIMARY_CONN_RULE IN ('explicit','implicit'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+--ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+--	ADD CONSTRAINT "DIM_COMM_TAH_FK1" FOREIGN KEY
+--		("ORG_L1_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_ORG_L1"
+--		("ORG_L1_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_FK3" FOREIGN KEY
+		("MANAGER_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAS_FK2" FOREIGN KEY
+		("ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_CK1" CHECK 
+		(SYSTEM_STATUS IN ('prod','test','dr','transition','decom','unk'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_CK2" CHECK 
+		(ENCRYPTION_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_CK3" CHECK 
+		(HC_AUTO_FLAG in ('y','n','u'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_CK4" CHECK 
+		(HC_MANUAL_FLAG in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_CK5" CHECK 
+		(DISASTER_RECOVERY_FLAG in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TAH_CK6" CHECK 
+		(VITAL_BUSINESS_PROCESS_FLAG in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_VULN_OS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN_OS" 
+	ADD CONSTRAINT "DIM_COMM_VULN_OS_FK1" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_VULN_APP"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN_APP" 
+	ADD CONSTRAINT "DIM_COMM_VULN_APP_FK1" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_VULN_SOURCE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_VULN_SOURCE" 
+	ADD CONSTRAINT "DIM_COMM_VULN_S_FK1" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK1" CHECK 
+		(DEVICE_TIMESTAMP in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK10" CHECK 
+		(SIG_ID           in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK11" CHECK 
+		(SOURCE_GEOIP_ID  in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK12" CHECK 
+		(DEST_GEOIP_ID    in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK13" CHECK 
+		(SOURCE_ASSET_ID  in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK14" CHECK 
+		(DEST_ASSET_ID    in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK15" CHECK 
+		(EVERYTHING_ELSE  in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK2" CHECK 
+		(DEVICE_ID        in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK3" CHECK 
+		(IDS_TYPE_ID      in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK4" CHECK 
+		(PROTOCOL_ID      in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK5" CHECK 
+		(SOURCE_IP_INT    in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK6" CHECK 
+		(DEST_IP_INT      in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK7" CHECK 
+		(EVENT_CNT        in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK8" CHECK 
+		(ACTION_ID        in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_IDS_QUALITY"
+
+ALTER TABLE "SWARE   "."DIM_IDS_QUALITY" 
+	ADD CONSTRAINT "DIM_IDS_QUALITY_CK9" CHECK 
+		(SEVERITY_ID      in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+--ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+--	ADD CONSTRAINT "DIM_COMM_TASH_FK1" FOREIGN KEY
+--		("SCAN_DATE_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_DATE"
+--		("DATE_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+--ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+--	ADD CONSTRAINT "DIM_COMM_TASH_FK12" FOREIGN KEY
+--		("ASSET_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET"
+--		("TOOL_ASSET_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+--ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+--	ADD CONSTRAINT "DIM_COMM_TASH_FK6" FOREIGN KEY
+--		("ORG_L1_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_ORG_L1"
+--		("ORG_L1_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TASH_FK7" FOREIGN KEY
+		("ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG_IDS"
+		("ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TASH_CK1" CHECK 
+		(SCAN_SERVICE IN ('health','vuln','patch'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST" 
+	ADD CONSTRAINT "DIM_COMM_TASH_CK2" CHECK 
+		(HOST_STATUS IN ('up','down'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."STAGING_SCAN_FINDING"
+
+--ALTER TABLE "SWARE   "."STAGING_SCAN_FINDING" 
+--	ADD CONSTRAINT "STAGING_SCANFIND_FK2" FOREIGN KEY
+--		("ASSET_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+--		("TOOL_ASSET_VID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+--ALTER TABLE "SWARE   "."STAGING_SCAN_FINDING" 
+--	ADD CONSTRAINT "STAGING_SCANFIND_FK3" FOREIGN KEY
+--		("ORG_L1_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_ORG_L1"
+--		("ORG_L1_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACT_IDS"
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK1" FOREIGN KEY
+		("DEVICE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK10" FOREIGN KEY
+		("ACTION_ID")
+	REFERENCES "SWARE   "."DIM_IDS_ACTION"
+		("ACTION_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK11" FOREIGN KEY
+		("QUALITY_ID")
+	REFERENCES "SWARE   "."DIM_IDS_QUALITY"
+		("QUALITY_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK2" FOREIGN KEY
+		("SEM_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK3" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DEVICE"
+		("DEVICE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK4" FOREIGN KEY
+		("SIG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SIG"
+		("SIG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK5" FOREIGN KEY
+		("SEVERITY_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SEVERITY"
+		("SEVERITY_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK6" FOREIGN KEY
+		("SOURCE_PORT")
+	REFERENCES "SWARE   "."DIM_COMM_PORT"
+		("PORT")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK7" FOREIGN KEY
+		("DEST_PORT")
+	REFERENCES "SWARE   "."DIM_COMM_PORT"
+		("PORT")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK8" FOREIGN KEY
+		("IDS_TYPE_ID")
+	REFERENCES "SWARE   "."DIM_IDS_TYPE"
+		("IDS_TYPE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_IDS" 
+	ADD CONSTRAINT "FACT_IDS_FK9" FOREIGN KEY
+		("PROTOCOL_ID")
+	REFERENCES "SWARE   "."DIM_IDS_PROTOCOL"
+		("PROTOCOL_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_COMM_DEVICE_MSS"
+
+ALTER TABLE "SWARE   "."DIM_COMM_DEVICE_MSS" 
+	ADD CONSTRAINT "DIM_COMM_DEVI_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_COMM_DEVICE_MSS" 
+	ADD CONSTRAINT "DIM_COMM_DEVI_FK3" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET"
+		("TOOL_ASSET_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY"
+
+ALTER TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_IDS_DSAM_FK1" FOREIGN KEY
+		("DEVICE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_IDS_DSAM_FK2" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DEVICE_MSS"
+		("DEVICE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_IDS_DSAM_FK3" FOREIGN KEY
+		("SIG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SIG"
+		("SIG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY"
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAM_FK1" FOREIGN KEY
+		("DEVICE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAM_FK2" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DEVICE_MSS"
+		("DEVICE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAM_FK3" FOREIGN KEY
+		("ACTION_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ACTION"
+		("ACTION_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAM_FK4" FOREIGN KEY
+		("DIRECTION_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DIRECTION"
+		("DIRECTION_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY"
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAPPM_FK1" FOREIGN KEY
+		("DEVICE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAPPM_FK2" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DEVICE_MSS"
+		("DEVICE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAPPM_FK3" FOREIGN KEY
+		("ACTION_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ACTION"
+		("ACTION_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAPPM_FK4" FOREIGN KEY
+		("DIRECTION_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DIRECTION"
+		("DIRECTION_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAPPM_FK5" FOREIGN KEY
+		("PROTOCOL_ID")
+	REFERENCES "SWARE   "."DIM_COMM_PROTOCOL"
+		("PROTOCOL_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_FW_DEV_DIR_ACT_PROTO_PORT_MONTHLY" 
+	ADD CONSTRAINT "CONSDB_FW_DDAPPM_FK6" FOREIGN KEY
+		("PORT")
+	REFERENCES "SWARE   "."DIM_COMM_PORT"
+		("PORT")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_CK1" CHECK 
+		(HC_TYPE IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_CK2" CHECK 
+		(VULN_TYPE IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_CK3" CHECK 
+		(PATCH_TYPE IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_CK4" CHECK 
+		(IDS_TYPE IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_CK5" CHECK 
+		(FW_TYPE IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_TOOL"
+
+ALTER TABLE "SWARE   "."DIM_COMM_TOOL" 
+	ADD CONSTRAINT "DIM_COMMTOOL_CK6" CHECK 
+		(ASSET_TYPE IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."MISC_SCAN_REJECT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_REJECT" 
+	ADD CONSTRAINT "MISC_SCAN_REJECT_FK1" FOREIGN KEY
+		("SCAN_START_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."MISC_SCAN_REJECT" 
+	ADD CONSTRAINT "MISC_SCAN_REJECT_FK2" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."MISC_SCAN_REJECT" 
+	ADD CONSTRAINT "MISC_SCAN_REJECT_FK8" FOREIGN KEY
+		("SCAN_TOOL_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL"
+		("TOOL_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2"
+
+ALTER TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2" 
+	ADD CONSTRAINT "CONSDB_IDS_DSAM2_FK1" FOREIGN KEY
+		("DEVICE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2" 
+	ADD CONSTRAINT "CONSDB_IDS_DSAM2_FK2" FOREIGN KEY
+		("DEVICE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DEVICE_MSS"
+		("DEVICE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."CONSDB_IDS_DEV_SIG_ACT_MONTHLY2" 
+	ADD CONSTRAINT "CONSDB_IDS_DSAM2_FK3" FOREIGN KEY
+		("SIG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SIG"
+		("SIG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACT_SCAN"
+
+--ALTER TABLE "SWARE   "."FACT_SCAN" 
+--	ADD CONSTRAINT "FACT_SCAN_FK1" FOREIGN KEY
+--		("ROW_TO_DATE_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_DATE"
+--		("DATE_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_FK2" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_FK4" FOREIGN KEY
+		("SEVERITY_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SEVERITY"
+		("SEVERITY_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_FK5" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+--ALTER TABLE "SWARE   "."FACT_SCAN" 
+--	ADD CONSTRAINT "FACT_SCAN_FK6" FOREIGN KEY
+--		("PORT")
+--	REFERENCES "SWARE   "."DIM_COMM_PORT"
+--		("PORT")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+--ALTER TABLE "SWARE   "."FACT_SCAN" 
+--	ADD CONSTRAINT "FACT_SCAN_FK7" FOREIGN KEY
+--		("PROTOCOL_ID")
+--	REFERENCES "SWARE   "."DIM_COMM_PROTOCOL"
+--		("PROTOCOL_ID")
+--	ON DELETE NO ACTION
+--	ON UPDATE NO ACTION
+--	ENFORCED
+--	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_FK8" FOREIGN KEY
+		("SCAN_TOOL_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL"
+		("TOOL_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACT_SCAN"
+
+ALTER TABLE "SWARE   "."FACT_SCAN" 
+	ADD CONSTRAINT "FACT_SCAN_CK1" CHECK 
+		(SCAN_SERVICE IN ('health','vuln', 'patch'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_FK1" FOREIGN KEY
+		("PUBLISH_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_FK2" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_FK3" FOREIGN KEY
+		("SCAN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+		("SCAN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_FK5" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_CK1" CHECK 
+		(PUBLISH_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_CK2" CHECK 
+		(VALIDATE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_CK3" CHECK 
+		(SUPPRESS_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_SCAN_FINDING_AUDIT"
+
+ALTER TABLE "SWARE   "."MISC_SCAN_FINDING_AUDIT" 
+	ADD CONSTRAINT "MISC_SCAN_FINDING_AUDIT_CK4" CHECK 
+		(CONSOLIDATE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT"
+
+ALTER TABLE "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT" 
+	ADD CONSTRAINT "FACTS_IDS_SEDN_FK1" FOREIGN KEY
+		("SIG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_SIG"
+		("SIG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_IDS_SIG_EMERGING_DAILY_NONMQT" 
+	ADD CONSTRAINT "FACTS_IDS_SEDN_FK2" FOREIGN KEY
+		("DEVICE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY" 
+	ADD CONSTRAINT "FACTS_SCAN_VSD_FK1" FOREIGN KEY
+		("SCAN_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_VULN_SCORE_DAILY" 
+	ADD CONSTRAINT "FACTS_SCAN_VSD_FK2" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	NOT ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_CK1" CHECK 
+		(SCORE_TYPE IN ('detail','summary'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_CK2" CHECK 
+		(SUBJECT_NAME IN ('device','signature','vulnerability','org'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_CK3" CHECK 
+		(SUBJECT_ASPECT IN ('config','threat','vulnerability', 'cost'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_CK4" CHECK 
+		(SCORE_SUMMARY_TYPE IN ('external','internal'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_CK5" CHECK 
+		(SCORE_SUMMARY_WEIGHT BETWEEN 0 AND 1)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_COMM_SCORE"
+
+ALTER TABLE "SWARE   "."DIM_COMM_SCORE" 
+	ADD CONSTRAINT "DIM_COMM_SCORE_CK6" CHECK 
+		(SCORE_ENGINE IN ('custom','score'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AM_PERIOD_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AM_PERIOD_CK1" CHECK 
+		(PUBLISH_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AM_PERIOD_CK2" CHECK 
+		(VALIDATE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AM_PERIOD_CK3" CHECK 
+		(SUPPRESS_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AVM_PERIOD_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AVM_PERIOD_FK3" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AVM_PERIOD_CK1" CHECK 
+		(PUBLISH_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AVM_PERIOD_CK2" CHECK 
+		(VALIDATE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_VULN_MISC_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_AVM_PERIOD_CK3" CHECK 
+		(SUPPRESS_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ASSET_SUPP_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_ASSET_SUPP_PERIOD_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_ORG_VULN_PERIOD_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_ORG_VULN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_ORG_VULN_PERIOD_FK3" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK1" CHECK 
+		(USER_TYPE IN ('internal','external'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK2" CHECK 
+		(APPLICATION_NAME IN ('security','compliance'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK3" CHECK 
+		(SUBJECT_AREA IN ('ids','fw','scan','hip','patch','common','av'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK4" CHECK 
+		(METRIC_TYPE_SECURITY IN ('read','write','none'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK5" CHECK 
+		(METRIC_TYPE_PROCESS IN ('read','write','none'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK6" CHECK 
+		(METRIC_TYPE_FINANCIAL IN ('read','write','none'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."MISC_COMM_AUTH"
+
+ALTER TABLE "SWARE   "."MISC_COMM_AUTH" 
+	ADD CONSTRAINT "MISC_COMM_AUTH_CK7" CHECK 
+		(STATUS IN ('open','close','suspend'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ASSET_PER_FK1" FOREIGN KEY
+		("ASSET_VID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET_HIST"
+		("TOOL_ASSET_VID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ASSET_PER_FK2" FOREIGN KEY
+		("PERIOD_MONTH_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_PERIOD"
+		("PERIOD_MONTH_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ASSET_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ASSET_PER_FK3" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_FK2" FOREIGN KEY
+		("PERIOD_MONTH_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_PERIOD"
+		("PERIOD_MONTH_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_FK3" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_CK1" CHECK 
+		(YEAR between 2010 and 2020)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_CK2" CHECK 
+		(MONTH_OF_YEAR between 1 and 12)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_CK3" CHECK 
+		(YEAR = YEAR(ASSET_FREEZE_TIMESTAMP))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_CK4" CHECK 
+		(MONTH_OF_YEAR = MONTH(ASSET_FREEZE_TIMESTAMP))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_CK5" CHECK 
+		(PERIOD_OVERRIDE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."DIM_SCAN_ORG_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_ORG_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_ORG_PERIOD_CK6" CHECK 
+		(DAYS_IN_MONTH BETWEEN 1 AND 31)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SCAN_PER_FK1" FOREIGN KEY
+		("PUBLISH_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SCAN_PER_FK2" FOREIGN KEY
+		("SCAN_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SCAN_PER_FK3" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SCAN_PER_FK4" FOREIGN KEY
+		("TOOL_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL"
+		("TOOL_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SCAN_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SCAN_PER_FK5" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	REFERENCES "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_FK1" FOREIGN KEY
+		("SUPPRESS_START_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_FK2" FOREIGN KEY
+		("SUPPRESS_STOP_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_FK4" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_FK5" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_ORG_PERIOD"
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_FK6" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	REFERENCES "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SUPPRESS_PER_FK7" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGP_FK1" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_GROUP_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGP_FK2" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_ORG_PERIOD"
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD"
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGF_FK1" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGF_FK2" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_ORG_PERIOD"
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "PERIOD_MONTH_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."DIM_SCAN_SUPPRESS_FINDING_PERIOD" 
+	ADD CONSTRAINT "DIM_SCAN_SGF_FK3" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	REFERENCES "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK1" FOREIGN KEY
+		("PUBLISH_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK2" FOREIGN KEY
+		("RELEASE_DATE_ID")
+	REFERENCES "SWARE   "."DIM_COMM_DATE"
+		("DATE_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK3" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK4" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "SCAN_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_SCAN_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "SCAN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK5" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK6" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	REFERENCES "SWARE   "."DIM_SCAN_ASSET_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "ASSET_VID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_FK7" FOREIGN KEY
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")
+	REFERENCES "SWARE   "."DIM_SCAN_SUPPRESS_PERIOD"
+		("PERIOD_MONTH_ID",
+		 "SUPPRESS_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK1" CHECK 
+		(PUBLISH_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK2" CHECK 
+		(VALIDATE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK3" CHECK 
+		(SUPPRESS_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK4" CHECK 
+		(RELEASE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK5" CHECK 
+		(AUTO_RELEASE_FLAG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK6" CHECK 
+		((SUPPRESS_FLAG = 'y' and SUPPRESS_CNT > 0) or (SUPPRESS_FLAG = 'n' and SUPPRESS_CNT
+= 0))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "SWARE   "."FACTS_SCAN_PERIOD"
+
+ALTER TABLE "SWARE   "."FACTS_SCAN_PERIOD" 
+	ADD CONSTRAINT "FACTS_SCAN_PERIOD_CK7" CHECK 
+		(RESULT IN ('valid', 'prevalid'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+
+
+
+
+
+---------------------------------
+-- DDL statements for User Defined Functions
+---------------------------------
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION daysbetween (x TIMESTAMP, y TIMESTAMP) RETURNS DECIMAL(10,3)
+LANGUAGE SQL CONTAINS SQL NO EXTERNAL ACTION DETERMINISTIC
+RETURN decimal(
+(
+86400.0 * ( days(y) - days(x) ) +
+midnight_seconds(y) - midnight_seconds(x)
+) / 86400.0
+, 10,3
+)
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION dayssince (x TIMESTAMP) RETURNS DECIMAL(10,3)
+LANGUAGE SQL CONTAINS SQL NO EXTERNAL ACTION DETERMINISTIC
+RETURN decimal (
+(
+86400.0 * ( days(current date) - days(x) ) +
+midnight_seconds(current timestamp) - midnight_seconds(x)
+) / 86400.0
+, 10,3
+)}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION decayscore ( s DOUBLE, t DOUBLE  )
+specific DECAYSCORE RETURNS DECIMAL(10,3)
+RETURN decimal(
+( s * EXP ( (0 - 0.0462) * t ) )
+, 10,3
+)
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION ip_to_bigint(IP_STRING varchar(20)) returns bigint
+begin atomic
+declare period_1    int;
+declare period_2    int;
+declare period_3    int;
+declare node_1      bigint;
+declare node_2      bigint;
+declare node_3      bigint;
+declare node_4      bigint;
+declare node_1_len  int;
+declare node_2_len  int;
+declare node_3_len  int;
+declare node_4_len  int;
+declare ip_bigint   bigint;
+SET period_1      = LOCATE('.',ip_string, 1);
+SET period_2      = LOCATE('.',ip_string, period_1 + 1);
+SET period_3      = LOCATE('.',ip_string, period_2 + 1);
+SET node_1_len    = period_1 - 1;
+SET node_2_len    = period_2 - period_1 - 1;
+SET node_3_len    = period_3 - period_2 - 1;
+SET node_4_len    = LENGTH(ip_string) - period_3;
+SET node_1        = INTEGER(SUBSTR(ip_string,           1, node_1_len));
+SET node_2        = INTEGER(SUBSTR(ip_string,period_1 + 1, node_2_len));
+SET node_3        = INTEGER(SUBSTR(ip_string,period_2 + 1, node_3_len));
+SET node_4        = INTEGER(SUBSTR(ip_string,period_3 + 1, node_4_len));
+SET ip_bigint      = (node_1 * 16777216) + (node_2 * 65536) + (node_3 * 256) + node_4;
+return ip_bigint;
+end
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION ip_to_string(IP_BIGINT bigint)
+returns varchar(15)
+deterministic
+no external action
+contains sql
+return       RTRIM(CHAR(MOD(BIGINT(ip_bigint / 16777216), 256)))
+|| '.' ||  RTRIM(CHAR(MOD(INTEGER(ip_bigint  / 65536), 256)))
+|| '.' ||  RTRIM(CHAR(MOD(INTEGER(ip_bigint / 256), 256)))
+|| '.' ||  RTRIM(CHAR(MOD(ip_bigint, 256)))
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION ldg_ip_flip(ip_string varchar(20)) returns varchar(15)
+deterministic
+begin atomic
+    declare period_1    int;
+    declare period_2    int;
+    declare period_3    int;
+    declare node_1      bigint;
+    declare node_2      bigint;
+    declare node_3      bigint;
+    declare node_4      bigint;
+    declare node_1_len  int;
+    declare node_2_len  int;
+    declare node_3_len  int;
+    declare node_4_len  int;
+    declare newip       varchar(15);
+---
+    SET period_1      = LOCATE('.',ip_string, 1);
+    SET period_2      = LOCATE('.',ip_string, period_1 + 1);
+    SET period_3      = LOCATE('.',ip_string, period_2 + 1);
+---
+    SET node_1_len    = period_1 - 1;
+    SET node_2_len    = period_2 - period_1 - 1;
+    SET node_3_len    = period_3 - period_2 - 1;
+    SET node_4_len    = LENGTH(ip_string) - period_3;
+---
+    SET node_1        = INTEGER(SUBSTR(ip_string,           1, node_1_len));
+    SET node_2        = INTEGER(SUBSTR(ip_string,period_1 + 1, node_2_len));
+    SET node_3        = INTEGER(SUBSTR(ip_string,period_2 + 1, node_3_len));
+    SET node_4        = INTEGER(SUBSTR(ip_string,period_3 + 1, node_4_len));
+    SET newip         = RTRIM( CHAR(node_1)) || '.' || RTRIM(CHAR(node_4)) || '.' || RTRIM(CHAR(node_3)) || '.' || RTRIM
+(CHAR(node_2));
+    return           newip  ;
+end
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION mac_2vendor( SOURCE_MAC_INT BIGINT)
+RETURNS VARCHAR(17)
+BEGIN ATOMIC
+DECLARE HEX_INT         VARCHAR(25);--
+DECLARE NODE_1          VARCHAR(3);--
+DECLARE NODE_2          VARCHAR(3);--
+DECLARE NODE_3          VARCHAR(3);--
+DECLARE NODE_4          VARCHAR(3);--
+DECLARE NODE_5          VARCHAR(3);--
+DECLARE NODE_6          VARCHAR(3);--
+
+SET HEX_INT             = SUBSTR(HEX(SOURCE_MAC_INT),5,12);--
+SET NODE_1              = SUBSTR(HEX_INT,1,2);--
+SET NODE_2              = SUBSTR(HEX_INT,3,2);--
+SET NODE_3              = SUBSTR(HEX_INT,5,2);--
+
+return RTRIM(CHAR(NODE_1)) || ':' || RTRIM(CHAR(NODE_2)) || ':' ||  RTRIM(CHAR(NODE_3));--
+end
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION mac_int2string( SOURCE_MAC_INT BIGINT)
+RETURNS VARCHAR(17)
+BEGIN ATOMIC
+DECLARE HEX_INT         VARCHAR(25);--
+DECLARE NODE_1          VARCHAR(3);--
+DECLARE NODE_2          VARCHAR(3);--
+DECLARE NODE_3          VARCHAR(3);--
+DECLARE NODE_4          VARCHAR(3);--
+DECLARE NODE_5          VARCHAR(3);--
+DECLARE NODE_6          VARCHAR(3);--
+
+SET HEX_INT             = SUBSTR(HEX(SOURCE_MAC_INT),5,12);--
+SET NODE_1              = SUBSTR(HEX_INT,1,2);--
+SET NODE_2              = SUBSTR(HEX_INT,3,2);--
+SET NODE_3              = SUBSTR(HEX_INT,5,2);--
+SET NODE_4              = SUBSTR(HEX_INT,7,2);--
+SET NODE_5              = SUBSTR(HEX_INT,9,2);--
+SET NODE_6              = SUBSTR(HEX_INT,11,2);--
+
+return RTRIM(CHAR(NODE_1)) || ':' || RTRIM(CHAR(NODE_2)) || ':' ||  RTRIM(CHAR(NODE_3)) || ':' || RTRIM(CHAR(NODE_4)) ||
+ ':' || RTRIM(CHAR(NODE_5)) || ':' || RTRIM(CHAR(NODE_6));--
+end
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION network_type (arg_type VARCHAR(10))
+returns varchar(10)
+deterministic
+RETURN ( CASE arg_type
+WHEN 'dmz'      THEN 'dmz'
+WHEN 'external' THEN 'external'
+WHEN 'extranet' THEN 'extranet'
+WHEN 'internal' THEN 'internal'
+ELSE                 'n/a'
+END )
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION secondsdiff (T1 timestamp, T2 timestamp)
+returns int
+return (
+(days(t1)  - days(t2)) * 86400 +
+(midnight_seconds(t1) - midnight_seconds(t2))
+)
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION SEVERITY_ID2CD (SEVERITY_ID smallint)
+returns varchar(15)
+specific sev_id2cd_smint
+deterministic
+begin atomic
+declare severity_cd  varchar(15);
+if severity_id      = 1 THEN
+set severity_cd  = 'high'          ;
+elseif severity_id  = 2 THEN
+set severity_cd  = 'medium'        ;
+elseif severity_id  = 3 THEN
+set severity_cd  = 'low'           ;
+elseif severity_id  = 4 THEN
+set severity_cd  = 'info'          ;
+else
+set severity_cd  = 'unknown'       ;
+end if;
+return severity_cd;
+end
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION SEVERITY_ID2CD (SEVERITY_ID integer)
+returns varchar(15)
+specific sev_id2cd_int
+deterministic
+begin atomic
+declare severity_cd  varchar(15);
+if severity_id      = 1 THEN
+set severity_cd  = 'high'          ;
+elseif severity_id  = 2 THEN
+set severity_cd  = 'medium'        ;
+elseif severity_id  = 3 THEN
+set severity_cd  = 'low'           ;
+elseif severity_id  = 4 THEN
+set severity_cd  = 'info'          ;
+else
+set severity_cd  = 'unknown'       ;
+end if;
+return severity_cd;
+end
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","DBA","SWARE"}
+
+CREATE FUNCTION zeropad (arg_val INTEGER, arg_len INTEGER) RETURNS VARCHAR(20)
+LANGUAGE SQL CONTAINS SQL NO EXTERNAL ACTION DETERMINISTIC
+BEGIN ATOMIC
+DECLARE arg_val_char  VARCHAR(20);
+DECLARE arg_val_pad   VARCHAR(20);
+DECLARE arg_val_len   INT;
+
+
+SET arg_val_char      = RIGHT(DIGITS(arg_val),arg_len);
+
+
+RETURN arg_val_char;
+END
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","DBA","SWARE"}
+
+CREATE FUNCTION ts2tenmin (arg_val TIMESTAMP) RETURNS TIMESTAMP
+LANGUAGE SQL CONTAINS SQL NO EXTERNAL ACTION DETERMINISTIC
+BEGIN ATOMIC
+DECLARE ts_varchar    VARCHAR(20);
+DECLARE ts_varchar2   VARCHAR(20);
+
+
+SET ts_varchar    = VARCHAR_FORMAT(arg_val, 'YYYY-MM-DD HH24:MI:SS');
+SET ts_varchar2   = LEFT(ts_varchar,10)                                    -- date
+|| '-' || SUBSTR(ts_varchar,12,2)                      -- hour
+|| '.' || ZEROPAD(((MINUTE(arg_val)/10)*10),2)         -- minute
+|| '.00';                                              -- second
+RETURN TIMESTAMP(ts_varchar2);
+
+
+END
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION ids_quality_inspect(quality_id SMALLINT, quality_col VARCHAR(20))
+returns varchar(10)
+deterministic
+no external action
+contains sql
+BEGIN ATOMIC
+   DECLARE result INT;
+   IF quality_col = 'device_timestamp' THEN
+      SET result = BITAND(quality_id, 1);
+   ELSEIF quality_col = 'device_id'  THEN 
+      SET result = BITAND(quality_id, 2);
+   ELSEIF quality_col = 'ids_type_id' THEN
+      SET result = BITAND(quality_id, 4);
+   ELSEIF quality_col = 'protocol_id' THEN
+      SET result = BITAND(quality_id, 8);
+   ELSEIF quality_col = 'protocol_id' THEN
+      SET result = BITAND(quality_id, 8);
+   ELSEIF quality_col = 'source_ip_int' THEN
+      SET result = BITAND(quality_id, 16);
+   ELSEIF quality_col = 'dest_ip_int' THEN
+      SET result = BITAND(quality_id, 32);
+   ELSEIF quality_col = 'event_cnt'   THEN
+      SET result = BITAND(quality_id, 64);
+   ELSEIF quality_col = 'action_id'   THEN
+      SET result = BITAND(quality_id, 128);
+   ELSEIF quality_col = 'severity_id' THEN
+      SET result = BITAND(quality_id, 256);
+   ELSEIF quality_col = 'sig_id'      THEN
+      SET result = BITAND(quality_id, 512);
+   ELSEIF quality_col = 'source_geoip_id' THEN
+      SET result = BITAND(quality_id, 1024);
+   ELSEIF quality_col = 'dest_geoip_id' THEN
+      SET result = BITAND(quality_id, 2048);
+   ELSEIF quality_col = 'source_asset_id' THEN
+      SET result = BITAND(quality_id, 4096);
+   ELSEIF quality_col = 'dest_asset_id' THEN
+      SET result = BITAND(quality_id, 8192);
+   ELSEIF quality_col = 'everything_else' THEN
+      SET result = BITAND(quality_id, 16384);
+   END IF;
+   IF result = 0 THEN
+      RETURN 'success';
+   ELSE
+      RETURN 'failure';
+   END IF;
+END
+}
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION  scan_suppress_asset_summary_tf( arg_org_l1_id
+         INTEGER,
+                                                           arg_org_id             INTEGER,
+                                                           arg_hc_group_id        INTEGER,
+                                                           arg_asset_id           INTEGER,
+                                                           arg_period_month_id    SMALLINT )
+RETURNS TABLE (asset_vid     INTEGER,
+               asset_id      INTEGER,
+               vuln_id       INTEGER,
+               finding_vid   INTEGER,
+               finding_id    INTEGER,
+               suppress_cnt  SMALLINT)
+
+LANGUAGE SQL
+READS SQL DATA
+EXTERNAL ACTION
+DETERMINISTIC
+RETURN
+  WITH 
+
+  -----------------------------------------------------------------------------------------
+  --- get all assets in scope for this query ---
+  --- implments conditional joins on hc_group_id & asset_id
+  -----------------------------------------------------------------------------------------
+  session.asset_scope (org_l1_id   ,
+                       org_id      ,
+                       hc_group_id ,
+                       asset_vid   ,
+                       asset_id    ,
+                       period_month_id ) AS
+       ( SELECT dsap.org_l1_id   ,
+                dsap.org_id      ,
+                dsap.hc_group_id ,
+                dsap.asset_vid   ,
+                dsap.asset_id    ,
+                dsap.period_month_id
+         FROM dim_scan_asset_period   dsap
+         WHERE  dsap.org_l1_id    = arg_org_l1_id
+           AND  dsap.org_id       = arg_org_id
+           AND  (dsap.hc_group_id = arg_hc_group_id
+                  or arg_hc_group_id = 0)
+           AND  (dsap.asset_id    = arg_asset_id
+                  or arg_asset_id = 0)
+           AND  dsap.period_month_id = arg_period_month_id
+       )
+
+       -----------------------------------------------------------------------------------------
+       --- notes:
+       ---  - use of MAX() may not produce correct results - if the same finding shows up twice
+       ---    in a month (released then re-released) it could theoretically have different vuln_ids.
+       ---    Perhaps we should only choose the later data?
+       -----------------------------------------------------------------------------------------
+       SELECT scope.asset_vid                       ,
+              MAX(scope.asset_id)  AS asset_id      ,
+              MAX(vuln_id)         AS vuln_id       ,
+              find.finding_vid                      ,
+              MAX(find.finding_id) AS finding_id    ,
+              MAX(suppress_cnt)    AS suppress_cnt
+       FROM   session.asset_scope                         scope
+           INNER JOIN facts_scan_period                   find
+              ON find.period_month_id = scope.period_month_id
+             AND find.org_l1_id       = scope.org_l1_id
+             AND find.org_id          = scope.org_id
+             AND find.asset_vid       = scope.asset_vid
+       WHERE find.suppress_flag = 'y'
+       GROUP BY scope.asset_vid,
+                find.finding_vid
+       
+}
+
+
+----------------------------
+
+-- DDL Statements for Views
+
+----------------------------
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW   fact_patch_ecm_pub_v AS SELECT org.org_l1_id  
+                               , org.org_id                           
+         , org_name                                       , org_ecm_account_id
+                            , org_ecm_account_name                    
+      , org_ecm_account_type                           , severity_cd  
+                                 , patch_status_name                  
+           , patch_type_name                                , vuln_advisory_no
+                              , vuln_vendor_cd                        
+        , vuln_ms_prod_name                              , vuln_ms_bulletin_id
+                           , vuln_ms_qno                              
+     , vuln_ms_reason                                 , vuln_cve      
+                                , vuln_name                           
+          , disc_date.date       AS discovered_date        , due_date.date
+       AS due_date               , inst_date.date       AS installed_date
+        , patch.lu_timestamp FROM   fact_patch                     patch
+INNER JOIN dim_comm_org             org ON patch.org_id = org.org_id INNER
+JOIN dim_comm_date            disc_date ON patch.discovered_date_id = disc_date.date_id
+INNER JOIN dim_comm_date            due_date ON patch.due_date_id = due_date.date_id
+INNER JOIN dim_comm_date            inst_date ON patch.installed_date_id
+= inst_date.date_id INNER JOIN dim_patch_severity       sev ON patch.severity_id
+= sev.severity_id INNER JOIN dim_patch_status         status ON patch.status_id
+  = status.patch_status_id INNER JOIN dim_patch_type           type ON
+patch.patch_type_id   = type.patch_type_id INNER JOIN dim_patch_vuln  
+         vuln ON patch.vuln_id     = vuln.vuln_id WHERE row_to_timestamp
+IS NULL AND patch.delete_flag <> 'y'}
+
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE view dim_comm_tool_asset_v AS (select (cast(org_id as
+bigint) * 1000000) + (cast(tool_asset_id as bigint)) as orgdev, org_l1_id,
+org_id, tool_asset_id from dim_comm_tool_asset)}
+
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_tool_asset_hist_v AS ( SELECT tool_asset_vid
+as asset_vid, tool_asset_id  as asset_id , tool_asset_vid             ,
+tool_asset_id              , row_from_timestamp         , row_to_timestamp
+          , org_l1_id                  , org_id                     , manager_id
+                , source_asset_id            , source_org_id          
+   , ip_string_primary          , ip_int_primary             , ip_string_list
+            , host_name                  , tool_id                    ,
+os_id                      , os_source_text             , system_status
+             , encryption_flag            , hc_auto_flag              
+, hc_auto_interval_weeks     , hc_manual_flag             , hc_manual_interval_weeks
+  , security_policy_name       , disaster_recovery_flag     , internet_accessible_flag
+  , vital_business_process_flag, hc_start_date              , lu_timestamp
+              , lu_userid FROM dim_comm_tool_asset_hist )}
+
+
+
+
+---------------------------------
+-- DDL statements for stored procedures
+---------------------------------
+
+SET CURRENT SCHEMA = "SWARE   "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SWARE"}
+CALL SYSPROC.SET_ROUTINE_OPTS('DYNAMICRULES BIND')}
+
+--CREATE PROCEDURE SSS_GBL_CHECK_ORG_ID                     
+--       (
+--       IN   I_ORG_L1_ID        INTEGER ,
+--       IN   I_ORG_ID           INTEGER ,
+--       IN   I_ORG_NAME         VARCHAR(80) ,
+--       OUT  O_PASS_FAIL_FLAG   NUMERIC(1)  
+--       )
+--       DYNAMIC RESULT SETS 0 
+--       LANGUAGE SQL 
+--       SPECIFIC SSSGBLCHECKORGID00 
+--       NOT DETERMINISTIC 
+--       NEW SAVEPOINT LEVEL 
+--       MODIFIES SQL DATA
+--       CALLED ON NULL INPUT 
+--
+--MAIN_START : BEGIN
+----**************************************************************************************
+----**************************************************************************************
+----***                     C O M M M E N T   S E C T I O N                           
+----**************************************************************************************
+----**************************************************************************************
+----***                                                                               
+----***                                                                                
+----***Author:		Eric Hoopes                                                
+----***Date Created:	07-17-2006                                                  
+----***                                                                                
+----***                                                                                
+----**************************************************************************************
+----************************C H A N G E   C O N T R O L***********************************
+----**************************************************************************************
+----***
+----***Developer:                                                                      
+----***Date Changed:                                                                   
+----***Comment:                                                                        
+----***                                                                                
+----**************************************************************************************
+----**************************************************************************************
+----***                                                                                
+----***Description:                                                                    
+----***	This takes the input parms passed in, to validate that a given ORG_ID and  
+----***	ORG_NAME Aactually belong together and match. In addition, the ORG_ID's level 1
+----***   ID is also checked against the I_ORG_L1_ID passed in.
+----***                                                                              
+----***Logic:                                                                        
+----***	The ORG_ID is used to read the DIM_ORG table to find the ORG_NAME out of the
+----***	the DIM_ORG table.  This name is then compared to the ORG_NAME input parm that
+----***   was passed in.  If the names match, then a 1 is returned.  If tHe names do not
+----***   match or if there is no row found from the DIM_ORG table, then a 0 is returned.
+----***   In addition, if the ORG_ID's level 1 ID does not match the I_ORG_L1_ID passed
+----***   in, then a 0 is returned.
+----***                                                                                
+----***Input Parameters:                                                               
+----***   I_ORG_L1_ID            -Level 1 Company for I_ORG_ID passed in
+----***   I_ORG_ID               -Company number passed in 
+----***   I_ORG_NAME             -Company name passed in
+----***                                                                               
+----***Output Parameters:                                                              
+----***   O_PASS_FAIL_FLAG       -Numeric value used to identify validation pass or fail
+----***                                                                                
+----***On Sucessfull Execution:                                                        
+----***	This procedure will return a 0 or 1 in the output parm and then return to caller. 
+----***                                                                                
+----***On Error Execution:                                                             
+----***	Thie procedure will not return any values in the output parm, and then signal
+----***	an SQLSTATE and return to the caller.
+----***
+----***Future Enhancements:
+----***
+----***                                                                                
+----**************************************************************************************
+----**************************************************************************************
+--
+--
+----------------------------------------------------------
+--------------SQL VARIABLE DECLARE STATEMENTS-------------
+----------------------------------------------------------
+--DECLARE SQLCODE          INTEGER            DEFAULT 0;  
+--DECLARE SQLSTATE         CHAR(5)            DEFAULT '00000'; 
+--DECLARE V_SQLCODE        INTEGER            DEFAULT 0;  
+--DECLARE V_SQLSTATE       CHAR(5)            DEFAULT '00000'; 
+--DECLARE V_MESSAGE        VARCHAR(100)       DEFAULT NULL; 
+--DECLARE V_PROCNAME       VARCHAR(128)       DEFAULT NULL; 
+--DECLARE V_ORG_NAME       VARCHAR(80)        DEFAULT NULL; 
+--DECLARE V_ORG_NAME_IN    VARCHAR(80)        DEFAULT NULL; 
+--DECLARE V_ORG_L1_ID      INTEGER            DEFAULT 0; 
+--
+--
+----------------------------------------------------------
+--------------SQL CURSOR DECLARE STATEMENTS---------------
+----------------------------------------------------------
+--
+--
+--
+----------------------------------------------------------
+--------------SQL CONDITION HANDLER STATEMENTS------------
+----------------------------------------------------------
+--DECLARE EXIT HANDLER FOR SQLEXCEPTION
+--ERROR: BEGIN
+--    --grab current db2 or user error text
+--    GET DIAGNOSTICS EXCEPTION 1 V_MESSAGE = MESSAGE_TEXT;
+--
+--    --grab current db2 or user sqlcode and sqlstate
+--    SELECT   SQLCODE
+--            ,SQLSTATE 
+--    INTO     V_SQLCODE 
+--            ,V_SQLSTATE  
+--    FROM    SYSIBM.SYSDUMMY1;
+-- 
+--    --reformat text message if nested proc or nested SIGNAL SQLSTATE
+--    IF V_PROCNAME IS NOT NULL THEN 
+--        SET V_MESSAGE = SUBSTR(V_MESSAGE, 59, (LENGTH(V_MESSAGE) - 59)); 
+--        SET V_MESSAGE = V_PROCNAME || '-' || V_MESSAGE;  
+--    END IF;
+--
+--    --raise error and return to caller
+--    SIGNAL SQLSTATE V_SQLSTATE SET MESSAGE_TEXT = V_MESSAGE;
+--END ERROR;
+--
+--
+--
+--DECLARE EXIT HANDLER FOR NOT FOUND
+--NOT_FOUND: BEGIN
+--    SET O_PASS_FAIL_FLAG = 0;
+--END NOT_FOUND;
+--
+--
+----------------------------------------------------------
+--------------SQL CONTROL STATEMENTS----------------------
+----------------------------------------------------------
+--
+----INITIALIZE VARIABLES
+--SET V_SQLCODE    = 0;
+--SET V_SQLSTATE   = '00000';
+--SET V_MESSAGE    = 'SUCCESS';
+--SET V_ORG_NAME_IN = I_ORG_NAME;
+--
+--
+--
+----VALIDATE INPUT PARMS
+--IF I_ORG_ID IS NULL OR I_ORG_NAME IS NULL OR I_ORG_L1_ID IS NULL THEN 
+--    SET O_PASS_FAIL_FLAG = 0;
+--    LEAVE MAIN_START;  
+--END IF;
+--
+--
+--
+----GET CURRENT ORG_NAME AND ORG_L1_ID FOR ORG_ID PASSED IN
+--SELECT  ORG_NAME
+--       ,ORG_L1_ID
+--INTO    V_ORG_NAME
+--       ,V_ORG_L1_ID
+--FROM    DIM_ORG   
+--WHERE   ORG_ID = I_ORG_ID;
+--
+--
+--
+----CONVERT, TRIM, AND COMPARE ORG_NAMES LOOKING FOR MATCH
+--SET V_ORG_NAME = LTRIM(V_ORG_NAME);
+--SET V_ORG_NAME = RTRIM(V_ORG_NAME);
+--SET V_ORG_NAME = LOWER(V_ORG_NAME);
+--
+--SET V_ORG_NAME_IN = LTRIM(V_ORG_NAME_IN); 
+--SET V_ORG_NAME_IN = RTRIM(V_ORG_NAME_IN);
+--SET V_ORG_NAME_IN = LOWER(V_ORG_NAME_IN);
+--
+--IF V_ORG_NAME IS NOT NULL AND V_ORG_L1_ID IS NOT NULL THEN
+--    IF V_ORG_NAME = V_ORG_NAME_IN AND V_ORG_L1_ID = I_ORG_L1_ID THEN
+--        SET O_PASS_FAIL_FLAG = 1; 
+--    ELSE
+--        SET O_PASS_FAIL_FLAG = 0;
+--    END IF;
+--ELSE
+--    SET O_PASS_FAIL_FLAG = 0;
+--END IF;
+--
+--
+--
+--END MAIN_START}
+--
+--COMMENT ON PROCEDURE "SWARE   "."SSS_GBL_CHECK_ORG_ID"(INTEGER,INTEGER,VARCHAR(),DECIMAL()) IS 'Checks that ORG_L1_ID, ORG_ID, and ORG_NAME match'}
+
+COMMIT WORK}
+
+--CONNECT RESET}
+
+--TERMINATE}
+
+-- This CLP file was created using DB2LOOK Version "9.7" 
+-- Timestamp: Mon Nov  1 20:38:54 GMT 2010
+-- Database Name: SWARE          
+-- Database Manager Version: DB2/AIX64 Version 9.7.2       
+-- Database Codepage: 1208
+-- Database Collating Sequence is: IDENTITY
+
+
+--CONNECT TO SWARE}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_ROLE"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_ROLE"  (
+		  "ROLE_NAME" VARCHAR(20) NOT NULL , 
+		  "HAS_ASSOCIATED_GEO" CHAR(1) NOT NULL , 
+		  "HAS_ASSOCIATED_ORG" CHAR(1) NOT NULL , 
+		  "HAS_ASSOCIATED_CATEGORY" CHAR(1) NOT NULL , 
+		  "CREATED_AT" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_ROLE"
+
+ALTER TABLE "HIP     "."HIP_ROLE" 
+	ADD CONSTRAINT "HIP_ROLE_PK" PRIMARY KEY
+		("ROLE_NAME")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_SESSION"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_SESSION"  (
+		  "ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "SESSION_ID" VARCHAR(254) NOT NULL , 
+		  "DATA" VARCHAR(12000) , 
+		  "CREATED_AT" TIMESTAMP NOT NULL , 
+		  "UPDATED_AT" TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_SESSION"
+
+ALTER TABLE "HIP     "."HIP_SESSION" 
+	ADD CONSTRAINT "HIP_SESSION_PK" PRIMARY KEY
+		("ID")}
+
+
+
+-- DDL Statements for indexes on Table "HIP     "."HIP_SESSION"
+
+CREATE INDEX "HIP     "."HIP_SESSION_X1" ON "HIP     "."HIP_SESSION" 
+		("UPDATED_AT" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+-- DDL Statements for indexes on Table "HIP     "."HIP_SESSION"
+
+CREATE INDEX "HIP     "."HIP_SESSION_X2" ON "HIP     "."HIP_SESSION" 
+		("SESSION_ID" ASC)
+		
+		ALLOW REVERSE SCANS}
+
+ALTER TABLE "HIP     "."HIP_SESSION" ALTER COLUMN "ID" RESTART WITH 2040}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_ROLES_BLUEGROUP"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_ROLES_BLUEGROUP"  (
+		  "ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "ROLE_NAME" VARCHAR(20) NOT NULL , 
+		  "GEO" VARCHAR(20) , 
+		  "CATEGORY" VARCHAR(50) , 
+		  "ORG_L1_ID" INTEGER , 
+		  "ORG_ID" INTEGER , 
+		  "BLUE_GROUPS_NAME" VARCHAR(254) NOT NULL , 
+		  "CREATED_AT" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_ROLES_BLUEGROUP"
+
+ALTER TABLE "HIP     "."HIP_ROLES_BLUEGROUP" 
+	ADD CONSTRAINT "HIP_ROLES_BGROUP_PK" PRIMARY KEY
+		("ID")}
+
+
+
+ALTER TABLE "HIP     "."HIP_ROLES_BLUEGROUP" ALTER COLUMN "ID" RESTART WITH 220}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_HC_GROUP"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_HC_GROUP"  (
+		  "HC_GROUP_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "GROUP_NAME" VARCHAR(80) NOT NULL , 
+		  "IS_CURRENT" CHAR(1) NOT NULL , 
+		  "LAST_CURRENT_TIMESTAMP" TIMESTAMP , 
+		  "CREATED_AT" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_HC_GROUP"
+
+ALTER TABLE "HIP     "."HIP_HC_GROUP" 
+	ADD CONSTRAINT "HIP_HC_GROUP_PK" PRIMARY KEY
+		("HC_GROUP_ID")}
+
+
+-- DDL Statements for unique constraints on Table "HIP     "."HIP_HC_GROUP"
+
+
+ALTER TABLE "HIP     "."HIP_HC_GROUP" 
+	ADD CONSTRAINT "HIP_HC_GROUP_UK1" UNIQUE
+		("ORG_ID",
+		 "GROUP_NAME")}
+
+
+ALTER TABLE "HIP     "."HIP_HC_GROUP" ALTER COLUMN "HC_GROUP_ID" RESTART WITH 420}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_PERIOD"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_PERIOD"  (
+		  "PERIOD_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "YEAR" SMALLINT NOT NULL , 
+		  "MONTH_OF_YEAR" SMALLINT NOT NULL , 
+		  "ASSET_FREEZE_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "DESC" VARCHAR(254) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_PERIOD"
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_PK" PRIMARY KEY
+		("PERIOD_ID")}
+
+
+-- DDL Statements for unique constraints on Table "HIP     "."HIP_PERIOD"
+
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_UK1" UNIQUE
+		("ORG_L1_ID",
+		 "ORG_ID",
+		 "YEAR",
+		 "MONTH_OF_YEAR")}
+
+
+ALTER TABLE "HIP     "."HIP_PERIOD" ALTER COLUMN "PERIOD_ID" RESTART WITH 60}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_SUPPRESS_GROUP"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_SUPPRESS_GROUP"  (
+		  "SUPPRESS_ID" INTEGER NOT NULL , 
+		  "HC_GROUP_ID" INTEGER NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_SUPPRESS_GROUP"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS_GROUP" 
+	ADD CONSTRAINT "HIP_SUPP_GROUP_PK" PRIMARY KEY
+		("SUPPRESS_ID",
+		 "HC_GROUP_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_SUPPRESS_FINDING"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_SUPPRESS_FINDING"  (
+		  "SUPPRESS_ID" INTEGER NOT NULL , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_SUPPRESS_FINDING"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS_FINDING" 
+	ADD CONSTRAINT "HIP_SUPP_FINDING_PK" PRIMARY KEY
+		("SUPPRESS_ID",
+		 "FINDING_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_ASSET_GROUP"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_ASSET_GROUP"  (
+		  "HC_GROUP_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_ASSET_GROUP"
+
+ALTER TABLE "HIP     "."HIP_ASSET_GROUP" 
+	ADD CONSTRAINT "HIP_ASSET_GROUP_PK" PRIMARY KEY
+		("HC_GROUP_ID",
+		 "ASSET_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_SCAN_FINDING"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_SCAN_FINDING"  (
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID_GEN" INTEGER NOT NULL GENERATED ALWAYS AS (ORG_L1_ID / 20) , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "PERIOD_ID" SMALLINT NOT NULL , 
+		  "FINDING_ID" INTEGER NOT NULL , 
+		  "RESULT" VARCHAR(20) NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_FACT1_32K" INDEX IN "TS_INDEX1_4K"  
+		 ORGANIZE BY ( 
+		  ( "ORG_L1_ID_GEN" ) , 
+		  ( "PERIOD_ID" ) ) 
+		 } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_SCAN_FINDING"
+
+ALTER TABLE "HIP     "."HIP_SCAN_FINDING" 
+	ADD CONSTRAINT "HIP_SCAN_FINDING_PK" PRIMARY KEY
+		("ASSET_ID",
+		 "PERIOD_ID",
+		 "FINDING_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_MISSED_SCAN_REASON"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_MISSED_SCAN_REASON"  (
+		  "MISSED_SCAN_REASON_ID" SMALLINT NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +32767  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "MISSED_SCAN_REASON" VARCHAR(254) NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_MISSED_SCAN_REASON"
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN_REASON" 
+	ADD CONSTRAINT "HIP_MSR_PK" PRIMARY KEY
+		("MISSED_SCAN_REASON_ID")}
+
+
+-- DDL Statements for unique constraints on Table "HIP     "."HIP_MISSED_SCAN_REASON"
+
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN_REASON" 
+	ADD CONSTRAINT "HIP_MSR_UK1" UNIQUE
+		("MISSED_SCAN_REASON")}
+
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN_REASON" ALTER COLUMN "MISSED_SCAN_REASON_ID" RESTART WITH 80}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_MISSED_SCAN"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_MISSED_SCAN"  (
+		  "MISSED_SCAN_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "PERIOD_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "MISSED_SCAN_REASON_ID" SMALLINT NOT NULL , 
+		  "OTHER_EXPLANATION" VARCHAR(254) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_MISSED_SCAN"
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN" 
+	ADD CONSTRAINT "HIP_MISSED_SCAN_PK" PRIMARY KEY
+		("MISSED_SCAN_ID")}
+
+
+-- DDL Statements for unique constraints on Table "HIP     "."HIP_MISSED_SCAN"
+
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN" 
+	ADD CONSTRAINT "HIP_MISSED_SCAN_UK1" UNIQUE
+		("PERIOD_ID",
+		 "ASSET_ID")}
+
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN" ALTER COLUMN "MISSED_SCAN_ID" RESTART WITH 1680}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_SUPPRESS"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_SUPPRESS"  (
+		  "SUPPRESS_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "SUPPRESS_NAME" VARCHAR(100) NOT NULL , 
+		  "SUPPRESS_DESC" VARCHAR(500) , 
+		  "START_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP , 
+		  "END_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "SUPPRESS_CLASS" VARCHAR(25) NOT NULL , 
+		  "APPROVAL_STATUS" VARCHAR(25) , 
+		  "AUTOMATIC_SUPPRESS_FLAG" CHAR(1) NOT NULL , 
+		  "VULN_ID" INTEGER , 
+		  "APPLY_TO_SCOPE" VARCHAR(40) NOT NULL , 
+		  "ASSET_ID" INTEGER , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_SUPPRESS"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" 
+	ADD CONSTRAINT "HIP_SUPPRESS_PK" PRIMARY KEY
+		("SUPPRESS_ID")}
+
+
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" ALTER COLUMN "SUPPRESS_ID" RESTART WITH 1080}
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_TASK_STATUS"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_TASK_STATUS"  (
+		  "TASK_ID" INTEGER NOT NULL GENERATED BY DEFAULT AS IDENTITY (  
+		    START WITH +1  
+		    INCREMENT BY +1  
+		    MINVALUE +1  
+		    MAXVALUE +2147483647  
+		    NO CYCLE  
+		    CACHE 20  
+		    NO ORDER ) , 
+		  "INSTANCE_NAME" VARCHAR(30) NOT NULL , 
+		  "TASK_NAME" VARCHAR(60) NOT NULL , 
+		  "SCHEDULED_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "AUTO_RETRY" CHAR(1) NOT NULL WITH DEFAULT 'n' , 
+		  "START_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "END_TIMESTAMP" TIMESTAMP , 
+		  "TASK_STATUS" VARCHAR(10) NOT NULL , 
+		  "TASK_MESSAGE" VARCHAR(255) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_TASK_STATUS"
+
+ALTER TABLE "HIP     "."HIP_TASK_STATUS" 
+	ADD CONSTRAINT "HIP_TASK_STATUS_PK" PRIMARY KEY
+		("TASK_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_SCAN"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_SCAN"  (
+		  "SCAN_ID" INTEGER NOT NULL , 
+		  "PERIOD_ID" INTEGER NOT NULL , 
+		  "SCAN_TYPE" VARCHAR(20) NOT NULL , 
+		  "PUBLISH_READY_TIMESTAMP" TIMESTAMP , 
+		  "PUBLISH_READY_USERID" VARCHAR(20) , 
+		  "PUBLISH_TIMESTAMP" TIMESTAMP , 
+		  "LU_USERID" VARCHAR(20) NOT NULL WITH DEFAULT 'unk' , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_SCAN"
+
+ALTER TABLE "HIP     "."HIP_SCAN" 
+	ADD CONSTRAINT "HIP_SCAN_PK" PRIMARY KEY
+		("SCAN_ID")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_PERIOD_HIST"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_PERIOD_HIST"  (
+		  "HIST_OPERATION" VARCHAR(10) NOT NULL , 
+		  "HIST_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "PERIOD_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "YEAR" SMALLINT NOT NULL , 
+		  "MONTH_OF_YEAR" SMALLINT NOT NULL , 
+		  "ASSET_FREEZE_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "DESC" VARCHAR(254) , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_PERIOD_HIST"
+
+ALTER TABLE "HIP     "."HIP_PERIOD_HIST" 
+	ADD CONSTRAINT "HIP_PERIOD_HIST_PK" PRIMARY KEY
+		("PERIOD_ID",
+		 "HIST_TIMESTAMP")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_HC_GROUP_HIST"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_HC_GROUP_HIST"  (
+		  "HIST_OPERATION" VARCHAR(10) NOT NULL , 
+		  "HIST_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "HC_GROUP_ID" INTEGER NOT NULL , 
+		  "ORG_L1_ID" INTEGER NOT NULL , 
+		  "ORG_ID" INTEGER NOT NULL , 
+		  "GROUP_NAME" VARCHAR(80) NOT NULL , 
+		  "IS_CURRENT" CHAR(1) NOT NULL , 
+		  "LAST_CURRENT_TIMESTAMP" TIMESTAMP , 
+		  "CREATED_AT" TIMESTAMP NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_HC_GROUP_HIST"
+
+ALTER TABLE "HIP     "."HIP_HC_GROUP_HIST" 
+	ADD CONSTRAINT "HIP_HC_GROUP_HIST_PK" PRIMARY KEY
+		("HC_GROUP_ID",
+		 "HIST_TIMESTAMP")}
+
+
+
+------------------------------------------------
+-- DDL Statements for table "HIP     "."HIP_ASSET_GROUP_HIST"
+------------------------------------------------
+ 
+
+CREATE TABLE "HIP     "."HIP_ASSET_GROUP_HIST"  (
+		  "HIST_OPERATION" VARCHAR(10) NOT NULL , 
+		  "HIST_TIMESTAMP" TIMESTAMP NOT NULL , 
+		  "HC_GROUP_ID" INTEGER NOT NULL , 
+		  "ASSET_ID" INTEGER NOT NULL , 
+		  "LU_USERID" VARCHAR(20) NOT NULL , 
+		  "LU_TIMESTAMP" TIMESTAMP NOT NULL )   
+		 IN "TS_DIM1_32K" INDEX IN "TS_INDEX1_4K" } 
+
+
+-- DDL Statements for primary key on Table "HIP     "."HIP_ASSET_GROUP_HIST"
+
+ALTER TABLE "HIP     "."HIP_ASSET_GROUP_HIST" 
+	ADD CONSTRAINT "HIP_ASSET_GROUP_HIST_PK" PRIMARY KEY
+		("HC_GROUP_ID",
+		 "ASSET_ID",
+		 "HIST_TIMESTAMP")}
+
+
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_ROLE"
+
+ALTER TABLE "HIP     "."HIP_ROLE" 
+	ADD CONSTRAINT "HIP_ROLE_CK1" CHECK 
+		(HAS_ASSOCIATED_GEO IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_ROLE"
+
+ALTER TABLE "HIP     "."HIP_ROLE" 
+	ADD CONSTRAINT "HIP_ROLE_CK2" CHECK 
+		(HAS_ASSOCIATED_ORG IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_ROLE"
+
+ALTER TABLE "HIP     "."HIP_ROLE" 
+	ADD CONSTRAINT "HIP_ROLE_CK3" CHECK 
+		(HAS_ASSOCIATED_CATEGORY IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_ROLES_BLUEGROUP"
+
+ALTER TABLE "HIP     "."HIP_ROLES_BLUEGROUP" 
+	ADD CONSTRAINT "HIP_ROLES_BGROUP_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "HIP     "."HIP_ROLES_BLUEGROUP" 
+	ADD CONSTRAINT "HIP_ROLES_BGROUP_FK2" FOREIGN KEY
+		("ROLE_NAME")
+	REFERENCES "HIP     "."HIP_ROLE"
+		("ROLE_NAME")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_HC_GROUP"
+
+ALTER TABLE "HIP     "."HIP_HC_GROUP" 
+	ADD CONSTRAINT "HIP_HC_GROUP_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_HC_GROUP"
+
+ALTER TABLE "HIP     "."HIP_HC_GROUP" 
+	ADD CONSTRAINT "HIP_HC_GROUP_CK1" CHECK 
+		(IS_CURRENT IN ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_PERIOD"
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_PERIOD"
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_CK1" CHECK 
+		(YEAR between 2010 and 2020)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_PERIOD"
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_CK2" CHECK 
+		(MONTH_OF_YEAR between 1 and 12)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_PERIOD"
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_CK3" CHECK 
+		(YEAR = YEAR(ASSET_FREEZE_TIMESTAMP))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_PERIOD"
+
+ALTER TABLE "HIP     "."HIP_PERIOD" 
+	ADD CONSTRAINT "HIP_PERIOD_CK4" CHECK 
+		(MONTH_OF_YEAR = MONTH(ASSET_FREEZE_TIMESTAMP))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_SUPPRESS_GROUP"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS_GROUP" 
+	ADD CONSTRAINT "HIP_SUPP_GROUP_FK2" FOREIGN KEY
+		("HC_GROUP_ID")
+	REFERENCES "HIP     "."HIP_HC_GROUP"
+		("HC_GROUP_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_SUPPRESS_FINDING"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS_FINDING" 
+	ADD CONSTRAINT "HIP_SUPP_FINDING_FK1" FOREIGN KEY
+		("SUPPRESS_ID")
+	REFERENCES "HIP     "."HIP_SUPPRESS"
+		("SUPPRESS_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_ASSET_GROUP"
+
+ALTER TABLE "HIP     "."HIP_ASSET_GROUP" 
+	ADD CONSTRAINT "HIP_ASSET_GROUP_FK1" FOREIGN KEY
+		("HC_GROUP_ID")
+	REFERENCES "HIP     "."HIP_HC_GROUP"
+		("HC_GROUP_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_SCAN_FINDING"
+
+ALTER TABLE "HIP     "."HIP_SCAN_FINDING" 
+	ADD CONSTRAINT "HIP_SCAN_FINDING_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "HIP     "."HIP_SCAN_FINDING" 
+	ADD CONSTRAINT "HIP_SCAN_FINDING_FK2" FOREIGN KEY
+		("PERIOD_ID")
+	REFERENCES "HIP     "."HIP_PERIOD"
+		("PERIOD_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_SCAN_FINDING"
+
+ALTER TABLE "HIP     "."HIP_SCAN_FINDING" 
+	ADD CONSTRAINT "HIP_SCAN_FINDING_CK1" CHECK 
+		(RESULT in ('valid','validated'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_MISSED_SCAN"
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN" 
+	ADD CONSTRAINT "HIP_MISSED_SCAN_FK1" FOREIGN KEY
+		("PERIOD_ID")
+	REFERENCES "HIP     "."HIP_PERIOD"
+		("PERIOD_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "HIP     "."HIP_MISSED_SCAN" 
+	ADD CONSTRAINT "HIP_MISSED_SCAN_FK2" FOREIGN KEY
+		("MISSED_SCAN_REASON_ID")
+	REFERENCES "HIP     "."HIP_MISSED_SCAN_REASON"
+		("MISSED_SCAN_REASON_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_SUPPRESS"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" 
+	ADD CONSTRAINT "HIP_SUPPRESS_FK1" FOREIGN KEY
+		("ORG_L1_ID",
+		 "ORG_ID")
+	REFERENCES "SWARE   "."DIM_COMM_ORG"
+		("ORG_L1_ID",
+		 "ORG_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" 
+	ADD CONSTRAINT "HIP_SUPPRESS_FK2" FOREIGN KEY
+		("VULN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_VULN"
+		("VULN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_SUPPRESS"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" 
+	ADD CONSTRAINT "HIP_SUPPRESS_CK1" CHECK 
+		(START_TIMESTAMP < END_TIMESTAMP)
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_SUPPRESS"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" 
+	ADD CONSTRAINT "HIP_SUPPRESS_CK2" CHECK 
+		(AUTOMATIC_SUPPRESS_FLAG in ('y','n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_SUPPRESS"
+
+ALTER TABLE "HIP     "."HIP_SUPPRESS" 
+	ADD CONSTRAINT "HIP_SUPPRESS_CK3" CHECK 
+		(APPLY_TO_SCOPE in ('account','group','asset','finding'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_TASK_STATUS"
+
+ALTER TABLE "HIP     "."HIP_TASK_STATUS" 
+	ADD CONSTRAINT "HIP_TASK_STATUS_CK1" CHECK 
+		(TASK_STATUS IN ('running','success','failed','crashed'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_TASK_STATUS"
+
+ALTER TABLE "HIP     "."HIP_TASK_STATUS" 
+	ADD CONSTRAINT "HIP_TASK_STATUS_CK2" CHECK 
+		(AUTO_RETRY IN ('y', 'n'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for foreign keys on Table "HIP     "."HIP_SCAN"
+
+ALTER TABLE "HIP     "."HIP_SCAN" 
+	ADD CONSTRAINT "HIP_SCAN_FK1" FOREIGN KEY
+		("SCAN_ID")
+	REFERENCES "SWARE   "."DIM_COMM_TOOL_ASSET_SCAN_HIST"
+		("SCAN_ID")
+	ON DELETE NO ACTION
+	ON UPDATE NO ACTION
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+-- DDL Statements for check constraints on Table "HIP     "."HIP_SCAN"
+
+ALTER TABLE "HIP     "."HIP_SCAN" 
+	ADD CONSTRAINT "HIP_SCAN_CK1" CHECK 
+		(SCAN_TYPE in ('HC Cycle', 'SA&D','HC Cycle Post Remed', 'Test','Implementation','Baseline Settings'))
+	ENFORCED
+	ENABLE QUERY OPTIMIZATION}
+
+
+
+----------------------------
+
+-- DDL Statements for Views
+
+----------------------------
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_org_v AS SELECT * from sware.dim_comm_org}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_os_v AS SELECT * from sware.dim_comm_os}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_tool_asset_scan_hist_v AS SELECT * from sware.dim_comm_tool_asset_scan_hist}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_tool_v AS SELECT * from sware.dim_comm_tool}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_vuln_v AS SELECT * from sware.dim_comm_vuln}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW fact_scan_v AS SELECT * from sware.fact_scan}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_role_v AS SELECT * from hip_role}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_hc_group_v AS SELECT * from hip_hc_group}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_roles_bluegroup_v AS SELECT * from hip_roles_bluegroup}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_session_v AS SELECT * from hip_session}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_scan_v AS SELECT * from hip_scan}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_asset_group_v AS SELECT * from hip_asset_group}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_period_v AS SELECT * from hip_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_suppress_group_v AS SELECT * from hip_suppress_group}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_suppress_finding_v AS SELECT * from hip_suppress_finding}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_scan_finding_v AS SELECT * from hip_scan_finding}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_missed_scan_v AS SELECT * from hip_missed_scan}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_missed_scan_reason_v AS SELECT * from hip_missed_scan_reason}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_suppress_v AS SELECT * from hip_suppress}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  hip_task_status_v AS SELECT * from hip_task_status}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW hip.hip_scan_finding_suppress_v AS select s.org_l1_id,
+s.org_id, s.suppress_id, s.start_timestamp        AS suppress_start_timestamp,
+s.end_timestamp          AS suppress_end_timestamp, fs.finding_id, fs.asset_id,
+fs.row_from_timestamp    AS finding_start_timestamp, coalesce(fs.row_to_timestamp,
+current_timestamp) AS finding_end_timestamp from hip.hip_suppress_v as
+s inner join hip.fact_scan_v as fs on fs.org_l1_id = s.org_l1_id and fs.org_id
+  = s.org_id and fs.vuln_id  = s.vuln_id where s.automatic_suppress_flag
+= 'y' and s.apply_to_scope = 'account' and fs.scan_service = 'health' union
+select s.org_l1_id, s.org_id, s.suppress_id, s.start_timestamp        AS
+suppress_start_timestamp, s.end_timestamp          AS suppress_end_timestamp,
+fs.finding_id, fs.asset_id, fs.row_from_timestamp    AS finding_start_timestamp,
+coalesce(fs.row_to_timestamp, current_timestamp) AS finding_end_timestamp
+from hip.hip_suppress_v as s inner join hip.hip_suppress_group_v as sg
+on sg.suppress_id = s.suppress_id inner join hip.hip_asset_group_v as ag
+on ag.hc_group_id = sg.hc_group_id inner join hip.fact_scan_v as fs on
+fs.asset_id = ag.asset_id and fs.vuln_id = s.vuln_id where s.automatic_suppress_flag
+= 'y' and s.apply_to_scope = 'group' and fs.scan_service = 'health' union
+select s.org_l1_id, s.org_id, s.suppress_id, s.start_timestamp        AS
+suppress_start_timestamp, s.end_timestamp          AS suppress_end_timestamp,
+fs.finding_id, fs.asset_id, fs.row_from_timestamp    AS finding_start_timestamp,
+coalesce(fs.row_to_timestamp, current_timestamp) AS finding_end_timestamp
+from hip.hip_suppress_v as s inner join hip.fact_scan_v as fs on fs.asset_id
+= s.asset_id and fs.vuln_id = s.vuln_id where s.automatic_suppress_flag
+= 'y' and s.apply_to_scope = 'asset' and fs.scan_service = 'health' union
+select s.org_l1_id, s.org_id, s.suppress_id, s.start_timestamp        AS
+suppress_start_timestamp, s.end_timestamp          AS suppress_end_timestamp,
+fs.finding_id, fs.asset_id, fs.row_from_timestamp    AS finding_start_timestamp,
+coalesce(fs.row_to_timestamp, current_timestamp) AS finding_end_timestamp
+from hip.hip_suppress_v as s inner join hip.hip_suppress_finding_v as sf
+on sf.suppress_id = s.suppress_id inner join hip.fact_scan_v as fs on fs.finding_id
+= sf.finding_id where s.automatic_suppress_flag = 'n' and fs.scan_service
+= 'health'}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW  misc_scan_finding_audit_v AS SELECT * from sware.misc_scan_finding_audit}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_severity_v AS SELECT * from sware.dim_comm_severity}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_date_v AS SELECT * from sware.dim_comm_date}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_tool_asset_hist_v AS SELECT * from sware.dim_comm_tool_asset_hist}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_period_v AS SELECT * from sware.dim_scan_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_org_period_v AS SELECT * from sware.dim_scan_org_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_asset_period_v AS SELECT * from sware.dim_scan_asset_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_suppress_period_v AS SELECT * from sware.dim_scan_suppress_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_suppress_finding_period_v AS SELECT * from
+sware.dim_scan_suppress_finding_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_suppress_group_period_v AS SELECT * from
+sware.dim_scan_suppress_group_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_scan_scan_period_v AS SELECT * from sware.dim_scan_scan_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW facts_scan_org_vuln_period_v AS SELECT * from sware.facts_scan_org_vuln_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW facts_scan_asset_vuln_misc_period_v AS SELECT * from
+sware.facts_scan_asset_vuln_misc_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW facts_scan_asset_misc_period_v AS SELECT * from sware.facts_scan_asset_misc_period}
+
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW facts_scan_period_v AS SELECT * from sware.facts_scan_period}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE VIEW dim_comm_org_ids_v AS SELECT * from sware.dim_comm_org_ids}
+
+---------------------------------
+-- DDL statements for User Defined Functions
+---------------------------------
+
+CREATE FUNCTION  hip_asset_scoper_v( arg_org_l1_id      INTEGER,
+                                                arg_org_id         INTEGER,
+                                                arg_group_id       INTEGER,
+                                                arg_asset_id       INTEGER)
+RETURNS TABLE (org_l1_id    INTEGER,
+               org_id       INTEGER,
+               hc_group_id  INTEGER,
+               asset_id     INTEGER,
+               is_current   CHAR(1))
+
+LANGUAGE SQL
+READS SQL DATA
+EXTERNAL ACTION
+DETERMINISTIC
+RETURN
+  WITH
+  asset_scope (org_l1_id,
+               org_id,
+               hc_group_id,
+               asset_id,
+               is_current ) AS
+       ( SELECT hcgrp.org_l1_id,
+                hcgrp.org_id,
+                hcgrp.hc_group_id,
+                assgrp.asset_id,
+                hcgrp.is_current
+         FROM hip_hc_group                          hcgrp
+            INNER JOIN hip_asset_group_v            assgrp
+                ON hcgrp.hc_group_id  = assgrp.hc_group_id
+         WHERE hcgrp.org_l1_id  = arg_org_l1_id
+           AND hcgrp.org_id     = arg_org_id
+         --AND hcgrp.is_current = 'y'
+         -- allow either all hc_groups or just one:
+           AND (arg_group_id = 0
+                or arg_group_id = hcgrp.hc_group_id)    
+         -- allow either all assets or just one:
+           AND (arg_asset_id = 0
+                or arg_asset_id = assgrp.asset_id)     
+        )
+  SELECT org_l1_id,
+         org_id,
+         hc_group_id,
+         asset_id,
+         is_current
+  FROM asset_scope
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+
+CREATE FUNCTION  hip_suppress_asset_summary_v( arg_org_l1_id
+         INTEGER,
+                                                          arg_org_id             INTEGER,
+                                                          arg_hc_group_id        INTEGER,
+                                                          arg_asset_id           INTEGER,
+                                                          arg_asof_timestamp     TIMESTAMP)
+RETURNS TABLE (asset_id      INTEGER,
+               vuln_id       INTEGER,
+               finding_id    INTEGER,
+               suppress_cnt  SMALLINT)
+
+LANGUAGE SQL
+READS SQL DATA
+EXTERNAL ACTION
+DETERMINISTIC
+RETURN
+  WITH 
+
+  session.asset_scope (org_l1_id,
+                       org_id,
+                       hc_group_id,
+                       asset_id,
+                       is_current)  AS
+       ( SELECT hasv.org_l1_id,
+                hasv.org_id,
+                hasv.hc_group_id,
+                hasv.asset_id,
+                hasv.is_current
+         FROM  TABLE (hip.hip_asset_scoper_v (arg_org_l1_id, arg_org_id, arg_hc_group_id, arg_asset_id))
+                  AS hasv (org_l1_id, org_id, hc_group_id, asset_id, is_current) 
+       ),
+
+  --- get all relevant suppressions 
+  session.suppress (suppress_id,
+                    apply_to_scope,
+                    automatic_suppress_flag,
+                    asset_id,
+                    vuln_id ) AS
+       ( SELECT suppress_id,
+                apply_to_scope,
+                automatic_suppress_flag,
+                asset_id,
+                vuln_id
+         FROM hip_suppress   
+         WHERE org_l1_id         = arg_org_l1_id
+           AND org_id            = arg_org_id
+           AND start_timestamp  <= arg_asof_timestamp
+           AND (end_timestamp   IS NULL
+               or end_timestamp >= arg_asof_timestamp ) ),
+     
+  --- get all vulns suppressed for a specific asset
+  session.asset_vuln_suppress (asset_id,
+                               vuln_id,
+                               finding_id) AS
+       ( SELECT scope.asset_id ,
+                supp.vuln_id   ,
+                0   as finding_id
+         FROM   session.asset_scope              scope
+           INNER JOIN  session.suppress          supp
+              ON scope.asset_id = supp.asset_id
+         WHERE  supp.apply_to_scope          = 'asset'
+           AND  supp.automatic_suppress_flag = 'y' ),
+  
+  --- get all vulns suppressed for a set of groups
+  session.group_vuln_suppress (asset_id,
+                               vuln_id,
+                               finding_id) AS
+       ( SELECT scope.asset_id,
+                supp.vuln_id   ,
+                0   as finding_id
+         FROM session.asset_scope                           scope
+           INNER JOIN hip_suppress_group                    suppgrp
+              ON scope.hc_group_id  = suppgrp.hc_group_id
+           INNER JOIN session.suppress                      supp
+              ON suppgrp.suppress_id = supp.suppress_id 
+         WHERE  supp.apply_to_scope        = 'group'
+           AND  supp.automatic_suppress_flag = 'y'  ),
+
+  --- get all vulns suppressed for the whole org
+  --- this should produce one row per asset_id per suppression row
+  session.org_vuln_suppress (asset_id,
+                             vuln_id,
+                             finding_id) AS
+       ( SELECT scope.asset_id ,
+                supp.vuln_id   ,
+                0  as finding_id
+         FROM   session.asset_scope          scope,
+                session.suppress             supp
+         WHERE  supp.apply_to_scope        = 'account'
+           AND  supp.automatic_suppress_flag = 'y'  ),
+
+  --- figure out asset_ids for finding_ids that have been expicitely suppressed:
+  --- this is only done because hip_suppress_finding does not have an asset_id
+  --- this is probably biggest performance hit of entire 
+  session.explicit_finding_suppress (asset_id  ,
+                                     vuln_id   ,
+                                     finding_id ) AS
+       ( SELECT scope.asset_id  ,
+                0 AS vuln_id    ,
+                suppfind.finding_id
+         FROM   session.suppress                            supp
+           INNER JOIN hip_suppress_finding                  suppfind
+              ON supp.suppress_id             = suppfind.suppress_id
+             AND supp.automatic_suppress_flag = 'n'
+           INNER JOIN fact_scan_v                           find
+              ON find.finding_id     = suppfind.finding_id
+             AND find.org_l1_id      = arg_org_l1_id
+             AND find.org_id         = arg_org_id
+           INNER JOIN session.asset_scope                   scope
+              ON find.asset_id       = scope.asset_id
+         GROUP BY scope.asset_id,
+                  suppfind.finding_id
+       ),
+
+  --- assemble into a single table:
+  session.asset_collection (asset_id,
+                    vuln_id,
+                    finding_id)  AS
+    ( SELECT avs.asset_id ,
+             avs.vuln_id  ,
+             avs.finding_id
+      FROM   session.asset_vuln_suppress    avs
+     UNION ALL
+      SELECT gvs.asset_id ,
+             gvs.vuln_id  ,
+             gvs.finding_id
+      FROM   session.group_vuln_suppress    gvs
+     UNION ALL
+      SELECT ovs.asset_id ,
+             ovs.vuln_id  ,
+             ovs.finding_id
+      FROM   session.org_vuln_suppress      ovs
+     UNION ALL
+      SELECT afs.asset_id ,
+             afs.vuln_id  ,
+             afs.finding_id
+      FROM   session.explicit_finding_suppress  afs 
+    )
+
+  --- final query:
+  SELECT asset_id,
+         vuln_id,
+         finding_id,
+         COUNT(*) as suppress_cnt
+  FROM session.asset_collection
+  GROUP BY asset_id,
+           vuln_id,
+           finding_id   
+
+  --- final query:
+  -- SELECT asset_id,
+  --       0 as vuln_id,
+  --       0 as finding_id,
+  --       0 as suppress_cnt
+  --FROM session.asset_scope
+}
+
+--SET CURRENT SCHEMA = "HIP     "}
+--SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+--
+--CREATE FUNCTION  hip_scan_finding_suppress3_v(org_l1_id     
+--    INTEGER,
+--                                                         org_id             INTEGER,
+--                                                         asset_id           INTEGER,
+--                                                         asof_timestamp     TIMESTAMP)
+--RETURNS TABLE (asset_id                     INTEGER, 
+--               finding_id                   INTEGER,
+--               suppress_flag                CHAR(1))
+--LANGUAGE SQL
+--READS SQL DATA
+--EXTERNAL ACTION
+--DETERMINISTIC
+-- 
+--RETURN
+--  WITH 
+--
+--  --- first figure out which assets are in scope for this query
+--  asset_scope (asset_id,
+--               hc_group_id ) AS
+--      ( SELECT assgrp.asset_id,
+--               hcgrp.hc_group_id
+--        FROM hip_hc_group                          hcgrp
+--           INNER JOIN hip_asset_group_v            assgrp
+--               ON hcgrp.hc_group_id  = assgrp.hc_group_id
+--        WHERE hcgrp.org_l1_id = org_l1_id
+--          AND hcgrp.org_id    = org_id
+--          AND hcgrp.is_current = 'y' 
+--          AND (asset_id IS NULL
+--               or asset_id = 0
+--               or asset_id = assgrp.asset_id)      ),
+--     
+--  --- get all vulns suppressed 
+--  asset_vuln_suppress (asset_id,
+--                       vuln_id ,
+--                       finding_id) AS
+--       ( SELECT out_asset_id,
+--                out_vuln_id ,
+--                out_finding_id
+--         FROM   TABLE(hip.hip_suppress_asset_summary_v (org_l1_id, 
+--                                                    org_id, 
+--                                                    asset_id, 
+--                                                    asof_timestamp))
+--                AS (out_asset_id, 
+--                    out_vuln_id,
+--                    out_finding_id) )
+--
+--  SELECT scan.asset_id   ,
+--         scan.finding_id ,
+--         CASE
+--            WHEN COALESCE(avs.vuln_id, avs.finding_id) IS NOT NULL  THEN 'y'
+--            ELSE                                                         'n'
+--            END AS suppress_flag
+--  FROM sware.fact_scan                      scan
+--    INNER JOIN asset_scope                  asssco
+--       ON scan.asset_id = asssco.asset_id
+--    LEFT OUTER JOIN asset_vuln_suppress     avs
+--       ON scan.asset_id = avs.asset_id
+--      AND scan.vuln_id = avs.vuln_id
+--  WHERE scan.org_l1_id           = org_l1_id
+--    AND scan.org_id              = org_id
+--    AND scan.scan_service        = 'health'
+--    AND scan.row_from_timestamp <= asof_timestamp
+--    AND (scan.row_to_timestamp  >= asof_timestamp
+--         OR scan.row_to_timestamp IS NULL)
+--}
+--
+--SET CURRENT SCHEMA = "HIP     "}
+--SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+--
+--SET CURRENT SCHEMA = "HIP     "}
+--SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+--
+--CREATE FUNCTION  hip_suppress_asset_summary_tf( arg_org_l1_id
+--         INTEGER,
+--                                                           arg_org_id             INTEGER,
+--                                                           arg_hc_group_id        INTEGER,
+--                                                           arg_asset_id           INTEGER,
+--                                                           arg_period_month_id    SMALLINT )
+--RETURNS TABLE (asset_vid     INTEGER,
+--               asset_id      INTEGER,
+--               vuln_id       INTEGER,
+--               finding_vid   INTEGER,
+--               finding_id    INTEGER,
+--               suppress_cnt  SMALLINT)
+--
+--LANGUAGE SQL
+--READS SQL DATA
+--EXTERNAL ACTION
+--DETERMINISTIC
+--RETURN
+--  WITH 
+--
+--  -----------------------------------------------------------------------------------------
+--  --- get all assets in scope for this query ---
+--  --- implments conditional joins on hc_group_id & asset_id
+--  -----------------------------------------------------------------------------------------
+--  session.asset_scope (org_l1_id   ,
+--                       org_id      ,
+--                       hc_group_id ,
+--                       asset_vid   ,
+--                       asset_id    ,
+--                       period_month_id ) AS
+--       ( SELECT dsap.org_l1_id   ,
+--                dsap.org_id      ,
+--                dsap.hc_group_id ,
+--                dsap.asset_vid   ,
+--                dsap.asset_id    ,
+--                dsap.period_month_id
+--         FROM dim_scan_asset_period_v   dsap
+--         WHERE  dsap.org_l1_id    = arg_org_l1_id
+--           AND  dsap.org_id       = arg_org_id
+--           AND  (dsap.hc_group_id = arg_hc_group_id
+--                  or arg_hc_group_id = 0)
+--           AND  (dsap.asset_id    = arg_asset_id
+--                  or arg_asset_id = 0)
+--           AND  dsap.period_month_id = arg_period_month_id
+--       )
+--
+--       -----------------------------------------------------------------------------------------
+--       --- notes:
+--       ---  - use of MAX() may not produce correct results - if the same finding shows up twice
+--       ---    in a month (released then re-released) it could theoretically have different vuln_ids.
+--       ---    Perhaps we should only choose the later data?
+--       -----------------------------------------------------------------------------------------
+--       SELECT scope.asset_vid                       ,
+--              MAX(scope.asset_id)  AS asset_id      ,
+--              MAX(vuln_id)         AS vuln_id       ,
+--              find.finding_vid                      ,
+--              MAX(find.finding_id) AS finding_id    ,
+--              MAX(suppress_cnt)    AS suppress_cnt
+--       FROM   session.asset_scope                         scope
+--           INNER JOIN facts_scan_period_v                 find
+--              ON find.period_month_id = scope.period_month_id
+--             AND find.org_l1_id       = scope.org_l1_id
+--             AND find.org_id          = scope.org_id
+--             AND find.asset_vid       = scope.asset_vid
+--       WHERE find.suppress_flag = 'y'
+--       GROUP BY scope.asset_vid,
+--                find.finding_vid
+--       
+--}
+
+
+
+-------------------------------
+-- DDL Statements for Triggers
+-------------------------------
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_asset_group_hist_del
+   AFTER DELETE ON hip_asset_group
+   REFERENCING OLD AS ooo
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_asset_group_hist 
+VALUES ('delete'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        ooo.hc_group_id         ,
+        ooo.asset_id            ,
+        ooo.lu_userid           ,
+        ooo.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_asset_group_hist_ins
+   AFTER INSERT ON hip_asset_group
+   REFERENCING NEW AS nnn
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_asset_group_hist 
+VALUES ('insert'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        nnn.hc_group_id         ,
+        nnn.asset_id            ,
+        nnn.lu_userid           ,
+        nnn.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_asset_group_hist_upd
+   AFTER UPDATE ON hip_asset_group
+   REFERENCING NEW AS nnn
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_asset_group_hist 
+VALUES ('update'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        nnn.hc_group_id         ,
+        nnn.asset_id            ,
+        nnn.lu_userid           ,
+        nnn.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_hc_group_hist_del
+   AFTER DELETE ON hip_hc_group
+   REFERENCING OLD AS ooo
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_hc_group_hist 
+VALUES ('delete'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        ooo.hc_group_id         ,
+        ooo.org_l1_id           ,
+        ooo.org_id              ,
+        ooo.group_name          ,
+        ooo.is_current          ,
+        ooo.last_current_timestamp,
+        ooo.created_at          ,
+        ooo.lu_userid           ,
+        ooo.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_hc_group_hist_ins
+   AFTER INSERT ON hip_hc_group
+   REFERENCING NEW AS nnn
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_hc_group_hist 
+VALUES ('insert'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        nnn.hc_group_id         ,
+        nnn.org_l1_id           ,
+        nnn.org_id              ,
+        nnn.group_name          ,
+        nnn.is_current          ,
+        nnn.last_current_timestamp,
+        nnn.created_at          ,
+        nnn.lu_userid           ,
+        nnn.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_hc_group_hist_upd
+   AFTER UPDATE ON hip_hc_group
+   REFERENCING NEW AS nnn
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_hc_group_hist 
+VALUES ('update'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        nnn.hc_group_id         ,
+        nnn.org_l1_id           ,
+        nnn.org_id              ,
+        nnn.group_name          ,
+        nnn.is_current          ,
+        nnn.last_current_timestamp,
+        nnn.created_at          ,
+        nnn.lu_userid           ,
+        nnn.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_period_hist_del
+   AFTER DELETE ON hip_period
+   REFERENCING OLD AS ooo
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_period_hist 
+VALUES ('delete'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        ooo.period_id           ,
+        ooo.org_l1_id           ,
+        ooo.org_id              ,
+        ooo.year                ,
+        ooo.month_of_year       ,
+        ooo.asset_freeze_timestamp,
+        ooo.desc                ,
+        ooo.lu_userid           ,
+        ooo.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_period_hist_ins
+   AFTER INSERT ON hip_period
+   REFERENCING NEW AS nnn
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_period_hist 
+VALUES ('insert'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        nnn.period_id           ,
+        nnn.org_l1_id           ,
+        nnn.org_id              ,
+        nnn.year                ,
+        nnn.month_of_year       ,
+        nnn.asset_freeze_timestamp,
+        nnn.desc                ,
+        nnn.lu_userid           ,
+        nnn.lu_timestamp  )
+}
+
+SET CURRENT SCHEMA = "HIP     "}
+SET CURRENT PATH = "SYSIBM","SYSFUN","SYSPROC","SYSIBMADM","DBA"}
+CREATE TRIGGER hip_period_hist_upd
+   AFTER UPDATE ON hip_period
+   REFERENCING NEW AS nnn
+   FOR EACH ROW
+   MODE DB2SQL
+INSERT INTO hip_period_hist 
+VALUES ('update'                ,  -- hist_operation
+        CURRENT_TIMESTAMP       ,  -- hist_timestamp
+        nnn.period_id           ,
+        nnn.org_l1_id           ,
+        nnn.org_id              ,
+        nnn.year                ,
+        nnn.month_of_year       ,
+        nnn.asset_freeze_timestamp,
+        nnn.desc                ,
+        nnn.lu_userid           ,
+        nnn.lu_timestamp  )
+}
+
+COMMIT WORK}
+
+--CONNECT RESET}
+
+--TERMINATE}
+
