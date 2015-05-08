@@ -1,0 +1,196 @@
+/* 
+    Document   : style
+    Created on : Mar 9, 2010, 4:51:47 PM
+    Author     : cwilhelm
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+td{
+    text-align: center;
+}
+.green{background: green;}
+.red{background: red}
+.yellow{background: yellow}
+
+.bold{font-weight: bold;}
+/* table classes */
+.gray{
+    background: #cccccc;
+}
+.white{
+    /*background: #ffffff;*/
+}
+
+th{
+    background: #000000;
+    border-spacing: 0px;
+    margin:0px;
+    color: #ffffff;
+}
+
+.red-text{
+    color:red;
+}
+/* formating classes */
+.center{text-align: center;}
+.left{text-align: left}
+.right{text-align: right}
+
+/* form */
+label {
+    font-weight: bold;
+    text-transform: capitalize;
+    float:left;
+    width: 10em;
+    clear:left;
+}
+label:after{
+    content: ":";
+}
+/* being used for new forms */
+.label {
+    font-weight: bold;
+    text-transform: capitalize;
+    float:left;
+    width: 10em;
+}
+
+fieldset{
+    border: 0px;
+}
+form{display: inline;}
+
+.button-to {
+    display: inline;
+}
+
+.button-to div {
+    display: inline;
+}
+
+li {vertical-align: top;} /* fix for ie */
+
+/* columns */
+/* two columns */
+
+/* Start of Column CSS */
+#container2 {
+    clear:left;
+    float:left;
+    width:100%;
+    overflow:hidden;
+
+}
+#container1 {
+    float:left;
+    width:100%;
+    position:relative;
+    right:50%;
+}
+#col1 {
+    float:left;
+    width:46%;
+    position:relative;
+    left:52%;
+    overflow:hidden;
+}
+#col2 {
+    float:left;
+    width:46%;
+    position:relative;
+    left:56%;
+    overflow:hidden;
+}
+
+
+.xclear{clear: left;}
+
+#result{
+    clear:both;
+}
+
+#system_msg{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    border: black solid 1px;
+    font-size: 1.5em;
+    color: #000;
+    background: #FDD017;
+    width: 75%;
+    padding: 5px;
+}
+
+#controller_msg{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    border: black solid 1px;
+    font-size: 1.25em;
+    color: #000;
+    background: #FDD017;
+    width: 75%;
+    padding: 5px;
+}
+
+
+#task p{ margin:2px;padding:2px}
+
+a.white:visited{color: #ffffff;}
+a.white:hover{color: #cccccc;}
+a.white:link{color: #ffffff;}
+
+a.black:visited{color: #000000;}
+a.black:hover{color: #cccccc;}
+a.black:link{color: #000000;}
+
+.title{
+    text-transform: capitalize;
+}
+
+.notice{font-weight: bold;color:green}
+.error{font-weight: bold;color:red}
+.warning{font-weight: bold;color:yellow}
+
+div.tooltip{
+
+}
+
+.fieldWithErrors input {
+    border: 1px solid red;
+
+}
+.fieldWithError {
+    display:inline;
+}
+
+a.active {color:#000; background:#fff;}
+#incycle,.incycle a{color:#000; background:#C3FDB8;}
+.incycle a.active {color:#000; background:#fff;}
+
+.suppression.expired {
+  font-style: italic;
+}
+
+.suppression_status.expired {
+  background: red; color: white; font-weight: bold;
+}
+
+.suppression_status.expires_soon {
+  background: yellow; font-weight: bold;
+}
+
+.suppression_status.current {
+  background: green; color: white; font-weight: bold;
+}
+
