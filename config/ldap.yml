@@ -1,0 +1,9 @@
+hip_userid_parm_name: &hip_userid_parm_name userid
+hip_password_parm_name: &hip_password_parm_name password
+bluepages_host: &bluepages_host bluepages.ibm.com
+bluepages_base: &bluepages_base ou=bluepages,o=ibm.com
+bluepages_ssl_port: &bluepages_ssl_port 636
+bluepages_encryption: &bluepages_encryption :simple_tls
+bluepages_userid_attribute: &bluepages_userid_attribute mail
+bluegroups_host: &bluegroups_host bluegroups.ibm.com
+bluegroups_base: &bluegroups_base ou=memberlist,ou=ibmgroups,o=ibm.com

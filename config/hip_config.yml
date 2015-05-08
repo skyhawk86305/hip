@@ -1,0 +1,85 @@
+# application config setting
+development:
+  ooc_executive_report_chip_ids: "100100404"
+  offline_suppression_files_path: <%= "#{RAILS_ROOT}/tmp" %>
+  # background count is number of deviations found before putting the task into background  
+  offline_suppression_background_count: 500 
+  mhc_files_path: <%= "#{RAILS_ROOT}/tmp" %>
+  mhc_error_threshold: 500
+  mhc_initial_check_count: 5
+  mhc_translate_tool_names:
+    # Key is input tool name, value is output tool name as passed to mhc_error_threshold
+    'Fusion HC': fusion
+    'VSA HC': vsa
+    'Qwest HC': questhct
+    'TSCM': tscm
+    'TRT': trthct
+  cbn_email_respond_address: hipreval@us.ibm.com
+  cbn_email_subject: 'Action Required:  HIP access revalidation'
+  cbn_email_days_to_respond: 14
+  cbn_email_test_send_all_to: bergy@us.ibm.com
+  cbn_email_test_only_for_manager: detomasi@us.ibm.com
+
+  
+test:
+  ooc_executive_report_chip_ids: "100100404"
+  offline_suppression_files_path: <%= "#{RAILS_ROOT}/tmp" %>
+  # background count is number of deviations found before putting the task into background  
+  offline_suppression_background_count: 500
+  mhc_files_path: <%= "#{RAILS_ROOT}/tmp" %>
+  mhc_error_threshold: 500
+  mhc_initial_check_count: 200
+  mhc_translate_tool_names:
+    # Key is input tool name, value is output tool name as passed to mhc_error_threshold
+    'Fusion HC': fusion
+    'VSA HC': vsa
+    'Qwest HC': questhct
+    'TSCM': tscm
+    'TRT': trthct
+  cbn_email_respond_address: hipreval@us.ibm.com
+  cbn_email_subject: 'Action Required:  HIP access revalidation'
+  cbn_email_days_to_respond: 14
+  cbn_email_test_send_all_to: bergy@us.ibm.com
+  cbn_email_test_only_for_manager: detomasi@us.ibm.com
+  
+staging: 
+  ooc_executive_report_chip_ids: 
+  offline_suppression_files_path: /www/hip_<%= RAILS_ENV %>/shared/offline_suppression_files
+  # background count is number of deviations found before putting the task into background
+  offline_suppression_background_count: 1000
+  mhc_files_path: /www/hip_<%= RAILS_ENV %>/shared/mhc_files
+  mhc_error_threshold: 500
+  mhc_initial_check_count: 200
+  mhc_translate_tool_names:
+    # Key is input tool name, value is output tool name as passed to mhc_error_threshold
+    'Fusion HC': fusion
+    'VSA HC': vsa
+    'Qwest HC': questhct
+    'TSCM': tscm
+    'TRT': trthct
+  cbn_email_respond_address: hipreval@us.ibm.com
+  cbn_email_subject: 'Action Required:  HIP access revalidation'
+  cbn_email_days_to_respond: 14
+  cbn_email_test_send_all_to: bergy@us.ibm.com
+  cbn_email_test_only_for_manager: detomasi@us.ibm.com
+   
+production:
+  ooc_executive_report_chip_ids: 
+  offline_suppression_files_path:  /www/hip_<%= RAILS_ENV %>/shared/offline_suppression_files
+  # background count is number of deviations found before putting the task into background
+  offline_suppression_background_count: 10000
+  mhc_files_path:  /www/hip_<%= RAILS_ENV %>/shared/mhc_files
+  mhc_error_threshold: 500
+  mhc_initial_check_count: 200
+  mhc_translate_tool_names:
+    # Key is input tool name, value is output tool name as passed to mhc_error_threshold
+    'Fusion HC': fusion
+    'VSA HC': vsa
+    'Qwest HC': questhct
+    'TSCM': tscm
+    'TRT': trthct
+  cbn_email_respond_address: hipreval@us.ibm.com
+  cbn_email_subject: 'Action Required:  HIP access revalidation'
+  cbn_email_days_to_respond: 14
+  #cbn_email_test_send_all_to: bergy@us.ibm.com
+  #cbn_email_test_only_for_manager: detomasi@us.ibm.com

@@ -1,0 +1,40 @@
+# Read ldap configuration out of a common file
+<%= file = File.join(RAILS_ROOT, "config", "ldap.yml")
+    ERB.new(IO.read(file)).result %>
+    
+bluepages_email_attribute: &bluepages_email_attribute mail
+
+development_bluepages:
+  :bluepages_host: *bluepages_host
+  :bluepages_base: *bluepages_base
+  :bluepages_email_attribute: *bluepages_email_attribute
+  :bluegroups_host: *bluegroups_host
+  :bluegroups_base: *bluegroups_base
+  
+local_staging_bluepages:
+  :bluepages_host: *bluepages_host
+  :bluepages_base: *bluepages_base
+  :bluepages_email_attribute: *bluepages_email_attribute
+  :bluegroups_host: *bluegroups_host
+  :bluegroups_base: *bluegroups_base
+
+staging_bluepages:
+  :bluepages_host: *bluepages_host
+  :bluepages_base: *bluepages_base
+  :bluepages_email_attribute: *bluepages_email_attribute
+  :bluegroups_host: *bluegroups_host
+  :bluegroups_base: *bluegroups_base
+
+etltest_bluepages:
+  :bluepages_host: *bluepages_host
+  :bluepages_base: *bluepages_base
+  :bluepages_email_attribute: *bluepages_email_attribute
+  :bluegroups_host: *bluegroups_host
+  :bluegroups_base: *bluegroups_base
+
+production_bluepages:
+  :bluepages_host: *bluepages_host
+  :bluepages_base: *bluepages_base
+  :bluepages_email_attribute: *bluepages_email_attribute
+  :bluegroups_host: *bluegroups_host
+  :bluegroups_base: *bluegroups_base

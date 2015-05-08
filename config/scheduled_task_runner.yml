@@ -1,0 +1,142 @@
+development:
+  :errors_to:
+    - 'bergy@us.ibm.com'
+  :errors_from:     'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+  :errors_reply_to: 'intel-reports@secintel.ibm.com'
+
+staging:
+  :errors_to:
+    - 'bergy@us.ibm.com'
+  :errors_from:     'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+  :errors_reply_to: 'intel-reports@secintel.ibm.com'
+  
+production:
+  :errors_to:
+    - 'bergy@us.ibm.com'
+  :errors_from:     'HIP Administrator <hip@hip.secintel.ibm.com>'
+  :errors_reply_to: 'intel-reports@secintel.ibm.com'
+
+development_hourly:
+  :classes: 
+    - HcCycleReport
+    - ExecutiveDashboardReport
+    - OocExecutiveDashboardReport
+    - InventoryDetailReport
+#    - OfflineResetCurrentGroups
+    - OocFinalSystemScanReport
+    - SuppressionDetailReport
+    - CleanFiles
+    - AccountMemberReport
+    - InfoWarningReportTask
+  ScheduledTest:
+    :to: bergy@us.ibm.com
+    :from: hip@msd-bld-dev-01.boulder.ibm.com
+    :subject: Offline Task Message
+    :message: Test Message from the Schedule Test Offline Task
+
+staging_hourly:
+  :classes:
+    - HcCycleReport
+    - ExecutiveDashboardReport
+    - OocExecutiveDashboardReport    
+    - InventoryDetailReport
+    - OfflineResetCurrentGroups
+    - OocFinalSystemScanReport
+    - SuppressionDetailReport
+    - AccountMemberReport
+    - InfoWarningReportTask
+
+production_hourly:
+  :classes:
+    - CleanFiles
+    - OfflineResetCurrentGroups
+    - OocFinalSystemScanReport
+    - SuppressionDetailReport
+    - ExecutiveDashboardReport
+    - OocExecutiveDashboardReport    
+    - AccountMemberReport
+#    - HcCycleReport # done manually at end of month release steps
+#    - InventoryDetailReport  # done manually at end of month
+#    - InfoWarningReportTask # done manually at end of month
+
+development_15minutes:
+  :classes:
+    - OfflineSuppressions::DownloadSuppressionTask
+    - OfflineSuppressions::UploadSuppressionTask  
+    - Mhc::MhcTask
+    - Mhc::MhcCheckEtlTask
+    - ContinuedBusinessNeedMail
+  Mhc::MhcTask:
+    :from: 'HIP Administrator <hip@msd-bld-dev-01.boulder.ibm.com>'
+    :host: "localhost:3000"
+  Mhc::MhcCheckEtlTask:
+    :from: 'HIP Administrator <hip@msd-bld-dev-01.boulder.ibm.com>'
+    :host: "localhost:3000"
+  OfflineSuppressions::DownloadSuppressionTask:
+    :from: 'HIP Administrator <hip@msd-bld-dev-01.boulder.ibm.com>'
+    :host: "localhost:3000"
+  OfflineSuppressions::UploadSuppressionTask:
+    :from: 'HIP Administrator <hip@msd-bld-dev-01.boulder.ibm.com>'
+    :host: "localhost:3000"
+  ContinuedBusinessNeedMail:
+    :send_email: true
+    :hip_administrator: 'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+
+
+staging_15minutes:
+  :classes:
+    - OfflineSuppressions::DownloadSuppressionTask
+    - OfflineSuppressions::UploadSuppressionTask
+    - Mhc::MhcTask
+    - Mhc::MhcCheckEtlTask    
+    - ContinuedBusinessNeedMail
+  Mhc::MhcTask:
+    :from:  'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+    :host:  "hip-test.secintel.ibm.com"
+  Mhc::MhcCheckEtlTask:
+    :from:  'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+    :host:  "hip-test.secintel.ibm.com"
+  OfflineSuppressions::UploadSuppressionTask:
+    :from:  'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+    :host:  "hip-test.secintel.ibm.com"
+  OfflineSuppressions::DownloadSuppressionTask:
+    :from:  'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+    :host:  "hip-test.secintel.ibm.com"
+  ContinuedBusinessNeedMail:
+    :send_email: true
+    :hip_administrator: 'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+  
+production_15minutes:
+  :classes:
+    - OfflineSuppressions::DownloadSuppressionTask
+    - OfflineSuppressions::OfflineSuppressions::UploadSuppressionTask
+    - Mhc::MhcTask
+    - Mhc::MhcCheckEtlTask
+    - ContinuedBusinessNeedMail
+  Mhc::MhcTask:
+    :from:  'HIP Administrator <hip@hip.secintel.ibm.com>'
+    :host:  "hip.secintel.ibm.com"
+  Mhc::MhcCheckEtlTask:
+    :from:  'HIP Administrator <hip@hip.secintel.ibm.com>'
+    :host:  "hip.secintel.ibm.com"
+  OfflineSuppressions::UploadSuppressionTask:
+    :from:  'HIP Administrator <hip@hip.secintel.ibm.com>'
+    :host:  "hip.secintel.ibm.com"
+  OfflineSuppressions::DownloadSuppressionTask:
+    :from:  'HIP Administrator <hip@hip.secintel.ibm.com>'
+    :host:  "hip.secintel.ibm.com"
+  ContinuedBusinessNeedMail:
+    :send_email: true
+    :hip_administrator: 'HIP Administrator <hip@hip-test.secintel.ibm.com>'
+
+development_finding_cache:
+  :classes:
+    - MaintainFindingCache
+    
+staging_finding_cache:
+  :classes:
+    - MaintainFindingCache
+
+production_finding_cache:
+  :classes:
+    - MaintainFindingCache

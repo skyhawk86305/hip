@@ -1,0 +1,238 @@
+# Read ldap configuration out of a common file
+<%= file = File.join(RAILS_ROOT, "config", "ldap.yml")
+    ERB.new(IO.read(file)).result %>
+
+development_auth_via_config: &dev_hip_auth_via_config
+  :userid_parm_name:  userid
+  :password_parm_name:  password
+  :users:
+# test users for Case New Holland
+    case_nh_focal:
+      :password:  test101
+      :bluegroups:
+        - hip_case_nh_focal
+    case_nh_iam:
+      :password:  test101
+      :bluegroups:
+        - hip_case_nh_iam
+    case_nh_sso:
+      :password:  test101
+      :bluegroups:
+        - hip_case_nh_sso
+# test users for Belk Inc
+    belk_focal:
+      :password:  test101
+      :bluegroups:
+        - hip_belk_focal
+    belk_iam:
+      :password:  test101
+      :bluegroups:
+        - hip_belk_iam
+    belk_sso:
+      :password:  test101
+      :bluegroups:
+        - hip_belk_sso
+# test users for IGA
+    iga_focal:
+      :password:  test101
+      :bluegroups:
+        - hip_iga_focal
+    iga_iam:
+      :password:  test101
+      :bluegroups:
+        - hip_iga_iam
+    iga_sso:
+      :password:  test101
+      :bluegroups:
+        - hip_iga_sso
+    no_auth:
+      :password: test101
+      :bluegroups:
+# can see everything and update anything.
+    batkin@us.ibm.com:
+      :password: critter99
+      :bluegroups:
+        - hip_admin
+    bergy:
+      :password: test101
+      :bluegroups:
+        - hip_admin
+    bergy@us.ibm.com:
+      :password: test101
+      :bluegroups:
+        - hip_admin
+    bergybergybergy@us.ibm.com:
+      :password: test101
+      :bluegroups:
+        - hip_admin
+# can see everything, but not update anything
+    guest:
+      :password: test101
+      :bluegroups:
+         - hip_ag_focal
+# only see authorized orgs, and only update
+# groups, assets, scans and exceptions
+    guestb:
+      :password: test101
+      :bluegroups:
+        - hip_disney_focal
+        - hip_disney_iam
+        - hip_hartford_focal
+#should see everything, but and only update
+# for those orgs authorized.
+    guestc:
+      :password: test101
+      :bluegroups:
+        - hip_ag_focal
+        - hip_disney_focal
+        - hip_disney_iam
+        - hip_hartford_focal
+
+    guestd:
+      :password: test101
+      :bluegroups:
+        - hip_case_ro
+
+        
+hip_authorization_admin_via_config: &hip_auth_admin_via_config
+  :userid_parm_name:  userid
+  :password_parm_name:  password
+  :users:
+    admin:
+      :password: temppw
+      :bluegroups:
+        - hip_admin
+        
+development_auth_via_blue_pages: &dev_auth_via_blue_pages
+  :userid_parm_name: *hip_userid_parm_name
+  :password_parm_name: *hip_password_parm_name
+  :authentication_host: *bluepages_host
+  :authentication_base: *bluepages_base
+  :authentication_userid_attribute: *bluepages_userid_attribute
+  :authentication_encryption: *bluepages_encryption
+  :authentication_port: *bluepages_ssl_port
+  :group_host: *bluegroups_host
+  :group_base: *bluegroups_base
+  :group_filter: (cn=dev_hip_*)
+
+staging_auth_via_blue_pages: &stag_auth_via_blue_pages
+  :userid_parm_name: *hip_userid_parm_name
+  :password_parm_name: *hip_password_parm_name
+  :authentication_host: *bluepages_host
+  :authentication_base: *bluepages_base
+  :authentication_userid_attribute: *bluepages_userid_attribute
+  :authentication_encryption: *bluepages_encryption
+  :authentication_port: *bluepages_ssl_port
+  :group_host: *bluegroups_host
+  :group_base: *bluegroups_base
+  :group_filter: (cn=stag_hip_*)
+
+
+production_auth_via_blue_pages: &prod_auth_via_blue_pages
+  :userid_parm_name: *hip_userid_parm_name
+  :password_parm_name: *hip_password_parm_name
+  :authentication_host: *bluepages_host
+  :authentication_base: *bluepages_base
+  :authentication_userid_attribute: *bluepages_userid_attribute
+  :authentication_encryption: *bluepages_encryption
+  :authentication_port: *bluepages_ssl_port
+  :group_host: *bluegroups_host
+  :group_base: *bluegroups_base
+  :group_filter: (cn=hip_*)
+
+development:
+  :login_url:
+    :controller:  /home
+    :action:      login
+   :default_roles:  :authenticated
+  :credential_duration: 32400   # time credential is valid for, in seconds.  32400 = 9 hours
+  :inactivity_timeout: 3600     # inactivity timeout in secionds.  3600 = 1 hour
+  #:black_list: bergy@us.ibm.com
+  :authorization_class_name:
+    - HipAuthViaConfig
+#    - HipAuthViaBluePages
+  :HipAuthViaConfig:
+    <<: *dev_hip_auth_via_config
+  :HipAuthViaBluePages:
+    <<: *dev_auth_via_blue_pages
+
+test:
+  :login_url:
+    :controller:  /home
+    :action:      login
+#  :default_roles:  :authenticated
+  :credential_duration: 32400   # time credential is valid for, in seconds.  32400 = 9 hours
+  :inactivity_timeout: 3600     # inactivity timeout in secionds.  3600 = 1 hour
+  #:black_list: bergy@us.ibm.com
+  :authorization_class_name:
+    - HipAuthViaConfig
+    - HipAuthViaBluePages
+  :HipAuthViaConfig:
+    <<: *dev_hip_auth_via_config
+  :HipAuthViaBluePages:
+    <<: *dev_auth_via_blue_pages
+    
+local_staging:
+  :login_url:
+    :controller:  /home
+    :action:      login
+#  :default_roles:  :authenticated
+  :credential_duration: 32400   # time credential is valid for, in seconds.  32400 = 9 hours
+  :inactivity_timeout: 3600     # inactivity timeout in secionds.  3600 = 1 hour
+  #:black_list: bergy@us.ibm.com
+  :authorization_class_name:
+#    - HipAuthViaConfig
+    - HipAuthViaBluePages
+  :HipAuthViaConfig:
+    <<: *hip_auth_admin_via_config
+  :HipAuthViaBluePages:
+    <<: *stag_auth_via_blue_pages
+
+staging: &staging_config
+  :login_url:
+    :controller:  /home
+    :action:      login
+#  :default_roles:  :authenticated
+  :credential_duration: 32400   # time credential is valid for, in seconds.  32400 = 9 hours
+  :inactivity_timeout: 3600     # inactivity timeout in secionds.  3600 = 1 hour
+  #:black_list: bergy@us.ibm.com
+  :authorization_class_name:
+#    - HipAuthViaConfig
+    - HipAuthViaBluePages
+  :HipAuthViaConfig:
+    <<: *hip_auth_admin_via_config
+  :HipAuthViaBluePages:
+    <<: *stag_auth_via_blue_pages
+
+etltest:
+  :login_url:
+    :controller:  /home
+    :action:      login
+#  :default_roles:  :authenticated
+  :credential_duration: 32400   # time credential is valid for, in seconds.  32400 = 9 hours
+  :inactivity_timeout: 3600     # inactivity timeout in secionds.  3600 = 1 hour
+  #:black_list: bergy@us.ibm.com
+  :authorization_class_name:
+#    - HipAuthViaConfig
+    - HipAuthViaBluePages
+  :HipAuthViaConfig:
+    <<: *hip_auth_admin_via_config
+  :HipAuthViaBluePages:
+    <<: *stag_auth_via_blue_pages
+
+
+production:
+  :login_url:
+    :controller:  /home
+    :action:      login
+#  :default_roles:  :authenticated
+  :credential_duration: 32400   # time credential is valid for, in seconds.  32400 = 9 hours
+  :inactivity_timeout: 3600     # inactivity timeout in secionds.  3600 = 1 hour
+  #:black_list: bergy@us.ibm.com
+  :authorization_class_name:
+#    - HipAuthViaConfig
+    - HipAuthViaBluePages
+  :HipAuthViaConfig:
+    <<: *hip_auth_admin_via_config
+  :HipAuthViaBluePages:
+    <<: *prod_auth_via_blue_pages

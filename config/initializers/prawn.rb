@@ -1,0 +1,3 @@
+require "prawn"
+
+require "ttfunk"
