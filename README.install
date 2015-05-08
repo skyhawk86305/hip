@@ -1,0 +1,35 @@
+INSTALL Ruby 1.9.1-p431
+
+ 1. Installing a Gemset for Rails 2.3.5
+
+     rvm autolibs packages enable
+ 
+     rvm install 1.9.1-p431 --with-iconv-dir=$rvm_path/usr --verify-downloads 1
+
+     rvm gemset create rails-2.3.5
+
+     rvm 1.9.1-p431@rails-2.3.5  
+  
+ Ruby 1.9.1-p431 should not be setup with Gem 1.6.2 and rails 2.3.5
+
+INSTALL Gems 1.6.2
+
+   Gem install rubygems-update -v '1.6.2'
+
+CLEANING UP ALL GEMS
+
+  rvm all-gemsets do rvm gemset pristine
+
+CHECKING THE ENVIRONMENT
+
+  gem -v    1.6.2
+  rails -v  2.3.5
+  ruby    1.9.1-p431
+
+STARTING THE SERVER
+
+  ruby script/server
+
+
+
+    

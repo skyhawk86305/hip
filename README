@@ -1,0 +1,170 @@
+== HIP
+
+=== Installation
+
+==== Development
+The development environment is setup to use DB2-C.  Instal DB2-C using userid "db2i1" as the database instance.  Create a userid "hip", and use the password in config/database.yml (unless you enjoy changing it again and again in the database.yml file when it gets updated).  The "hip" userid needs to be part of the db2i1 group so that it has DB-Admin privilege.
+
+To create the appropriate tables and load sample data, run:
+1) rake hip:reset_seed
+
+Other than preparing the database, everything else should work as you expect.
+
+=== Staging and Production
+
+The staging and production environments are very similar.  Here is the required information needed to setup each environment:
+
+Staging:
+ApplicationServer: msd-bld-dev-01.boulder.ibm.com
+CryptKeepServer: bld-msd-etl-03t.boulder.ibm.com
+RailsEnvironment: staging
+
+Production:
+ApplicationServer: msd-bld-web-03p.boulder.ibm.com
+CryptKeepServer: bld-msd-etl-02p.boulder.ibm.com
+RailsEnvironment: production
+
+==== First Time Setup
+
+In the instructions below, you'll see ApplicationServer, CryptKeepServer and RailsEnvironment:  When you see these terms, substitute the value from the Staging and Production sections above.
+
+===== Setting up user ids
+
+1) You'll need a personal userid on the ApplicationServer, and that userid will need to be part of the secintel group
+2) Create a userid "hip" on the ApplicationServer
+
+===== Setting up ssh
+
+1) Login to hip@ApplicationServer and add you public key to ~hip/.ssh/authorized_keys.  Remember to chmod 700 ~hip.ssh and chmod 600 ~hip/.ssh/authorized_keys
+2) From hip@ApplicationServer, run "ssh msd-bld-dev-01.boulder.ibm.com" so that it gets added to the ~/.ssh/known_hosts file, this is where the svn repository is.
+3) From your personal workstation, verify that you can ssh to your personal userid on the ApplicationServer, and from the ApplicationServer, that you can ssh to hip@ApplicationServer without being prompted for a password.  If you get prompted on that second ssh, you probably do not have ForwardAgent turned on.  You'll need to get it turned on for the capistrano deployment to work correctly.  If you are running Windows and using putty, you'll need to also run pageant (available at the putty web site) configure it with your private key, and configure putty to use it.  The section you need to update is PuTTY Configuration->Connection->SSH->Auth, make sure "Attempt authentication using Pageant" is selected, and select "Allow agent forwarding".  Remember to save this configuration.
+4) ssh to your personal ID on the ApplicationServer. You shouldn't be prompted for a password.  This is where you will run the deploys from.
+5) From your personal ID on the ApplicationServer, ssh to hip@ApplicationServer. You shouldn't be prompted for a password.  This is where the most of the commands triggered by capistrano will run.
+6) From the "hip" userid on the ApplicationServer, ssh to hip@msd-bld-dev-01.boulder.ibm.com. You shouldn't be prompted for a password.  This is where the subversion export command will run.
+7) Back out of all the ssh commands.  ssh is now setup correctly.
+
+===== Setting up DB2
+
+1) For both your person userid and the "hip" userid, put the following statement (note the leading dot) in ~/.bashrc: . ~db2i1/sqllib/db2profile
+2) For each userid, logout and log back in and verify that the following command returns a list of the databases that are defined:  db2 list db directory
+
+===== Setting up Ruby 1.8.7 and Ruby Gems
+
+0) Setup DB2
+1) ssh to your personal ID on the ApplicationServer
+2) Create (or have the system admins and give ownership to you) a directory /www/local
+3) chgrp secintel /www/local
+4) chmod 2775 /www/local
+5) Check out the ruby install files from subversion: svn co file:///www/svn/hip/ruby-1.8.6 ~/ruby-1.8.6
+6) cd ~/ruby-1.8.6
+7) ./mkruby ruby-1.8.6-p399.tar.gz rubygems-1.3.6.tgz passenger-2.2.15.tar.gz wkhtmltopdf-0.10.0.i386 /www/local/ruby-1.8.6 secintel
+8) For both your personal userid and the "hip" userid on the ApplicationServer, put the following statement in ~/.bashrc:
+	export PATH=/www/local/ruby-1.8.6/bin:$PATH
+9) For both your personal userid and the "hip" userid on the ApplicationServer, verify that the command "which ruby" indicates /www/local/ruby-1.8.6/bin/ruby and that the command "ruby -v" indicates 1.8.6
+
+===== Setting up CryptKeep
+
+0) Setup Ruby 1.8.7
+1) Get the current copy of CryptKeep.  Normally you can pull it off of one of the ETL servers as /etlsmart/lib/python/secure_users.py
+2) mkdir --mode=2775 /www/local/crypt_keep
+3) mkdir --mode=2775 /www/local/crypt_keep/bin) copy the secure_users.py from step 1 into /www/local/crypt_keep/bin/secure_users.py
+5) chmod 555 /www/local/crypt_keep/bin/secure_users.py
+6) Have your public key added to the ~/.ssh/authorized_keys for etlsmart@CryptKeepServer
+7) Get the HIP Application private key installed on hip@ApplicationServer that verify that etlsmart@bCryptKeepServer has been updated with the public key.  This same private/public key is used for all the HIP application userids.
+8) For hip@ApplicationServer, create a file ~/.secure_users.cfg, and place the following in it (no leading blanks):
+   [remote]
+   use_remote: True
+   user: etlsmart
+   host: CryptKeepServer
+   script: /etlsmart/lib/python/secure_users.py
+9) Use the secure_users command to verify the hip password on the target database server is there.  If not, add it.
+
+===== Setting up Apache
+
+Setting up Apache is beyond the scope of this install document.  It needs to be configured for:
+
+1) http to redirect to https
+2) the https virtual host needs to be setup for passenger
+
+
+===== Installing HIP the first time
+
+0) Setup CryptKeep
+1) Login to your userid on the ApplicationServer (you could probably work from elsewhere, but the ssh instructions make this a safe place)
+2) checkout, or bring up to date, the version of HIP that you are going to deploy, and cd to the root Rails directory
+3) make a directory /www/RailsEnvironment or have the system admin create it for you and make you the owner of it.
+4) chmod 2775 /www/hip_staging
+5) chgrp secintel /www/hip_staging
+6) cap staging deploy:setup
+7) cap staging deploy:check
+8) Run the cap command to install the code.  Note that the RELEASE parameter is optional for staging, but required for production.  Without the RELEASE parameter, the code from the subversion trunk will be installed.  With the RELEASE parameter, the specified directory from the releases subversion area will be installed:  cap staging deploy:update [ RELEASE=rrrr ]
+9) ssh to hip@ApplicationServer, cd to /www/hip_staging/current and run "./script/console staging" and make sure it starts.
+10) IF THE DATABASE has not been seeded: with the current directory still set to /www/hip_staging/current run "RAILS_ENV=staging rake db:seed"
+11) modify config/authorization_login.yml.  In the staging stanza, uncomment the line "#    - HipAuthViaConfig"
+12) Logout of hip@ApplicationServer; you should be back on your userid on dev-01 in the root Rails directory for HIP
+13) cap staging deploy:start
+14) in a web browser, go to http://hip-test.secintel.ibm.com, and login as userid "admin", password "temppw"
+15) Select "Administration" in the left nav-bar, then select "Roles"
+16) For the "Admin" role, select "manage groups"
+17) Select "Add New Role Group"
+18) Enter the Blue Group name for administration.  It must start with "stag_hip_" in staging, and "hip_" in production (e.g. stag_hip_admin or hip_admin)
+19) Create the bluegroup at https://bluepages.ibm.com and add yourself to it
+20) go back to the HIP application, and try logging in with your IBM Intranet ID
+21) Assuming that you can login -- delete the original Role Group that was named "hip_admin"
+22) Logout
+23) back on your userid on the ApplicationServer, stop the application using:  cap staging deploy:stop
+24) Comment out the "    - HipAuthViaConfig" in the staging stanza of config/authorization_login.yml
+25) Start the application using:  cap staging deploy:start
+26) TODO:  Add starting HIP from cron
+
+==== Creating a release
+
+A release is nothing more than a version of HIP copied into the releases directory in subversion.
+
+You can create a release from any server that has a subversion client and ssh access.  But because
+"file:" URLs are easier to type than "svn+ssh" URLs, you might want to login to dev-01  to run the
+command.
+
+To find out what releases exist (or to figure out the naming convention) run:
+   svn ls file:///www/svn/hip/releases
+
+To create a new release from the current trunk, named 1.0, run:
+   svn cp file:///www/svn/hip/trunk file:///www/svn/hip/releases/1.0
+
+==== Updating HIP to a new Release
+
+In the following commands, substitute the environment (staging or production) for <ENV>
+and the release directory from file:///www/svn/hip/releases, for <REL>
+
+0) Make sure SSH is setup as specified in Setting up ssh in the First Time Setup section
+1) checkout the HIP source code you're about to install (or update your svn work area)
+2) cd to the RAIL_HOME directory for your checkout'ed or updated code
+3) cap <ENV> deploy:stop
+4) cap <ENV> deploy:update [ RELEASE=<REL> ]
+   Note the RELEASE is optional for stating.  If not specified, the update is from the trunk
+   Do not type the brackets
+5) cap <ENV> deploy:start
+
+==== Running tests
+
+Running the tests relies on some gems that aren't frozen in vendor/gems.
+These can be installed with Bundler, by running @gem install bundler@
+and @bundle install@.
+
+Once the gems are installed, set up the database with
+@RAILS_ENV=test rake hip:reset_seed@ and run the tests with @rake spec@.
+
+Bundler isn't currently used in production. Passenger's automatic
+Bundler support is suppressed with the empty
+@config/setup_load_paths.rb@.
+
+==== Debugging
+
+Bundler pulls in ruby-debug and pry, which can be used to inspect a running ruby program.
+To run pry, add a line that says @binding.pry@ where you want the break to occur. For 
+ruby-debug, add a line that says @debugger@.
+
+The advantage of pry is that it has a really neat interface for inspecting and interacting
+with the current program state. The advantage of ruby-debug is that it's a full-featured 
+debugger and supports stepping through the code, even to lines that don't have a @debugger@
+command before them.
