@@ -1,0 +1,104 @@
+#!/bin/bash
+
+instance=$1
+method="ScheduledTaskRunner.run_tasks('$instance')"
+
+error_subject="Problem with HIP offine Tasks for instance $instance"
+error_to_list="bergy@us.ibm.com"
+
+app_name=hip
+
+if [[ -z $instance ]]
+then
+  echo "You must specify an instance name as the first parameter"
+  exit 1
+fi
+
+# Get this script's name without the path
+script_name=${0##*/}
+# Get the path part that was specified for this command
+dir_name=${0%/*}
+# Get absolute path -- Note that the pwd command (not builtin command) was 
+# used because it will resolve any symbolic links
+cd $dir_name
+dir_name=$(/bin/pwd)
+
+#
+# We needt to pick up the environment name -- we'll see if
+# there is a name in the path.
+#
+bin_dir_name=${dir_name##*/}
+bin_dir_path=${dir_name%/*}
+bin_dir_parent_name=${bin_dir_path##*/}
+if [[ $bin_dir_parent_name = $app_name || $bin_dir_parent_name = ${app_name}_* ]]
+then
+  environemt=development
+else
+  bin_dir_parent_path=${bin_dir_path%/*}
+  releases_dir_name=${bin_dir_parent_path##*/}
+  if [[ $releases_dir_name = releases ]]
+  then
+    application_path=${bin_dir_parent_path%/*}
+    application_directory_name=${application_path##*/}
+    if [[ $application_directory_name = ${app_name}_* ]]
+    then
+      environment=${application_directory_name##*_}
+    else
+      environment=development
+    fi
+  else
+    environment=development
+  fi
+fi
+
+base_dir=${dir_name%/releases/*}
+base_name=${base_dir##*/}
+
+base_dir=${dir_name%/releases/*}
+pid_dir=$base_dir/shared/pids
+pid_file_name=$pid_dir/${script_name}_${instance}.pid
+#
+# Read the pidfile if it exists and pull the pid id out of it
+# At the end fo this block, $pid will either contain the pid of
+# the process that might be running, or it will be empty if the
+# this script isn't running and the previous run properly cleaned up
+if [[ -r $pid_file_name ]]
+then
+  read pid <$pid_file_name >/dev/null
+else
+  pid=
+fi
+#
+# If there is a pid, we want to make sure that process is alive.  If it's
+# not still running, we want to proceed
+if [[ -n $pid ]]
+then
+  if ps -p $pid >/dev/null 2>&1
+  then
+    echo process $pid is still running, exiting >&2
+    exit 1
+  fi
+fi
+#
+# The check for a duplicate instance of this shell passed, so
+# we should continue by putting our PID in the pid file, if
+# the pid directory exists
+if [[ -e $pid_dir ]]
+then
+  echo $$ >$pid_file_name
+fi
+
+# Run the method via the console
+output_file=/tmp/$script_name.$$
+#echo "$method" | $dir_name/../script/console $rails_env >$output_file 2>&1
+$dir_name/../script/runner --environment=$environment $method >$output_file 2>&1
+
+#
+# If the console didn't exit cleanly, we need to send an email
+#
+if [[ $? -ne 0 ]]
+then
+  mail -s "$error_subject" $error_to_list <$output_file
+else
+  rm $output_file
+fi

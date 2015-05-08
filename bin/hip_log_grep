@@ -1,0 +1,132 @@
+#!/usr/bin/env ruby
+ 
+# Include stardard library classes and class extensions
+require 'time'
+require 'getoptlong'
+
+# Definitions
+MATCH_COLOR_SEQUENCES = Regexp.new("\\x1b\\[[0-9;]*[mK]")
+TEST_TIME = Time.parse('1960-01-01 00:00:01')
+HELP_MESSAGE = <<EOF
+#{File.basename($0)} [OPTIONS] [--] [FILE]
+
+Abstract:
+  Filter HIP logs to separate out relavent lines for problem determination
+  
+  Note:  Buy default, #{File.basename($0)} will remove ASCII color codes
+
+Options:
+  -h, --help:
+    show help
+    
+  -c, --color:
+    Do not filter out ASCII color codes
+
+  -s, --starttime:
+    Process only log timestamp on or after this timestamp.  Timestamp format can be any of the formats supported by Ruby's Time.parse method.  If unsure, try your favorate timestamp and it will more than likely work.
+
+  -e, --endtime:
+    Process only log timestamps on or before this timestamp.  See --starttime for format information.
+
+  -u, --username:
+    Process only log entries for the specified user
+
+  -r, --regexp:
+    Only display lines matcing the supplied regular expression.  Regular expressons defined by the Ruby langage are acceptable (which probably includes what you want to use).
+
+Parameters:
+  FILE:
+    The name of the file to search.  If ommitted, STDIN will be searched
+
+Examples:
+  #{File.basename($0)} --username=ibmuser@us.ibm.com /www/hip/log/production.log
+
+  zcat /www/hip/log/production.log.1.gzip | #{File.basename($0)} 
+
+EOF
+
+# Setup the options for parsing
+opts = GetoptLong.new(
+  [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
+  [ '--starttime', '-s', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--endtime', '-e', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--username', '-u', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--regexp', '-r', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--color', '-c', GetoptLong::NO_ARGUMENT ]
+)
+
+# Specify the default option values
+start_time = nil
+end_time = nil
+username = nil
+regexp = nil
+color = false
+
+# Parse the flags
+opts.each do |opt, arg|
+  case opt
+    when '--help'
+      puts HELP_MESSAGE
+      exit 0
+    when '--starttime'
+      start_time = Time.parse(arg)
+    when '--endtime'
+      end_time = Time.parse(arg)
+    when '--username'
+      username = arg
+    when '--regexp'
+      regexp = Regexp.new(arg)
+    when '--color'
+      color = true
+  end
+end # Process positional parameters
+if ARGV.length == 0
+  file_name = STDIN.fileno
+elsif ARGV.length == 1
+  file_name = ARGV[0]
+else
+  puts HELP_MESSAGE
+  exit 1
+end
+
+# Treat the case when no options are specified as a special case to avoid the overhead
+# of parsing the input lines
+if start_time.nil? && end_time.nil? && username.nil? && regexp.nil?
+  File.open(file_name, "r") do |file|
+    while line = file.gets
+      line.chomp!
+      line.gsub!(MATCH_COLOR_SEQUENCES, "") unless color
+      puts line
+    end
+  end
+else
+  # Fix up start_time or end_time if only one was specified
+  if start_time.nil?
+    start_time = Time.parse('1960-01-01 00:00:00')
+  end
+  if end_time.nil?
+    end_time = Time.parse('2038-01-01 00:00:00')
+  end
+  # Main grep loop
+  File.open(file_name, "r") do |file|
+    print_current_line = false
+    while line = file.gets
+      line.chomp!
+      line.gsub!(MATCH_COLOR_SEQUENCES, "") unless color
+      (date, time, userid, debug_level, *data) = line.split
+      date_time = Time.parse("#{date.chomp(':')} #{time.chomp(':')}", TEST_TIME) rescue date_time = TEST_TIME
+      if date_time == TEST_TIME || debug_level.nil? || ['DEBUG','INFO','WARN','ERROR','FATAL','UNKNOWN'].include?(debug_level)
+        puts(line) if print_current_line
+      else
+        if start_time <= date_time && date_time <= end_time \
+          && ( username.nil? || username == userid.chomp(':')) \
+          && ( regexp.nil? || regexp.match(line))
+          print_current_line = true
+          puts(line)
+        else
+          print_current_line = false
+        end
+      end
+    end # while
+  end # File.open() do
+end # if start_time.nil? ...
